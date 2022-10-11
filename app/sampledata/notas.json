@@ -1,0 +1,29 @@
+{
+  "notes": [
+    {
+      "title": "My first note",
+      "description": "Description of my first note",
+      "modified_date": "08/12/2022"
+    },
+    {
+      "title": "My second note",
+      "description": "This is definitely the description of my second note",
+      "modified_date": "08/12/2022"
+    },
+    {
+      "title": "My third note",
+      "description": "No waste of time",
+      "modified_date": "08/12/2022"
+    },
+    {
+      "title": "Don't wake up",
+      "description": "And if I sleep tonight the cosmic radiation I wont complain",
+      "modified_date": "08/12/2022"
+    },
+    {
+      "title": "Nothing quite like this",
+      "description": "Gravity is losing its hold",
+      "modified_date": "08/12/2022"
+    }
+  ]
+}
