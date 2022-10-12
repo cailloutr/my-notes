@@ -1,4 +1,4 @@
-package com.example.mynotes.ui.NotesList
+package com.example.mynotes.ui.notesList
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,7 +9,7 @@ import com.example.mynotes.database.model.Note
 import com.example.mynotes.databinding.ItemNoteBinding
 
 class NotesListAdapter(
-    private val onItemClickListener: (Note) -> Unit
+    private val onItemClickListener: () -> Unit
 ) : ListAdapter<Note, NotesListAdapter.NoteViewHolder>(DiffCallback) {
 
     class NoteViewHolder(private var binding: ItemNoteBinding): ViewHolder(binding.root) {

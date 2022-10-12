@@ -1,4 +1,4 @@
-package com.example.mynotes.ui.NotesList
+package com.example.mynotes.ui.notesList
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,11 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.coroutineScope
 import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.databinding.FragmentNotesListBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,7 +26,7 @@ class NotesListFragment : Fragment() {
 
     private val viewModel: NotesListViewModel by viewModels {
         NotesListViewModelFactory(
-            (activity?.application as MyNotesApplication).database.notesDao()
+            (activity?.application as MyNotesApplication)
         )
     }
 
@@ -44,13 +41,11 @@ class NotesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = NotesListAdapter { _ -> }
+        val adapter = NotesListAdapter {  -> }
         binding.fragmentNotesRecyclerView.adapter = adapter
 
-        lifecycle.coroutineScope.launch(Dispatchers.IO) {
-            viewModel.getAllNotes().collect() {
-                adapter.submitList(it)
-            }
+        viewModel.notesList.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
         }
     }
 
