@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Widget.MyNotes.TextView.Title" parent="Widget.MaterialComponents.TextView">
+        <item
+            name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline4
+        </item>
+    </style>
+
+    <style name="Widget.MyNotes.TextView.Description" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body1</item>
+    </style>
+
+    <style name="Widget.MyNotes.TextView.Date" parent="Widget.MaterialComponents.TextView">
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Caption</item>
+    </style>
+</resources>

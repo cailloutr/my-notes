@@ -5,4 +5,6 @@
     <string name="fragment_notes_text_input_inser_hint">Add new note</string>
     <string name="fragment_notes_button_add_new_note_content_description">Botão salvar nota</string>
     <string name="fragment_note_text_input_end_icon_content_description">Expand new note screen</string>
+    <string name="fragment_notes_list">MyNotes</string>
+    <string name="fragment_new_note">New Note</string>
 </resources>

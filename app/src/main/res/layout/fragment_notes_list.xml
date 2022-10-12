@@ -42,6 +42,7 @@
         app:endIconContentDescription="@string/fragment_note_text_input_end_icon_content_description"
         app:endIconDrawable="@drawable/ic_open_in_full"
         app:endIconMode="custom"
+        app:endIconCheckable="true"
         app:hintEnabled="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/fragment_notes_cardview_button_add_note"

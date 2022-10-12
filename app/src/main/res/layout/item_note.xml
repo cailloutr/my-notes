@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:minWidth="200dp"
-    android:layout_margin="8dp">
+    android:layout_margin="8dp"
+    android:minWidth="200dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,9 +14,9 @@
 
         <TextView
             android:id="@+id/item_note_title"
+            style="@style/Widget.MyNotes.TextView.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
             android:layout_margin="4dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -27,22 +27,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-            app:layout_constraintTop_toBottomOf="@id/item_note_title"
             app:layout_constraintStart_toStartOf="@id/item_note_title"
-            tools:text="@sample/notas.json/notes/description" />
+            app:layout_constraintTop_toBottomOf="@id/item_note_title"
+            tools:text="@sample/notas.json/notes/description"
+            style="@style/Widget.MyNotes.TextView.Description" />
 
         <TextView
             android:id="@+id/item_note_modified_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-            app:layout_constraintTop_toBottomOf="@id/item_note_description"
-            app:layout_constraintStart_toStartOf="@id/item_note_description"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/item_note_description"
+            app:layout_constraintTop_toBottomOf="@id/item_note_description"
             tools:text="@sample/notas.json/notes/modified_date"
-            />
+            style="@style/Widget.MyNotes.TextView.Date" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

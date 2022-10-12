@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.database.model.Note
 import com.example.mynotes.databinding.FragmentNotesListBinding
@@ -54,10 +57,16 @@ class NotesListFragment : Fragment() {
 
             // TODO: size of an small note (temporally solved)
             // TODO: Expand button on the editText opens a new fragment for adding a new Note
+            // TODO: AddNewNote fragment
             val description = binding.fragmentNotesTextInputEdittextInsert.text.toString()
 
             viewModel.saveNote(description = description)
             binding.fragmentNotesTextInputEdittextInsert.text?.clear()
+        }
+
+        binding.fragmentNotesTextInputInsert.setEndIconOnClickListener {
+            val action = NotesListFragmentDirections.actionNotesListFragmentToNewNoteFragment()
+            findNavController().navigate(action)
         }
     }
 
