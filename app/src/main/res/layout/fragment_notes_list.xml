@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
-        app:layout_constraintBottom_toTopOf="@id/fragment_notes_text_input_insert"
+        app:layout_constraintBottom_toTopOf="@id/fragment_notes_divisor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -19,12 +19,22 @@
         tools:itemCount="20"
         tools:listitem="@layout/item_note" />
 
+    <View
+        android:id="@+id/fragment_notes_divisor"
+        android:layout_width="0dp"
+        android:layout_height="5dp"
+        android:background="@drawable/gradient_divisor"
+        app:layout_constraintBottom_toTopOf="@id/fragment_notes_text_input_insert"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/fragment_notes_text_input_insert"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:paddingTop="4dp"
         app:boxCornerRadiusBottomEnd="30dp"
         app:boxCornerRadiusBottomStart="30dp"
         app:boxCornerRadiusTopEnd="30dp"
@@ -32,6 +42,7 @@
         app:endIconContentDescription="@string/fragment_note_text_input_end_icon_content_description"
         app:endIconDrawable="@drawable/ic_open_in_full"
         app:endIconMode="custom"
+        app:hintEnabled="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/fragment_notes_cardview_button_add_note"
         app:layout_constraintStart_toStartOf="parent">
@@ -39,9 +50,10 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/fragment_notes_text_input_edittext_insert"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:hint="@string/fragment_notes_text_input_inser_hint"
-            android:inputType="textAutoCorrect"
+            android:inputType="textMultiLine"
+            android:maxHeight="160dp"
             android:textColorHint="#757575" />
 
     </com.google.android.material.textfield.TextInputLayout>
