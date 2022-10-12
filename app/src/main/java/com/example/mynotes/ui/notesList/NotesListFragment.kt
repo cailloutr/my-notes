@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.mynotes.MyNotesApplication
+import com.example.mynotes.database.model.Note
 import com.example.mynotes.databinding.FragmentNotesListBinding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -46,6 +48,16 @@ class NotesListFragment : Fragment() {
 
         viewModel.notesList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
+        }
+
+        binding.fragmentNotesButtonAddNote.setOnClickListener {
+
+            // TODO: size of an small note (temporally solved)
+            // TODO: Expand button on the editText opens a new fragment for adding a new Note
+            val description = binding.fragmentNotesTextInputEdittextInsert.text.toString()
+
+            viewModel.saveNote(description = description)
+            binding.fragmentNotesTextInputEdittextInsert.text?.clear()
         }
     }
 
