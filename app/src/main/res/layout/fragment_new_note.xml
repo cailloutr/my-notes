@@ -6,31 +6,53 @@
     android:layout_height="match_parent"
     tools:context=".NewNoteFragment">
 
-    <TextView
-        android:id="@+id/fragment_new_note_title"
-        style="@style/Widget.MyNotes.TextView.Title"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fragment_new_note_textInput_title"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
+        app:hintEnabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Title" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/fragment_new_note_description"
-        style="@style/Widget.MyNotes.TextView.Description"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/fragment_new_note_textInput_edittext_title"
+            style="@style/Widget.MyNotes.TextView.Title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:maxHeight="200dp"
+            android:hint="@string/fragment_new_note_edittext_hint_title"
+            android:inputType="textMultiLine" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fragment_new_note_textInput_description"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
+        app:hintEnabled="false"
         app:layout_constraintBottom_toTopOf="@id/fragment_new_note_date"
-        app:layout_constraintEnd_toEndOf="@id/fragment_new_note_title"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/fragment_new_note_title"
-        app:layout_constraintTop_toBottomOf="@id/fragment_new_note_title"
-        app:layout_constraintVertical_bias="1.0"
-        tools:text="Description" />
+        app:layout_constraintEnd_toEndOf="@id/fragment_new_note_textInput_title"
+        app:layout_constraintStart_toStartOf="@id/fragment_new_note_textInput_title"
+        app:layout_constraintTop_toBottomOf="@id/fragment_new_note_textInput_title">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/fragment_new_note_textInput_edittext_description"
+            style="@style/Widget.MyNotes.TextView.Description"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top"
+            android:hint="@string/fragment_new_note_edittext_hint_description"
+            android:inputType="textMultiLine" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/fragment_new_note_date"
