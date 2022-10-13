@@ -5,6 +5,7 @@ import java.util.*
 
 class DateUtil {
 
+    // TODO: fix: time is in the wrong time-zone
     companion object {
         fun getFormattedDate(): String {
             val calendar = Calendar.getInstance()
