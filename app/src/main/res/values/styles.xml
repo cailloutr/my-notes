@@ -14,4 +14,9 @@
     <style name="Widget.MyNotes.TextView.Date" parent="Widget.MaterialComponents.TextView">
         <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Caption</item>
     </style>
+
+    <style name="Widget.MyNotes.TextInputLayout.OutlinedBox.Dense" 
+        parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+    </style>
 </resources>

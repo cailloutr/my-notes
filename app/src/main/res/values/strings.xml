@@ -7,4 +7,7 @@
     <string name="fragment_note_text_input_end_icon_content_description">Expand new note screen</string>
     <string name="fragment_notes_list">MyNotes</string>
     <string name="fragment_new_note">New Note</string>
+    <string name="fragment_new_note_edittext_hint_title">Title</string>
+    <string name="fragment_new_note_edittext_hint_description">Description</string>
+    <string name="fragment_new_note_menu_item_save_note">Save note</string>
 </resources>

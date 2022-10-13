@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".NewNoteFragment">
 
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/fragment_new_note_textInput_title"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
