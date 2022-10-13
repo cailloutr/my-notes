@@ -16,7 +16,7 @@ class NotesListAdapter(
         fun bind(note: Note) {
             binding.itemNoteTitle.text = note.title
             binding.itemNoteDescription.text = note.description
-            binding.itemNoteModifiedDate.text = note.modifiedData
+            binding.itemNoteModifiedDate.text = note.modifiedDate
         }
     }
 

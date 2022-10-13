@@ -8,6 +8,7 @@ import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.database.AppDatabase
 import com.example.mynotes.database.model.Note
 import com.example.mynotes.database.repository.NotesRepository
+import com.example.mynotes.util.DateUtil
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -26,12 +27,14 @@ class NotesListViewModel(
 
     fun getAllNotes(): Flow<List<Note>> = application.database.notesDao().getAllNotes()
 
-    fun saveNote(title: String = "", description: String = "", modifiedData: String = "") {
+    fun saveNote(title: String = "", description: String = "") {
+
+        val modifiedDate = DateUtil.getFormattedDate()
 
         val note = Note(
             title = title,
             description = description,
-            modifiedData = modifiedData
+            modifiedDate = modifiedDate
         )
 
         viewModelScope.launch {

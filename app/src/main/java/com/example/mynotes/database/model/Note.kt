@@ -9,6 +9,6 @@ data class Note(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val title: String?,
     val description: String?,
-    @ColumnInfo(name = "modified_data") val modifiedData: String?
+    @ColumnInfo(name = "modified_data") val modifiedDate: String
 ) {
 }
