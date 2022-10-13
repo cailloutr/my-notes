@@ -5,13 +5,12 @@ import android.view.*
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.mynotes.databinding.FragmentNewNoteBinding
 import com.example.mynotes.ui.notesList.NotesListViewModel
 import com.example.mynotes.ui.notesList.NotesListViewModelFactory
-import com.example.mynotes.util.DateUtil.Companion.getFormattedDate
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,7 +26,7 @@ class NewNoteFragment : Fragment() {
     private var _binding: FragmentNewNoteBinding? = null
     val binding get() = _binding!!
 
-    private val viewModel: NotesListViewModel by viewModels {
+    private val viewModel: NotesListViewModel by activityViewModels {
         NotesListViewModelFactory(
             activity?.application as MyNotesApplication
         )
@@ -52,6 +51,9 @@ class NewNoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.fragmentNewNoteTextInputEdittextDescription.setText(
+            viewModel.newNoteDescription.value
+        )
         setupMenu()
     }
 
@@ -65,11 +67,16 @@ class NewNoteFragment : Fragment() {
 
                 if (menuItem.itemId == R.id.fragment_new_note_menu_item_save_note) {
                     saveNewNote()
+                    clearViewModelNewNoteDescription()
                 }
                 return true
             }
 
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    private fun clearViewModelNewNoteDescription() {
+        viewModel.setNewNoteDescription(null)
     }
 
     private fun saveNewNote() {

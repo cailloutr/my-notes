@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.databinding.FragmentNotesListBinding
@@ -25,7 +25,7 @@ class NotesListFragment : Fragment() {
     private var _binding: FragmentNotesListBinding? = null
     val binding get() = _binding!!
 
-    private val viewModel: NotesListViewModel by viewModels {
+    private val viewModel: NotesListViewModel by activityViewModels {
         NotesListViewModelFactory(
             (activity?.application as MyNotesApplication)
         )
@@ -51,19 +51,25 @@ class NotesListFragment : Fragment() {
 
         binding.fragmentNotesButtonAddNote.setOnClickListener {
 
-            // TODO: size of an small note (temporally solved)
-            // TODO: Expand button on the editText opens a new fragment for adding a new Note
-            // TODO: AddNewNote fragment
             val description = binding.fragmentNotesTextInputEdittextInsert.text.toString()
 
             viewModel.saveNote(description = description)
-            binding.fragmentNotesTextInputEdittextInsert.text?.clear()
+            cleanEditTextInsertNote()
         }
 
         binding.fragmentNotesTextInputInsert.setEndIconOnClickListener {
+
+            val description = binding.fragmentNotesTextInputEdittextInsert.text.toString()
+            viewModel.setNewNoteDescription(description)
+            cleanEditTextInsertNote()
+
             val action = NotesListFragmentDirections.actionNotesListFragmentToNewNoteFragment()
             findNavController().navigate(action)
         }
+    }
+
+    private fun cleanEditTextInsertNote() {
+        binding.fragmentNotesTextInputEdittextInsert.text?.clear()
     }
 
     override fun onDestroyView() {
