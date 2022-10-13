@@ -1,4 +1,4 @@
-package com.example.mynotes
+package com.example.mynotes.ui.newnote
 
 import android.os.Bundle
 import android.view.*
@@ -8,9 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
+import com.example.mynotes.MyNotesApplication
+import com.example.mynotes.R
 import com.example.mynotes.databinding.FragmentNewNoteBinding
-import com.example.mynotes.ui.notesList.NotesListViewModel
-import com.example.mynotes.ui.notesList.NotesListViewModelFactory
+import com.example.mynotes.ui.noteslist.NotesListViewModel
+import com.example.mynotes.ui.noteslist.NotesListViewModelFactory
+import com.example.mynotes.util.ToastUtil
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -85,10 +88,17 @@ class NewNoteFragment : Fragment() {
         val description =
             binding.fragmentNewNoteTextInputEdittextDescription.text.toString()
 
-        viewModel.saveNote(
-            title = title,
-            description = description
-        )
+        if (title.isNotEmpty() || description.isNotEmpty()) {
+            viewModel.saveNote(
+                title = title,
+                description = description
+            )
+        } else {
+            ToastUtil.makeToast(
+                context,
+                getString(R.string.notes_list_fragment_toast_empty_note)
+            )
+        }
 
         findNavController().navigate(
             NewNoteFragmentDirections.actionNewNoteFragmentToNotesListFragment()

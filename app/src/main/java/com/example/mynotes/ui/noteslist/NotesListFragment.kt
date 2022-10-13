@@ -1,4 +1,4 @@
-package com.example.mynotes.ui.notesList
+package com.example.mynotes.ui.noteslist
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.mynotes.MyNotesApplication
+import com.example.mynotes.R
 import com.example.mynotes.databinding.FragmentNotesListBinding
+import com.example.mynotes.util.ToastUtil
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -53,8 +55,15 @@ class NotesListFragment : Fragment() {
 
             val description = binding.fragmentNotesTextInputEdittextInsert.text.toString()
 
-            viewModel.saveNote(description = description)
-            cleanEditTextInsertNote()
+            if (description.isNotEmpty()) {
+                viewModel.saveNote(description = description)
+                cleanEditTextInsertNote()
+            } else {
+                ToastUtil.makeToast(
+                    context,
+                    getString(R.string.notes_list_fragment_toast_empty_note)
+                )
+            }
         }
 
         binding.fragmentNotesTextInputInsert.setEndIconOnClickListener {
@@ -78,6 +87,8 @@ class NotesListFragment : Fragment() {
     }
 
     companion object {
+        const val TAG = "NotesListFragment"
+
         /**
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.

@@ -1,4 +1,4 @@
-package com.example.mynotes
+package com.example.mynotes.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +7,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
+import com.example.mynotes.R
 import com.example.mynotes.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

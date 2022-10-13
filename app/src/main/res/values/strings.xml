@@ -10,4 +10,5 @@
     <string name="fragment_new_note_edittext_hint_title">Title</string>
     <string name="fragment_new_note_edittext_hint_description">Description</string>
     <string name="fragment_new_note_menu_item_save_note">Save note</string>
+    <string name="notes_list_fragment_toast_empty_note">Empty note not saved</string>
 </resources>
