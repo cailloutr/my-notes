@@ -1,4 +1,4 @@
-package com.example.mynotes.ui.noteslist
+package com.example.mynotes.ui.viewModel
 
 import androidx.lifecycle.*
 import com.example.mynotes.MyNotesApplication

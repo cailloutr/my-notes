@@ -10,18 +10,10 @@ import androidx.navigation.fragment.findNavController
 import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.R
 import com.example.mynotes.databinding.FragmentNotesListBinding
+import com.example.mynotes.ui.viewModel.NotesListViewModel
+import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
 import com.example.mynotes.util.ToastUtil
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [NotesListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class NotesListFragment : Fragment() {
 
     private var _binding: FragmentNotesListBinding? = null
@@ -44,13 +36,37 @@ class NotesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = NotesListAdapter {  -> }
-        binding.fragmentNotesRecyclerView.adapter = adapter
+        val adapter = setupAdapter()
 
         viewModel.notesList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
 
+        setupAddNoteButton()
+        setupEdittextExpandViewButton()
+    }
+
+    private fun setupEdittextExpandViewButton() {
+        binding.fragmentNotesTextInputInsert.setEndIconOnClickListener {
+
+            saveDescriptionInViewModel()
+            cleanEditTextInsertNote()
+
+            navigateToNewNotesFragment()
+        }
+    }
+
+    private fun navigateToNewNotesFragment() {
+        val action = NotesListFragmentDirections.actionNotesListFragmentToNewNoteFragment()
+        findNavController().navigate(action)
+    }
+
+    private fun saveDescriptionInViewModel() {
+        val description = binding.fragmentNotesTextInputEdittextInsert.text.toString()
+        viewModel.setNewNoteDescription(description)
+    }
+
+    private fun setupAddNoteButton() {
         binding.fragmentNotesButtonAddNote.setOnClickListener {
 
             val description = binding.fragmentNotesTextInputEdittextInsert.text.toString()
@@ -65,16 +81,12 @@ class NotesListFragment : Fragment() {
                 )
             }
         }
+    }
 
-        binding.fragmentNotesTextInputInsert.setEndIconOnClickListener {
-
-            val description = binding.fragmentNotesTextInputEdittextInsert.text.toString()
-            viewModel.setNewNoteDescription(description)
-            cleanEditTextInsertNote()
-
-            val action = NotesListFragmentDirections.actionNotesListFragmentToNewNoteFragment()
-            findNavController().navigate(action)
-        }
+    private fun setupAdapter(): NotesListAdapter {
+        val adapter = NotesListAdapter { }
+        binding.fragmentNotesRecyclerView.adapter = adapter
+        return adapter
     }
 
     private fun cleanEditTextInsertNote() {
@@ -88,23 +100,5 @@ class NotesListFragment : Fragment() {
 
     companion object {
         const val TAG = "NotesListFragment"
-
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment NotesListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            NotesListFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }
