@@ -4,20 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:minWidth="200dp">
+    android:layout_margin="@dimen/border_margin"
+    android:minWidth="@dimen/item_note_cardView_max_width">
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp">
+        android:padding="@dimen/border_margin">
 
         <TextView
             android:id="@+id/item_note_title"
             style="@style/Widget.MyNotes.TextView.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
+            android:layout_margin="@dimen/item_note_title_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@sample/notas.json/notes/title" />
@@ -26,7 +27,7 @@
             android:id="@+id/item_note_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/border_margin"
             app:layout_constraintStart_toStartOf="@id/item_note_title"
             app:layout_constraintTop_toBottomOf="@id/item_note_title"
             tools:text="@sample/notas.json/notes/description"
@@ -36,7 +37,7 @@
             android:id="@+id/item_note_modified_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/border_margin"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/item_note_description"
             app:layout_constraintTop_toBottomOf="@id/item_note_description"

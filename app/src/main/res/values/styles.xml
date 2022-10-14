@@ -15,8 +15,49 @@
         <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Caption</item>
     </style>
 
-    <style name="Widget.MyNotes.TextInputLayout.OutlinedBox.Dense" 
+    <style name="Widget.MyNotes.TextInputLayout.CircularOutlinedBox"
         parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-
+        <item name="boxCornerRadiusBottomEnd">@dimen/fragment_notes_list_text_input_radius</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/fragment_notes_list_text_input_radius</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/fragment_notes_list_text_input_radius</item>
+        <item name="boxCornerRadiusTopStart">@dimen/fragment_notes_list_text_input_radius</item>
+        <item name="endIconCheckable">true</item>
+        <item name="endIconMode">custom</item>
+        <item name="hintEnabled">false</item>
     </style>
+
+
+    <style name="Widget.MyNotes.TextInputLayout.OutlinedBox.BorderlessEditText"
+        parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="hintEnabled">false</item>
+    </style>
+
+    <style name="Widget.MyNotes.TextInputEditText.OutlinedBox.BorderlessEditText.Title"
+        parent="Widget.MyNotes.TextView.Title">
+        <item name="android:inputType">textMultiLine</item>
+        <item name="maxHeight">@dimen/fragment_new_note_edittext_title_max_height</item>
+    </style>
+
+    <style name="Widget.MyNotes.TextInputEditText.OutlinedBox.BorderlessEditText.Description"
+        parent="Widget.MyNotes.TextView.Description">
+        <item name="android:inputType">textMultiLine</item>
+        <item name="android:gravity">top</item>
+    </style>
+
+    <style name="Widget.MyNotes.View.Divisor" parent="Widget.MaterialComponents.MaterialDivider">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">5dp</item>
+        <item name="android:background">@drawable/gradient_divisor</item>
+    </style>
+
+    <style name="Widget.MyNotes.FloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/purple_500</item>
+        <item name="backgroundTint">@color/purple_500</item>
+        <item name="android:scaleType">center</item>
+    </style>
+
 </resources>

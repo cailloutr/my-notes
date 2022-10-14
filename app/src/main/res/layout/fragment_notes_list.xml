@@ -6,10 +6,11 @@
     android:layout_height="match_parent"
     tools:context="ui.noteslist.NotesListFragment">
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_notes_recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/match_constrain"
+        android:layout_height="@dimen/match_constrain"
         app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/fragment_notes_divisor"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,29 +22,20 @@
 
     <View
         android:id="@+id/fragment_notes_divisor"
-        android:layout_width="0dp"
-        android:layout_height="5dp"
-        android:background="@drawable/gradient_divisor"
+        style="@style/Widget.MyNotes.View.Divisor"
         app:layout_constraintBottom_toTopOf="@id/fragment_notes_text_input_insert"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/fragment_notes_text_input_insert"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-        android:layout_width="0dp"
+        style="@style/Widget.MyNotes.TextInputLayout.CircularOutlinedBox"
+        android:layout_width="@dimen/match_constrain"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:paddingTop="4dp"
-        app:boxCornerRadiusBottomEnd="30dp"
-        app:boxCornerRadiusBottomStart="30dp"
-        app:boxCornerRadiusTopEnd="30dp"
-        app:boxCornerRadiusTopStart="30dp"
+        android:layout_margin="@dimen/border_margin"
+        android:paddingTop="@dimen/fragment_notes_list_text_input_padding"
         app:endIconContentDescription="@string/fragment_note_text_input_end_icon_content_description"
         app:endIconDrawable="@drawable/ic_open_in_full"
-        app:endIconMode="custom"
-        app:endIconCheckable="true"
-        app:hintEnabled="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/fragment_notes_cardview_button_add_note"
         app:layout_constraintStart_toStartOf="parent">
@@ -54,17 +46,17 @@
             android:layout_height="wrap_content"
             android:hint="@string/fragment_notes_text_input_inser_hint"
             android:inputType="textMultiLine"
-            android:maxHeight="160dp"
+            android:maxHeight="@dimen/fragment_notes_list_edit_text_max_height"
             android:textColorHint="#757575" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/fragment_notes_cardview_button_add_note"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="8dp"
-        app:cardCornerRadius="30dp"
+        android:layout_width="@dimen/fragment_notes_list_button_add_note_size"
+        android:layout_height="@dimen/fragment_notes_list_button_add_note_size"
+        android:layout_marginEnd="@dimen/border_margin"
+        app:cardCornerRadius="@dimen/fragment_notes_list_text_input_radius"
         app:layout_constraintBottom_toBottomOf="@id/fragment_notes_text_input_insert"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/fragment_notes_text_input_insert"
@@ -72,11 +64,8 @@
 
         <ImageButton
             android:id="@+id/fragment_notes_button_add_note"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/purple_500"
+            style="@style/Widget.MyNotes.FloatingActionButton"
             android:contentDescription="@string/fragment_notes_button_add_new_note_content_description"
-            android:scaleType="center"
             android:src="@drawable/ic_add" />
     </androidx.cardview.widget.CardView>
 

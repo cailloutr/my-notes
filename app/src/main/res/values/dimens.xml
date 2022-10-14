@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="activity_main_toolbar_elevation">4dp</dimen>
+    <dimen name="match_constrain">0dp</dimen>
+    <dimen name="border_margin">8dp</dimen>
+    <dimen name="fragment_new_note_edittext_title_max_height">200dp</dimen>
+    <dimen name="fragment_notes_list_text_input_radius">30dp</dimen>
+    <dimen name="fragment_notes_list_text_input_padding">4dp</dimen>
+    <dimen name="fragment_notes_list_edit_text_max_height">160dp</dimen>
+    <dimen name="fragment_notes_list_button_add_note_size">48dp</dimen>
+    <dimen name="item_note_cardView_max_width">200dp</dimen>
+    <dimen name="item_note_title_margin">4dp</dimen>
+</resources>
