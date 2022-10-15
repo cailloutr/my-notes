@@ -13,6 +13,12 @@ import org.junit.Assert.*
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
+
+// TODO: instrumentation tests for quickly adding note from NoteListFragment
+// TODO: instrumentation tests for start adding note from NoteListFragment then opens the NewNotesFragment to finish
+// TODO: instrumentation tests for adding note from NewNotesFragment
+// TODO: instrumentation tests for editing note
+
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
     @Test
