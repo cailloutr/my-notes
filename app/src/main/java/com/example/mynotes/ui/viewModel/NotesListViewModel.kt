@@ -62,7 +62,7 @@ class NotesListViewModel(
         _note.value = note
     }
 
-    fun cleatNote() {
+    private fun cleatNote() {
         _note.value = null
     }
 

@@ -37,24 +37,29 @@ class NotesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = setupAdapter()
+        loadNotesList()
 
+        setupAddNoteButton()
+        setupEditTextExpandViewButton()
+    }
+
+    private fun loadNotesList() {
+        val adapter = setupAdapter()
         viewModel.notesList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
-
-        setupAddNoteButton()
-        setupEdittextExpandViewButton()
     }
 
-    private fun setupEdittextExpandViewButton() {
+    private fun setupEditTextExpandViewButton() {
         binding.fragmentNotesTextInputInsert.setEndIconOnClickListener {
 
             saveDescriptionInViewModel()
             cleanEditTextInsertNote()
 
             viewModel.setFragmentMode(FragmentMode.FRAGMENT_NEW)
-            viewModel.fragmentMode.value?.let { it1 -> navigateToNewNotesFragment(it1) }
+            viewModel.fragmentMode.value?.let { fragmentMode ->
+                navigateToNewNotesFragment(fragmentMode)
+            }
         }
     }
 
