@@ -44,7 +44,7 @@
             android:id="@+id/fragment_notes_text_input_edittext_insert"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/fragment_notes_text_input_inser_hint"
+            android:hint="@string/fragment_notes_text_input_insert_hint"
             android:inputType="textMultiLine"
             android:maxHeight="@dimen/fragment_notes_list_edit_text_max_height"
             android:textColorHint="#757575" />
