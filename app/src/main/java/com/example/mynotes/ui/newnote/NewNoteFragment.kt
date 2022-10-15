@@ -15,7 +15,6 @@ import com.example.mynotes.databinding.FragmentNewNoteBinding
 import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
-import com.example.mynotes.util.ToastUtil
 
 
 class NewNoteFragment : Fragment() {
@@ -49,7 +48,6 @@ class NewNoteFragment : Fragment() {
         }
 
         loadNoteFromViewModel()
-
         setupMenu()
     }
 
@@ -59,7 +57,6 @@ class NewNoteFragment : Fragment() {
             binding.fragmentNewNoteTextInputEdittextDescription.setText(it?.description)
             binding.fragmentNewNoteDate.text = it?.modifiedDate
         }
-
     }
 
     private fun setupMenu() {
@@ -71,16 +68,11 @@ class NewNoteFragment : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 if (menuItem.itemId == R.id.fragment_new_note_menu_item_save_note) {
                     saveNewNote()
-                    clearViewModelNewNoteDescription()
                 }
                 return true
             }
 
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-    }
-
-    private fun clearViewModelNewNoteDescription() {
-        viewModel.createNote(null)
     }
 
     private fun saveNewNote() {
@@ -93,7 +85,6 @@ class NewNoteFragment : Fragment() {
             NewNoteFragmentDirections.actionNewNoteFragmentToNotesListFragment()
         )
     }
-
 
     companion object {
         const val TAG = "NewNoteFragment"

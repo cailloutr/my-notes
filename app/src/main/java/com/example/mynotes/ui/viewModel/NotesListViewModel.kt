@@ -22,49 +22,12 @@ class NotesListViewModel(
         MutableLiveData(FragmentMode.FRAGMENT_NEW)
     val fragmentMode: LiveData<FragmentMode> = _fragmentMode
 
-
     private val _note = MutableLiveData<Note?>(null)
     val note: LiveData<Note?> = _note
 
 
-//    private var _noteId = MutableLiveData<Int>()
-//    val noteId: LiveData<Int> = _noteId
-//
-//    private var _noteTitle = MutableLiveData<String?>()
-//    val noteTitle: LiveData<String?> = _noteTitle
-//
-//    private var _noteDescription = MutableLiveData<String?>()
-//    val noteDescription: LiveData<String?> = _noteDescription
-//
-//    private var _noteDate = MutableLiveData<String?>()
-//    val noteDate: LiveData<String?> = _noteDate
-
-    // TODO: update note instead of crating a new
 
     private fun getAllNotes() = repository.getAllNotes()
-
-//    fun saveNote(title: String = "", description: String = "") {
-//
-//        val modifiedDate = DateUtil.getFormattedDate()
-//
-//        val note = Note(
-//            title = title,
-//            description = description,
-//            modifiedDate = modifiedDate
-//        )
-//
-//        viewModelScope.launch {
-//            repository.insert(note)
-//        }
-//    }
-
-    fun updateNote() {
-        viewModelScope.launch {
-            note.value?.let { repository.update(it) }
-        }
-
-        cleatNote()
-    }
 
     fun saveNote() {
 
@@ -80,19 +43,11 @@ class NotesListViewModel(
         cleatNote()
     }
 
-    fun createNote(description: String?) {
-        val note = Note(
-            title = "",
-            description = description,
-            modifiedDate = DateUtil.getFormattedDate()
-        )
-        _note.value = note
-    }
-
-    fun updateViewModelNote(title: String, description: String) {
+    fun updateViewModelNote(title: String = "", description: String) {
         if (note.value?.id != null) {
             _note.value?.title = title
             _note.value?.description = description
+            _note.value?.modifiedDate = DateUtil.getFormattedDate()
         } else {
             val note = Note(
                 title = title,

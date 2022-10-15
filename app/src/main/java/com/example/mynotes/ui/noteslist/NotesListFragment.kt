@@ -64,18 +64,24 @@ class NotesListFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-    private fun saveDescriptionInViewModel() {
+    /**
+     * Return true if the description field is not empty
+     * */
+    private fun saveDescriptionInViewModel(): Boolean {
         val description = binding.fragmentNotesTextInputEdittextInsert.text.toString()
-        viewModel.createNote(description)
+
+        if (description.isNotEmpty()) {
+            viewModel.updateViewModelNote(description = description)
+            return true
+        }
+
+        return false
     }
 
     private fun setupAddNoteButton() {
         binding.fragmentNotesButtonAddNote.setOnClickListener {
 
-            val description = binding.fragmentNotesTextInputEdittextInsert.text.toString()
-
-            if (description.isNotEmpty()) {
-                viewModel.createNote(description)
+            if (saveDescriptionInViewModel()) {
                 viewModel.saveNote()
                 cleanEditTextInsertNote()
             } else {
