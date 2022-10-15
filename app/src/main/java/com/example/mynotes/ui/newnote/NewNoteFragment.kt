@@ -49,7 +49,7 @@ class NewNoteFragment : Fragment() {
         setupMenu()
 
         binding.fragmentNewNoteOptionsMenu.setOnClickListener {
-            val modalBottomSheet = NoteOptionModalBottomSheet()
+            val modalBottomSheet = NoteOptionModalBottomSheet(viewModel = viewModel)
 
             modalBottomSheet.show(parentFragmentManager, NoteOptionModalBottomSheet.TAG)
         }

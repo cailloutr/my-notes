@@ -18,4 +18,8 @@ class NotesRepository(private val appDatabase: AppDatabase) {
     suspend fun update(note: Note) {
         appDatabase.notesDao().update(note)
     }
+
+    suspend fun delete(note: Note) {
+        appDatabase.notesDao().delete(note)
+    }
 }

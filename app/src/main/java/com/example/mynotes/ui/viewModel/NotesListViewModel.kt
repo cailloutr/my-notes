@@ -25,13 +25,15 @@ class NotesListViewModel(
     private val _note = MutableLiveData<Note?>(null)
     val note: LiveData<Note?> = _note
 
+    private val _noteTrash = MutableLiveData<Note?>(null)
+    val noteTrash: LiveData<Note?> = _noteTrash
 
 
     private fun getAllNotes() = repository.getAllNotes()
 
     fun saveNote() {
 
-        if (_note.value?.id == null) {
+        if (note.value?.id == null) {
             viewModelScope.launch {
                 note.value?.let { repository.insert(it) }
             }
@@ -41,6 +43,41 @@ class NotesListViewModel(
             }
         }
         cleatNote()
+    }
+
+    fun undoDeleteNote(){
+        viewModelScope.launch {
+            note.value?.let { repository.insert(it) }
+        }
+        cleatNote()
+    }
+
+    // Return false if Note don't exist
+    fun deleteNote(): Boolean {
+        if (note.value?.id == null) {
+            cleatNote()
+            return false
+        }
+
+        viewModelScope.launch {
+            note.value?.let { repository.delete(it) }
+        }
+        cleatNote()
+        return true
+    }
+
+    fun moveNoteToTrash(): Boolean {
+        if (note.value?.id == null) {
+            return false
+        }
+
+        _noteTrash.value = note.value
+        return true
+    }
+
+    fun retrieveNoteFromTrash() {
+        _note.value = noteTrash.value
+        clearTrash()
     }
 
     fun updateViewModelNote(title: String = "", description: String) {
@@ -64,6 +101,10 @@ class NotesListViewModel(
 
     private fun cleatNote() {
         _note.value = null
+    }
+
+    private fun clearTrash() {
+        _noteTrash.value = null
     }
 
     fun setFragmentMode(mode: FragmentMode) {

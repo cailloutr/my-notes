@@ -17,6 +17,10 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <argument
+            android:name="hasDeletedANote"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/newNoteFragment"
@@ -31,5 +35,8 @@
         <argument
             android:name="fragmentMode"
             app:argType="com.example.mynotes.ui.enums.FragmentMode" />
+        <action
+            android:id="@+id/action_newNoteFragment_to_notesListFragment2"
+            app:destination="@id/notesListFragment" />
     </fragment>
 </navigation>

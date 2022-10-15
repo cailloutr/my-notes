@@ -7,18 +7,22 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.R
 import com.example.mynotes.databinding.FragmentNotesListBinding
+import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
 import com.example.mynotes.util.ToastUtil
-import com.example.mynotes.ui.enums.FragmentMode
+import com.google.android.material.snackbar.Snackbar
 
 class NotesListFragment : Fragment() {
 
     private var _binding: FragmentNotesListBinding? = null
     val binding get() = _binding!!
+
+    private val args: NotesListFragmentArgs by navArgs()
 
     private val viewModel: NotesListViewModel by activityViewModels {
         NotesListViewModelFactory(
@@ -37,8 +41,23 @@ class NotesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loadNotesList()
 
+        val hasDeletedANote = args.hasDeletedANote
+        if (hasDeletedANote) {
+            Snackbar.make(
+                view.findViewById(R.id.fragment_notes_button_add_note),
+                "Note deleted",
+                Snackbar.LENGTH_LONG)
+                .setAction("Undo") {
+
+                    viewModel.retrieveNoteFromTrash()
+
+                    viewModel.undoDeleteNote()
+                }
+                .show()
+        }
+
+        loadNotesList()
         setupAddNoteButton()
         setupEditTextExpandViewButton()
     }
