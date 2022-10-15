@@ -70,4 +70,23 @@
         <item name="cornerSize">24dp</item>
     </style>
 
+    <style name="Widget.MyNotes.TextView.OptionsBottomSheet.Item" parent="Widget.MaterialComponents.TextView">
+        <item name="android:layout_width">@dimen/match_constrain</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/border_margin</item>
+        <item name="android:layout_marginEnd">@dimen/border_margin</item>
+        <item name="android:drawablePadding">
+            @dimen/option_bottom_sheet_textview_drawable_padding
+        </item>
+        <item name="android:padding">@dimen/option_bottom_sheet_textview_padding</item>
+        <item name="android:textSize">@dimen/option_bottom_sheet_textview_textsize</item>
+    </style>
+
+    <style name="SliderIndicator">
+        <item name="android:layout_width">@dimen/SliderIndicator_width</item>
+        <item name="android:layout_height">@dimen/SliderIndicator_height</item>
+        <item name="android:layout_marginTop">@dimen/border_margin</item>
+        <item name="android:background">@android:color/darker_gray</item>
+    </style>
+
 </resources>

@@ -4,75 +4,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <View
         android:id="@+id/option_menu_bottom_sheet_slider_indicator"
-        android:layout_width="100dp"
-        android:layout_height="3dp"
-        android:layout_marginTop="8dp"
-        android:background="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-
-
-    <ImageView
-        android:id="@+id/option_menu_bottom_sheet_delete_imageview"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginHorizontal="16dp"
-        android:src="@drawable/ic_delete"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/option_menu_bottom_sheet_slider_indicator"
-        android:contentDescription="@string/option_bottom_sheet_delete_option_icon_content_description" />
+        style="@style/SliderIndicator" />
 
     <TextView
         android:id="@+id/option_menu_bottom_sheet_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        style="@style/Widget.MyNotes.TextView.OptionsBottomSheet.Item"
+        android:layout_marginTop="@dimen/option_bottom_sheet_textview_margintop"
         android:text="@string/option_bottom_sheet_delete_note"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@id/option_menu_bottom_sheet_delete_imageview"
-        app:layout_constraintStart_toEndOf="@id/option_menu_bottom_sheet_delete_imageview"
-        app:layout_constraintTop_toTopOf="@id/option_menu_bottom_sheet_delete_imageview" />
+        app:drawableStartCompat="@drawable/ic_delete"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/option_menu_bottom_sheet_slider_indicator" />
 
     <View
         android:id="@+id/option_menu_bottom_sheet_divider"
         android:layout_width="0dp"
         android:layout_height="1dp"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginHorizontal="@dimen/border_margin"
+        android:layout_marginTop="@dimen/border_margin"
         android:background="@android:color/darker_gray"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/option_menu_bottom_sheet_delete_imageview" />
+        app:layout_constraintTop_toBottomOf="@id/option_menu_bottom_sheet_delete" />
 
-    <ImageView
-        android:id="@+id/option_menu_bottom_sheet_share_imageview"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="32dp"
-        android:src="@drawable/ic_share"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/option_menu_bottom_sheet_divider"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0"
-        android:contentDescription="@string/option_bottom_sheet_share_option_icon_content_description" />
 
     <TextView
         android:id="@+id/option_menu_bottom_sheet_share"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        style="@style/Widget.MyNotes.TextView.OptionsBottomSheet.Item"
+        android:layout_marginTop="@dimen/border_margin"
         android:text="@string/option_bottom_sheet_share_note"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@id/option_menu_bottom_sheet_share_imageview"
-        app:layout_constraintStart_toEndOf="@id/option_menu_bottom_sheet_share_imageview"
-        app:layout_constraintTop_toTopOf="@id/option_menu_bottom_sheet_share_imageview" />
+        app:drawableStartCompat="@drawable/ic_share"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/option_menu_bottom_sheet_divider" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
