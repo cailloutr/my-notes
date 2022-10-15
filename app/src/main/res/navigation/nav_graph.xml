@@ -28,5 +28,8 @@
             app:destination="@id/notesListFragment"
             app:popUpTo="@id/notesListFragment"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="fragmentMode"
+            app:argType="com.example.mynotes.ui.enums.FragmentMode" />
     </fragment>
 </navigation>

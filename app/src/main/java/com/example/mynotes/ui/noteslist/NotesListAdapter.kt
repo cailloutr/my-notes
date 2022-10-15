@@ -9,10 +9,10 @@ import com.example.mynotes.database.model.Note
 import com.example.mynotes.databinding.ItemNoteBinding
 
 class NotesListAdapter(
-    private val onItemClickListener: () -> Unit
+    private val onItemClickListener: (Note) -> Unit,
 ) : ListAdapter<Note, NotesListAdapter.NoteViewHolder>(DiffCallback) {
 
-    class NoteViewHolder(private var binding: ItemNoteBinding): ViewHolder(binding.root) {
+    class NoteViewHolder(private var binding: ItemNoteBinding) : ViewHolder(binding.root) {
         fun bind(note: Note) {
             binding.itemNoteTitle.text = note.title
             binding.itemNoteDescription.text = note.description
@@ -25,17 +25,17 @@ class NotesListAdapter(
             LayoutInflater.from(parent.context),
             parent,
             false
-            )
-
-//        viewHolder.itemView.setOnClickListener {
-//            val position = viewHolder.adapterPosition
-//            onItemClicked(getItem(position))
-
+        )
         return NoteViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
-      holder.bind(getItem(position))
+        val note = getItem(position)
+        holder.bind(note)
+
+        holder.itemView.setOnClickListener {
+            onItemClickListener(note)
+        }
     }
 
     companion object {

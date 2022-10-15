@@ -8,9 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.R
 import com.example.mynotes.databinding.FragmentNewNoteBinding
+import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
 import com.example.mynotes.util.ToastUtil
@@ -20,6 +22,8 @@ class NewNoteFragment : Fragment() {
 
     private var _binding: FragmentNewNoteBinding? = null
     val binding get() = _binding!!
+
+    val args: NewNoteFragmentArgs by navArgs()
 
     private val viewModel: NotesListViewModel by activityViewModels {
         NotesListViewModelFactory(
@@ -38,10 +42,24 @@ class NewNoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.fragmentNewNoteTextInputEdittextDescription.setText(
-            viewModel.newNoteDescription.value
-        )
+
+        val fragmentMode = args.fragmentMode
+        if (fragmentMode == FragmentMode.FRAGMENT_EDIT) {
+            activity?.title = "Edit Note"
+        }
+
+        loadNoteFromViewModel()
+
         setupMenu()
+    }
+
+    private fun loadNoteFromViewModel() {
+        viewModel.note.observe(viewLifecycleOwner) {
+            binding.fragmentNewNoteTextInputEdittextTitle.setText(it?.title)
+            binding.fragmentNewNoteTextInputEdittextDescription.setText(it?.description)
+            binding.fragmentNewNoteDate.text = it?.modifiedDate
+        }
+
     }
 
     private fun setupMenu() {
@@ -62,26 +80,14 @@ class NewNoteFragment : Fragment() {
     }
 
     private fun clearViewModelNewNoteDescription() {
-        viewModel.setNewNoteDescription(null)
+        viewModel.createNote(null)
     }
 
     private fun saveNewNote() {
-        val title =
-            binding.fragmentNewNoteTextInputEdittextTitle.text.toString()
-        val description =
-            binding.fragmentNewNoteTextInputEdittextDescription.text.toString()
-
-        if (title.isNotEmpty() || description.isNotEmpty()) {
-            viewModel.saveNote(
-                title = title,
-                description = description
-            )
-        } else {
-            ToastUtil.makeToast(
-                context,
-                getString(R.string.notes_list_fragment_toast_empty_note)
-            )
-        }
+        val title = binding.fragmentNewNoteTextInputEdittextTitle.text
+        val description = binding.fragmentNewNoteTextInputEdittextDescription.text
+        viewModel.updateViewModelNote(title.toString(), description.toString())
+        viewModel.saveNote()
 
         findNavController().navigate(
             NewNoteFragmentDirections.actionNewNoteFragmentToNotesListFragment()
