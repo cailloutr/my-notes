@@ -32,7 +32,8 @@
         android:layout_width="@dimen/match_constrain"
         android:layout_height="@dimen/match_constrain"
         android:layout_marginTop="@dimen/border_margin"
-        app:layout_constraintBottom_toTopOf="@id/fragment_new_note_date"
+        android:layout_marginBottom="@dimen/border_margin"
+        app:layout_constraintBottom_toTopOf="@id/fragment_new_note_options_menu"
         app:layout_constraintEnd_toEndOf="@id/fragment_new_note_textInput_title"
         app:layout_constraintStart_toStartOf="@id/fragment_new_note_textInput_title"
         app:layout_constraintTop_toBottomOf="@id/fragment_new_note_textInput_title">
@@ -53,9 +54,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/border_margin"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/fragment_new_note_options_menu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/fragment_new_note_options_menu"
         tools:text="Edited: 08/12/2022" />
+
+    <ImageButton
+        android:id="@+id/fragment_new_note_options_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/border_margin"
+        android:padding="4dp"
+        android:clickable="true"
+        android:backgroundTint="@color/white"
+        android:contentDescription="@string/fragment_new_note_option_menu"
+        android:focusable="true"
+        android:src="@drawable/ic_more"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

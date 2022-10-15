@@ -11,4 +11,9 @@
     <string name="fragment_new_note_menu_item_save_note">Save note</string>
     <string name="notes_list_fragment_toast_empty_note">Empty note not saved</string>
     <string name="app_bar_title_edit_note">Edit Note</string>
+    <string name="fragment_new_note_option_menu">Options menu</string>
+    <string name="option_bottom_sheet_delete_note">Delete note</string>
+    <string name="option_bottom_sheet_share_note">Share note</string>
+    <string name="option_bottom_sheet_delete_option_icon_content_description">Delete option icon</string>
+    <string name="option_bottom_sheet_share_option_icon_content_description">Share option icon</string>
 </resources>

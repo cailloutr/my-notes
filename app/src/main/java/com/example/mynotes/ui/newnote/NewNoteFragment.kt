@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.R
 import com.example.mynotes.databinding.FragmentNewNoteBinding
+import com.example.mynotes.ui.NoteOptionModalBottomSheet
 import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
@@ -46,6 +47,12 @@ class NewNoteFragment : Fragment() {
         setAppBarTitle()
         loadNoteFromViewModel()
         setupMenu()
+
+        binding.fragmentNewNoteOptionsMenu.setOnClickListener {
+            val modalBottomSheet = NoteOptionModalBottomSheet()
+
+            modalBottomSheet.show(parentFragmentManager, NoteOptionModalBottomSheet.TAG)
+        }
     }
 
     private fun setAppBarTitle() {
