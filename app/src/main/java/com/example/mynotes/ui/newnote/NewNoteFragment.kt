@@ -105,6 +105,8 @@ class NewNoteFragment : Fragment() {
         )
     }
 
+
+
     companion object {
         const val TAG = "NewNoteFragment"
     }

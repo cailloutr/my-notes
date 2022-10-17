@@ -9,6 +9,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.example.mynotes.R
 import com.example.mynotes.databinding.ActivityMainBinding
+import com.example.mynotes.ui.newnote.NewNoteFragmentDirections
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,8 +32,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
+        navController.navigate(
+            NewNoteFragmentDirections
+                .actionNewNoteFragmentToNotesListFragment(false)
+        )
+        return super.onSupportNavigateUp()
     }
 
 }

@@ -20,30 +20,34 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/item_note_title_margin"
+            android:ellipsize="end"
+            android:maxLines="2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@sample/notas.json/notes/title" />
 
         <TextView
             android:id="@+id/item_note_description"
+            style="@style/Widget.MyNotes.TextView.Description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/border_margin"
+            android:ellipsize="end"
+            android:maxLines="12"
             app:layout_constraintStart_toStartOf="@id/item_note_title"
             app:layout_constraintTop_toBottomOf="@id/item_note_title"
-            tools:text="@sample/notas.json/notes/description"
-            style="@style/Widget.MyNotes.TextView.Description" />
+            tools:text="@sample/notas.json/notes/description" />
 
         <TextView
             android:id="@+id/item_note_modified_date"
+            style="@style/Widget.MyNotes.TextView.Date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/border_margin"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/item_note_description"
             app:layout_constraintTop_toBottomOf="@id/item_note_description"
-            tools:text="@sample/notas.json/notes/modified_date"
-            style="@style/Widget.MyNotes.TextView.Date" />
+            tools:text="@sample/notas.json/notes/modified_date" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

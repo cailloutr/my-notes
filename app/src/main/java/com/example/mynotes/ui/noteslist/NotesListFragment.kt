@@ -49,9 +49,7 @@ class NotesListFragment : Fragment() {
                 "Note deleted",
                 Snackbar.LENGTH_LONG)
                 .setAction("Undo") {
-
                     viewModel.retrieveNoteFromTrash()
-
                     viewModel.undoDeleteNote()
                 }
                 .show()
