@@ -16,7 +16,7 @@
     <dimen name="option_bottom_sheet_textview_margintop">32dp</dimen>
     <dimen name="option_bottom_sheet_textview_drawable_padding">16dp</dimen>
     <dimen name="option_bottom_sheet_textview_padding">8dp</dimen>
-    <dimen name="option_bottom_sheet_textview_textsize">18sp</dimen>
+    <dimen name="option_bottom_sheet_textview_textsize">16sp</dimen>
 
 
     <dimen name="SliderIndicator_width">100dp</dimen>

@@ -7,10 +7,10 @@
 
     <View
         android:id="@+id/option_menu_bottom_sheet_slider_indicator"
+        style="@style/SliderIndicator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        style="@style/SliderIndicator" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/option_menu_bottom_sheet_delete"
@@ -22,28 +22,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/option_menu_bottom_sheet_slider_indicator" />
 
-    <View
-        android:id="@+id/option_menu_bottom_sheet_divider"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginHorizontal="@dimen/border_margin"
-        android:layout_marginTop="@dimen/border_margin"
-        android:background="@android:color/darker_gray"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/option_menu_bottom_sheet_delete" />
-
-
     <TextView
         android:id="@+id/option_menu_bottom_sheet_share"
         style="@style/Widget.MyNotes.TextView.OptionsBottomSheet.Item"
         android:layout_marginTop="@dimen/border_margin"
+        android:layout_marginBottom="@dimen/border_margin"
         android:text="@string/option_bottom_sheet_share_note"
         app:drawableStartCompat="@drawable/ic_share"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/option_menu_bottom_sheet_divider" />
+        app:layout_constraintTop_toBottomOf="@id/option_menu_bottom_sheet_delete"
+        app:layout_constraintVertical_bias="0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
