@@ -48,9 +48,12 @@ class NewNoteFragment : Fragment() {
         loadNoteFromViewModel()
         setupMenu()
 
+        setupOptionsModalBottomSheet()
+    }
+
+    private fun setupOptionsModalBottomSheet() {
         binding.fragmentNewNoteOptionsMenu.setOnClickListener {
             val modalBottomSheet = NoteOptionModalBottomSheet(viewModel = viewModel)
-
             modalBottomSheet.show(parentFragmentManager, NoteOptionModalBottomSheet.TAG)
         }
     }
@@ -95,10 +98,10 @@ class NewNoteFragment : Fragment() {
                 getString(R.string.notes_list_fragment_toast_empty_note)
             )
         } else {
+            viewModel.clearNote()
             viewModel.updateViewModelNote(title.toString(), description.toString())
             viewModel.saveNote()
         }
-
 
         findNavController().navigate(
             NewNoteFragmentDirections.actionNewNoteFragmentToNotesListFragment()

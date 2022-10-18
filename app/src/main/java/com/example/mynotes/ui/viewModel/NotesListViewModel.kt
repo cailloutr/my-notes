@@ -18,6 +18,9 @@ class NotesListViewModel(
     private val _notesList = getAllNotes()
     val notesList: LiveData<List<Note>> = _notesList
 
+    private val _trashList = getTrash()
+    val trashList: LiveData<List<Note>> = _trashList
+
     private var _fragmentMode: MutableLiveData<FragmentMode> =
         MutableLiveData(FragmentMode.FRAGMENT_NEW)
     val fragmentMode: LiveData<FragmentMode> = _fragmentMode
@@ -25,44 +28,37 @@ class NotesListViewModel(
     private val _note = MutableLiveData<Note?>(null)
     val note: LiveData<Note?> = _note
 
-    private val _noteTrash = MutableLiveData<Note?>(null)
-    val noteTrash: LiveData<Note?> = _noteTrash
 
 
-    private fun getAllNotes() = repository.getAllNotes()
+    private fun getAllNotes() = repository.getAllSavedNotes()
+
+    private fun getTrash() = repository.getAllTrashNotes()
 
     fun saveNote() {
 
         if (note.value?.id == null) {
-            viewModelScope.launch {
+            viewModelScope.launch() {
                 note.value?.let { repository.insert(it) }
             }
         } else {
-            viewModelScope.launch {
+            viewModelScope.launch() {
                 note.value?.let { repository.update(it) }
             }
         }
-        cleatNote()
-    }
 
-    fun undoDeleteNote(){
-        viewModelScope.launch {
-            note.value?.let { repository.insert(it) }
-        }
-        cleatNote()
     }
 
     // Return false if Note don't exist
     fun deleteNote(): Boolean {
         if (note.value?.id == null) {
-            cleatNote()
+            clearNote()
             return false
         }
 
-        viewModelScope.launch {
+        viewModelScope.launch() {
             note.value?.let { repository.delete(it) }
         }
-        cleatNote()
+        clearNote()
         return true
     }
 
@@ -71,13 +67,12 @@ class NotesListViewModel(
             return false
         }
 
-        _noteTrash.value = note.value
+        _note.value?.isTrash = true
         return true
     }
 
     fun retrieveNoteFromTrash() {
-        _note.value = noteTrash.value
-        clearTrash()
+        _note.value?.isTrash = false
     }
 
     fun updateViewModelNote(title: String = "", description: String) {
@@ -89,7 +84,8 @@ class NotesListViewModel(
             val note = Note(
                 title = title,
                 description = description,
-                modifiedDate = DateUtil.getFormattedDate()
+                modifiedDate = DateUtil.getFormattedDate(),
+                isTrash = false
             )
             _note.value = note
         }
@@ -99,12 +95,8 @@ class NotesListViewModel(
         _note.value = note
     }
 
-    private fun cleatNote() {
+    fun clearNote() {
         _note.value = null
-    }
-
-    private fun clearTrash() {
-        _noteTrash.value = null
     }
 
     fun setFragmentMode(mode: FragmentMode) {

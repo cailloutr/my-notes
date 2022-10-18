@@ -13,6 +13,7 @@ class NotesListAdapter(
 ) : ListAdapter<Note, NotesListAdapter.NoteViewHolder>(DiffCallback) {
 
     class NoteViewHolder(private var binding: ItemNoteBinding) : ViewHolder(binding.root) {
+
         fun bind(note: Note) {
             binding.itemNoteTitle.text = note.title
             binding.itemNoteDescription.text = note.description

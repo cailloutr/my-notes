@@ -1,11 +1,12 @@
 package com.example.mynotes.ui.noteslist
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.mynotes.MyNotesApplication
@@ -42,6 +43,35 @@ class NotesListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupMenu()
+        setupSnackBarUndoAction(view)
+        loadNotesList()
+        setupAddNoteButton()
+        setupEditTextExpandViewButton()
+    }
+
+    private fun setupMenu() {
+        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.note_list_options_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                if (menuItem.itemId == R.id.note_list_options_menu_item_trash) {
+                    navigateToTrashFragment()
+                }
+                return true
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    private fun navigateToTrashFragment() {
+        findNavController().navigate(
+            NotesListFragmentDirections.actionNotesListFragmentToTrashFragment()
+        )
+    }
+
+    private fun setupSnackBarUndoAction(view: View) {
         val hasDeletedANote = args.hasDeletedANote
         if (hasDeletedANote) {
             Snackbar.make(
@@ -50,14 +80,10 @@ class NotesListFragment : Fragment() {
                 Snackbar.LENGTH_LONG)
                 .setAction("Undo") {
                     viewModel.retrieveNoteFromTrash()
-                    viewModel.undoDeleteNote()
+                    viewModel.saveNote()
                 }
                 .show()
         }
-
-        loadNotesList()
-        setupAddNoteButton()
-        setupEditTextExpandViewButton()
     }
 
     private fun loadNotesList() {
@@ -69,10 +95,8 @@ class NotesListFragment : Fragment() {
 
     private fun setupEditTextExpandViewButton() {
         binding.fragmentNotesTextInputInsert.setEndIconOnClickListener {
-
             saveDescriptionInViewModel()
             cleanEditTextInsertNote()
-
             viewModel.setFragmentMode(FragmentMode.FRAGMENT_NEW)
             viewModel.fragmentMode.value?.let { fragmentMode ->
                 navigateToNewNotesFragment(fragmentMode)
@@ -93,6 +117,7 @@ class NotesListFragment : Fragment() {
         val description = binding.fragmentNotesTextInputEdittextInsert.text.toString()
 
         if (description.isNotEmpty()) {
+            viewModel.clearNote()
             viewModel.updateViewModelNote(description = description)
             return true
         }

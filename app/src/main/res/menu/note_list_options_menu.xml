@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/note_list_options_menu_item_trash"
+        android:title="@string/note_list_options_menu_item_trash"
+        app:showAsAction="never"
+        android:orderInCategory="1"
+        tools:targetApi="o" />
+</menu>

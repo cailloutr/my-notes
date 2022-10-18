@@ -7,8 +7,12 @@ import com.example.mynotes.database.model.Note
 
 class NotesRepository(private val appDatabase: AppDatabase) {
 
-    fun getAllNotes(): LiveData<List<Note>> {
-        return appDatabase.notesDao().getAllNotes().asLiveData()
+    fun getAllSavedNotes(): LiveData<List<Note>> {
+        return appDatabase.notesDao().getAllSavedNotes().asLiveData()
+    }
+
+    fun getAllTrashNotes(): LiveData<List<Note>> {
+        return appDatabase.notesDao().getAllTrashNotes().asLiveData()
     }
 
     suspend fun insert(note: Note) {

@@ -21,6 +21,9 @@
             android:name="hasDeletedANote"
             app:argType="boolean"
             android:defaultValue="false" />
+        <action
+            android:id="@+id/action_notesListFragment_to_trashFragment"
+            app:destination="@id/trashFragment" />
     </fragment>
     <fragment
         android:id="@+id/newNoteFragment"
@@ -35,10 +38,10 @@
         <argument
             android:name="fragmentMode"
             app:argType="com.example.mynotes.ui.enums.FragmentMode" />
-        <action
-            android:id="@+id/action_newNoteFragment_to_notesListFragment2"
-            app:destination="@id/notesListFragment"
-            app:popUpTo="@id/notesListFragment"
-            app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/trashFragment"
+        android:name="com.example.mynotes.TrashFragment"
+        android:label="@string/fragment_trash_appBar_title"
+        tools:layout="@layout/fragment_trash" />
 </navigation>

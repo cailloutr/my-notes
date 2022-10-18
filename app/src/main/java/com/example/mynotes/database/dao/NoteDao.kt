@@ -12,8 +12,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface NoteDao {
 
-    @Query("SELECT * FROM note ORDER BY id")
-    fun getAllNotes(): Flow<List<Note>>
+    @Query("SELECT * FROM note WHERE is_trash != 1 ORDER BY id")
+    fun getAllSavedNotes(): Flow<List<Note>>
+
+    @Query("SELECT * FROM note WHERE is_trash = 1 ORDER BY id")
+    fun getAllTrashNotes(): Flow<List<Note>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(note: Note)
