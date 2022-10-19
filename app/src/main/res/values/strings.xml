@@ -27,4 +27,6 @@
     <string name="trash_list_menu_option_restore_all">Restore all</string>
     <string name="clear_trash_dialog_cancel">Cancel</string>
     <string name="clear_trash_dialog_confirm">Yes</string>
+    <string name="note_list_snack_bar_message_moved_to_trash">Moved to trash</string>
+    <string name="note_list_snack_bar_message_undo">Undo</string>
 </resources>

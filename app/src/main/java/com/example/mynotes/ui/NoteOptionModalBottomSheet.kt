@@ -29,12 +29,18 @@ class NoteOptionModalBottomSheet(
 
         val deleteOption = view.findViewById<TextView>(R.id.option_menu_bottom_sheet_delete)
         deleteOption.setOnClickListener {
-            viewModel.moveNoteToTrash()
-            viewModel.saveNote()
-
-            findNavController().navigate(
-                NewNoteFragmentDirections.actionNewNoteFragmentToNotesListFragment(true)
-            )
+            if (viewModel.note.value?.isTrash == true) {
+                viewModel.deleteNote()
+                findNavController().navigate(
+                    NewNoteFragmentDirections.actionNewNoteFragmentToTrashFragment()
+                )
+            } else {
+                viewModel.moveNoteToTrash()
+                viewModel.saveNote()
+                findNavController().navigate(
+                    NewNoteFragmentDirections.actionNewNoteFragmentToNotesListFragment(true)
+                )
+            }
             dismiss()
         }
     }

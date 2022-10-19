@@ -76,9 +76,9 @@ class NotesListFragment : Fragment() {
         if (hasDeletedANote) {
             Snackbar.make(
                 view.findViewById(R.id.fragment_notes_button_add_note),
-                "Note deleted",
+                getString(R.string.note_list_snack_bar_message_moved_to_trash),
                 Snackbar.LENGTH_LONG)
-                .setAction("Undo") {
+                .setAction(getString(R.string.note_list_snack_bar_message_undo)) {
                     viewModel.retrieveNoteFromTrash()
                     viewModel.saveNote()
                 }

@@ -29,7 +29,6 @@ class NotesListViewModel(
     val note: LiveData<Note?> = _note
 
 
-
     private fun getAllNotes() = repository.getAllSavedNotes()
 
     private fun getTrash() = repository.getAllTrashNotes()
@@ -56,14 +55,14 @@ class NotesListViewModel(
 
     // Return false if Note don't exist
     fun deleteNote(): Boolean {
-        if (note.value?.id == null) {
-            clearNote()
-            return false
+        if (note.value?.isTrash == true) {
+            viewModelScope.launch {
+                note.value?.let {
+                    repository.delete(it)
+                }
+            }
         }
 
-        viewModelScope.launch() {
-            note.value?.let { repository.delete(it) }
-        }
         clearNote()
         return true
     }

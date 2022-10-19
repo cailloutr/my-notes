@@ -45,9 +45,10 @@ class NewNoteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setAppBarTitle()
-        loadNoteFromViewModel()
         setupMenu()
 
+
+        loadNoteFromViewModel()
         setupOptionsModalBottomSheet()
     }
 

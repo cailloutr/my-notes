@@ -42,10 +42,19 @@
         <argument
             android:name="fragmentMode"
             app:argType="com.example.mynotes.ui.enums.FragmentMode" />
+        <action
+            android:id="@+id/action_newNoteFragment_to_trashFragment"
+            app:destination="@id/trashFragment"
+            app:popUpTo="@id/trashFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/trashFragment"
         android:name="com.example.mynotes.TrashFragment"
         android:label="@string/fragment_trash_appBar_title"
-        tools:layout="@layout/fragment_trash" />
+        tools:layout="@layout/fragment_trash" >
+        <action
+            android:id="@+id/action_trashFragment_to_newNoteFragment"
+            app:destination="@id/newNoteFragment" />
+    </fragment>
 </navigation>

@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.mynotes.databinding.FragmentTrashBinding
 import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.noteslist.NotesListAdapter
-import com.example.mynotes.ui.noteslist.NotesListFragmentDirections
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -54,22 +53,7 @@ class TrashFragment : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
                     R.id.trash_list_menu_option_clear_trash -> {
-                        MaterialAlertDialogBuilder(requireContext())
-                            .setTitle(resources.getString(R.string.trash_list_menu_option_clear_trash))
-                            .setMessage(resources.getString(
-                                R.string.fragment_trash_confirmation_dialog_clear_trash_message)
-                            )
-                            .setNegativeButton(resources.getString(
-                                R.string.clear_trash_dialog_cancel)
-                            ) { _, _ ->
-                                // Close Dialog
-                            }
-                            .setPositiveButton(resources.getString(
-                                R.string.clear_trash_dialog_confirm)
-                            ) { _, _ ->
-                                viewModel.clearTrash()
-                            }
-                            .show()
+                        showClearTrashConfirmationDialog()
                     }
                     R.id.trash_list_menu_option_restore_all -> {
                         //TODO: restore all
@@ -78,6 +62,25 @@ class TrashFragment : Fragment() {
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    private fun showClearTrashConfirmationDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(resources.getString(R.string.trash_list_menu_option_clear_trash))
+            .setMessage(resources.getString(
+                R.string.fragment_trash_confirmation_dialog_clear_trash_message)
+            )
+            .setNegativeButton(resources.getString(
+                R.string.clear_trash_dialog_cancel)
+            ) { _, _ ->
+                // Close Dialog
+            }
+            .setPositiveButton(resources.getString(
+                R.string.clear_trash_dialog_confirm)
+            ) { _, _ ->
+                viewModel.clearTrash()
+            }
+            .show()
     }
 
     private fun loadNotesList() {
@@ -89,7 +92,7 @@ class TrashFragment : Fragment() {
 
     private fun navigateToNewNotesFragment(fragmentMode: FragmentMode) {
         val action =
-            NotesListFragmentDirections.actionNotesListFragmentToNewNoteFragment(fragmentMode)
+            TrashFragmentDirections.actionTrashFragmentToNewNoteFragment(fragmentMode)
         findNavController().navigate(action)
     }
 
