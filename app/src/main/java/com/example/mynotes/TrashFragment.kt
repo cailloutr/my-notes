@@ -14,6 +14,7 @@ import com.example.mynotes.ui.noteslist.NotesListAdapter
 import com.example.mynotes.ui.noteslist.NotesListFragmentDirections
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 
 class TrashFragment : Fragment() {
@@ -47,13 +48,32 @@ class TrashFragment : Fragment() {
     private fun setupMenu() {
         (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                //TODO: change menu layout
-                menuInflater.inflate(R.menu.note_list_options_menu, menu)
+                menuInflater.inflate(R.menu.trash_list_menu_options, menu)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                if (menuItem.itemId == R.id.note_list_options_menu_item_trash) {
-                    //TODO: setup menu action
+                when (menuItem.itemId) {
+                    R.id.trash_list_menu_option_clear_trash -> {
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(resources.getString(R.string.trash_list_menu_option_clear_trash))
+                            .setMessage(resources.getString(
+                                R.string.fragment_trash_confirmation_dialog_clear_trash_message)
+                            )
+                            .setNegativeButton(resources.getString(
+                                R.string.clear_trash_dialog_cancel)
+                            ) { _, _ ->
+                                // Close Dialog
+                            }
+                            .setPositiveButton(resources.getString(
+                                R.string.clear_trash_dialog_confirm)
+                            ) { _, _ ->
+                                viewModel.clearTrash()
+                            }
+                            .show()
+                    }
+                    R.id.trash_list_menu_option_restore_all -> {
+                        //TODO: restore all
+                    }
                 }
                 return true
             }

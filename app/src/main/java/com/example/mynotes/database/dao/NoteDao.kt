@@ -18,6 +18,9 @@ interface NoteDao {
     @Query("SELECT * FROM note WHERE is_trash = 1 ORDER BY id")
     fun getAllTrashNotes(): Flow<List<Note>>
 
+    @Query("DELETE FROM note WHERE is_trash = 1")
+    suspend fun deleteTrash()
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(note: Note)
 

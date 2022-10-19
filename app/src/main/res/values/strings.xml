@@ -17,7 +17,14 @@
     <string name="option_bottom_sheet_delete_option_icon_content_description">Delete option icon</string>
     <string name="option_bottom_sheet_share_option_icon_content_description">Share option icon</string>
     <string name="note_list_options_menu_item_trash">Trash</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="fragment_trash_confirmation_dialog_clear_trash_message">
+        Are you sure you want to clear the trash?
+    </string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="fragment_trash_appBar_title">Trash</string>
+    <string name="trash_list_menu_option_clear_trash">Clear trash</string>
+    <string name="trash_list_menu_option_restore_all">Restore all</string>
+    <string name="clear_trash_dialog_cancel">Cancel</string>
+    <string name="clear_trash_dialog_confirm">Yes</string>
 </resources>

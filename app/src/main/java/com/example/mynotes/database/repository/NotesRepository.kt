@@ -15,6 +15,11 @@ class NotesRepository(private val appDatabase: AppDatabase) {
         return appDatabase.notesDao().getAllTrashNotes().asLiveData()
     }
 
+    suspend fun clearTrash() {
+        appDatabase.notesDao().deleteTrash()
+    }
+
+
     suspend fun insert(note: Note) {
         appDatabase.notesDao().insert(note)
     }

@@ -48,6 +48,12 @@ class NotesListViewModel(
 
     }
 
+    fun clearTrash() {
+        viewModelScope.launch {
+            repository.clearTrash()
+        }
+    }
+
     // Return false if Note don't exist
     fun deleteNote(): Boolean {
         if (note.value?.id == null) {
