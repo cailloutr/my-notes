@@ -7,8 +7,6 @@
     android:layout_margin="@dimen/border_margin"
     android:minWidth="@dimen/item_note_cardView_max_width">
 
-    <!-- TODO: set max height for card -->
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

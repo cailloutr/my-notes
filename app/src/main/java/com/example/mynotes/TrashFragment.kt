@@ -99,7 +99,7 @@ class TrashFragment : Fragment() {
     private fun setupAdapter(): NotesListAdapter {
         val adapter = NotesListAdapter { note ->
             viewModel.loadNote(note)
-            viewModel.setFragmentMode(FragmentMode.FRAGMENT_EDIT)
+            viewModel.setFragmentMode(FragmentMode.FRAGMENT_TRASH)
             viewModel.fragmentMode.value?.let { navigateToNewNotesFragment(it) }
         }
         binding.fragmentTrashRecyclerView.adapter = adapter

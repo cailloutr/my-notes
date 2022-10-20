@@ -26,10 +26,17 @@ class NewNoteFragment : Fragment() {
 
     private val args: NewNoteFragmentArgs by navArgs()
 
+    lateinit var fragmentMode: FragmentMode
+
     private val viewModel: NotesListViewModel by activityViewModels {
         NotesListViewModelFactory(
             activity?.application as MyNotesApplication
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        fragmentMode = args.fragmentMode
     }
 
     override fun onCreateView(
@@ -46,8 +53,6 @@ class NewNoteFragment : Fragment() {
 
         setAppBarTitle()
         setupMenu()
-
-
         loadNoteFromViewModel()
         setupOptionsModalBottomSheet()
     }
@@ -60,7 +65,7 @@ class NewNoteFragment : Fragment() {
     }
 
     private fun setAppBarTitle() {
-        val fragmentMode = args.fragmentMode
+//        val fragmentMode = args.fragmentMode
         if (fragmentMode == FragmentMode.FRAGMENT_EDIT) {
             activity?.title = getString(R.string.app_bar_title_edit_note)
         }
@@ -72,23 +77,46 @@ class NewNoteFragment : Fragment() {
             binding.fragmentNewNoteTextInputEdittextDescription.setText(it?.description)
             binding.fragmentNewNoteDate.text = it?.modifiedDate
         }
+//        val fragmentMode = args.fragmentMode
+        if (fragmentMode == FragmentMode.FRAGMENT_TRASH) {
+            binding.apply {
+                fragmentNewNoteTextInputEdittextTitle.isEnabled = false
+                fragmentNewNoteTextInputEdittextDescription.isEnabled = false
+            }
+        }
     }
 
     private fun setupMenu() {
         (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.fragment_new_note_menu_save_note, menu)
+                if (args.fragmentMode == FragmentMode.FRAGMENT_TRASH) {
+                    menuInflater.inflate(R.menu.fragment_new_note_trash_menu, menu)
+                } else {
+                    menuInflater.inflate(R.menu.fragment_new_note_menu_save_note, menu)
+                }
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 if (menuItem.itemId == R.id.fragment_new_note_menu_item_save_note) {
                     saveNewNote()
                 }
+
+                if (menuItem.itemId == R.id.fragment_new_note_trash_menu_restore) {
+                    undoDeleteNote()
+                    navigateToNoteListFragment()
+                    // TODO: not let user edit note in trash
+                }
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
+    private fun undoDeleteNote() {
+        viewModel.retrieveNoteFromTrash()
+        viewModel.saveNote()
+    }
+
+    // TODO: EDIT NOTE CRATES A NEW ONE
     private fun saveNewNote() {
         val title = binding.fragmentNewNoteTextInputEdittextTitle.text
         val description = binding.fragmentNewNoteTextInputEdittextDescription.text
@@ -104,11 +132,14 @@ class NewNoteFragment : Fragment() {
             viewModel.saveNote()
         }
 
+        navigateToNoteListFragment()
+    }
+
+    private fun navigateToNoteListFragment() {
         findNavController().navigate(
             NewNoteFragmentDirections.actionNewNoteFragmentToNotesListFragment()
         )
     }
-
 
 
     companion object {

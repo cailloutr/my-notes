@@ -79,11 +79,15 @@ class NotesListFragment : Fragment() {
                 getString(R.string.note_list_snack_bar_message_moved_to_trash),
                 Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.note_list_snack_bar_message_undo)) {
-                    viewModel.retrieveNoteFromTrash()
-                    viewModel.saveNote()
+                    undoDeleteNote()
                 }
                 .show()
         }
+    }
+
+    private fun undoDeleteNote() {
+        viewModel.retrieveNoteFromTrash()
+        viewModel.saveNote()
     }
 
     private fun loadNotesList() {
