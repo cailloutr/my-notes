@@ -56,7 +56,7 @@ class TrashFragment : Fragment() {
                         showClearTrashConfirmationDialog()
                     }
                     R.id.trash_list_menu_option_restore_all -> {
-                        //TODO: restore all
+                        viewModel.restoreAllNotesFromTrash()
                     }
                 }
                 return true

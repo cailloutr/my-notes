@@ -19,6 +19,9 @@ class NotesRepository(private val appDatabase: AppDatabase) {
         appDatabase.notesDao().deleteTrash()
     }
 
+    suspend fun restoreAllNotesFromTrash() {
+        appDatabase.notesDao().restoreAllItems()
+    }
 
     suspend fun insert(note: Note) {
         appDatabase.notesDao().insert(note)

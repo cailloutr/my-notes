@@ -52,6 +52,12 @@ class NotesListViewModel(
         }
     }
 
+    fun restoreAllNotesFromTrash() {
+        viewModelScope.launch {
+            repository.restoreAllNotesFromTrash()
+        }
+    }
+
     // Return false if Note don't exist
     fun deleteNote(): Boolean {
         if (note.value?.isTrash == true) {

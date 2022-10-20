@@ -31,20 +31,27 @@ class NoteOptionModalBottomSheet(
         deleteOption.setOnClickListener {
             if (viewModel.note.value?.isTrash == true) {
                 viewModel.deleteNote()
-                findNavController().navigate(
-                    NewNoteFragmentDirections.actionNewNoteFragmentToTrashFragment()
-                )
+                navigateToTrashFragment()
             } else {
                 viewModel.moveNoteToTrash()
                 viewModel.saveNote()
-                findNavController().navigate(
-                    NewNoteFragmentDirections.actionNewNoteFragmentToNotesListFragment(true)
-                )
+                navigateToNoteListFragment()
             }
             dismiss()
         }
     }
 
+    private fun navigateToTrashFragment() {
+        findNavController().navigate(
+            NewNoteFragmentDirections.actionNewNoteFragmentToTrashFragment()
+        )
+    }
+
+    private fun navigateToNoteListFragment() {
+        findNavController().navigate(
+            NewNoteFragmentDirections.actionNewNoteFragmentToNotesListFragment(true)
+        )
+    }
 
 
     companion object {
