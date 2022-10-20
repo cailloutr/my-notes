@@ -44,7 +44,6 @@ class NotesListViewModel(
                 note.value?.let { repository.update(it) }
             }
         }
-
     }
 
     fun clearTrash() {

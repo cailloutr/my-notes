@@ -104,7 +104,6 @@ class NewNoteFragment : Fragment() {
                 if (menuItem.itemId == R.id.fragment_new_note_trash_menu_restore) {
                     undoDeleteNote()
                     navigateToNoteListFragment()
-                    // TODO: not let user edit note in trash
                 }
                 return true
             }
@@ -116,7 +115,6 @@ class NewNoteFragment : Fragment() {
         viewModel.saveNote()
     }
 
-    // TODO: EDIT NOTE CRATES A NEW ONE
     private fun saveNewNote() {
         val title = binding.fragmentNewNoteTextInputEdittextTitle.text
         val description = binding.fragmentNewNoteTextInputEdittextDescription.text
@@ -127,9 +125,9 @@ class NewNoteFragment : Fragment() {
                 getString(R.string.notes_list_fragment_toast_empty_note)
             )
         } else {
-            viewModel.clearNote()
             viewModel.updateViewModelNote(title.toString(), description.toString())
             viewModel.saveNote()
+            viewModel.clearNote()
         }
 
         navigateToNoteListFragment()
