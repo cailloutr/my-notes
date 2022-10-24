@@ -18,6 +18,7 @@ import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
 import com.example.mynotes.util.ToastUtil
 
+// TODO: issue: click to edit a note, then going back, then clicking to open new Note loads the previous edited note
 
 class NewNoteFragment : Fragment() {
 

@@ -25,10 +25,17 @@ class NotesListFragment : Fragment() {
 
     private val args: NotesListFragmentArgs by navArgs()
 
+    lateinit var hasDeletedANote: NotesListFragmentArgs
+
     private val viewModel: NotesListViewModel by activityViewModels {
         NotesListViewModelFactory(
             (activity?.application as MyNotesApplication)
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        hasDeletedANote = args
     }
 
     override fun onCreateView(
@@ -72,8 +79,8 @@ class NotesListFragment : Fragment() {
     }
 
     private fun setupSnackBarUndoAction(view: View) {
-        val hasDeletedANote = args.hasDeletedANote
-        if (hasDeletedANote) {
+//        val hasDeletedANote = args.hasDeletedANote
+        if (hasDeletedANote.hasDeletedANote) {
             Snackbar.make(
                 view.findViewById(R.id.fragment_notes_button_add_note),
                 getString(R.string.note_list_snack_bar_message_moved_to_trash),
@@ -99,6 +106,7 @@ class NotesListFragment : Fragment() {
 
     private fun setupEditTextExpandViewButton() {
         binding.fragmentNotesTextInputInsert.setEndIconOnClickListener {
+            viewModel.clearNote()
             saveDescriptionInViewModel()
             cleanEditTextInsertNote()
             viewModel.setFragmentMode(FragmentMode.FRAGMENT_NEW)

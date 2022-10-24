@@ -34,13 +34,12 @@ class NotesListViewModel(
     private fun getTrash() = repository.getAllTrashNotes()
 
     fun saveNote() {
-
         if (note.value?.id == null) {
-            viewModelScope.launch() {
+            viewModelScope.launch {
                 note.value?.let { repository.insert(it) }
             }
         } else {
-            viewModelScope.launch() {
+            viewModelScope.launch {
                 note.value?.let { repository.update(it) }
             }
         }
