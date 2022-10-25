@@ -50,7 +50,7 @@
     </fragment>
     <fragment
         android:id="@+id/trashFragment"
-        android:name="com.example.mynotes.TrashFragment"
+        android:name="com.example.mynotes.ui.trash.TrashFragment"
         android:label="@string/fragment_trash_appBar_title"
         tools:layout="@layout/fragment_trash" >
         <action
