@@ -1,4 +1,4 @@
-# MyNotes App
+# MyNotes App (ongoing project)
 
 Funcionalidades:
 - Capacidade de criar uma nota rapidamente na tela de listagem de notas e/ou expandir e continuar a criação da nota na tela de NovasNotas
