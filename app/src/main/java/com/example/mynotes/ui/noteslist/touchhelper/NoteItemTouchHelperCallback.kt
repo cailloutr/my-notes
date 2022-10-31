@@ -19,9 +19,9 @@ class NoteItemTouchHelperCallback(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
     ): Int {
-        val onMoveTouchHelper = (ItemTouchHelper.UP or ItemTouchHelper.DOWN
-                or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-                )
+//        val onMoveTouchHelper = (ItemTouchHelper.UP or ItemTouchHelper.DOWN
+//                or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+//                )
 
         return makeMovementFlags(0, 0)
     }
@@ -54,16 +54,6 @@ class NoteItemTouchHelperCallback(
         }
     }
 
-    //    override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
-//        super.clearView(recyclerView, viewHolder)
-//
-//        if(dragFrom != -1 && dragTo != -1 && dragFrom != dragTo) {
-//            viewModel.updateListPositions(dragFrom.toLong(), dragTo.toLong())
-//        }
-//
-//        dragFrom = -1
-//        dragTo = -1
-//    }
 
     override fun isLongPressDragEnabled(): Boolean {
         return true
