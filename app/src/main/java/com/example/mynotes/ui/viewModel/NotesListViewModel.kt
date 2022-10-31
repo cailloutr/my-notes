@@ -1,6 +1,7 @@
 package com.example.mynotes.ui.viewModel
 
 import androidx.lifecycle.*
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.database.AppDatabase
 import com.example.mynotes.database.model.Note
@@ -27,6 +28,12 @@ class NotesListViewModel(
 
     private val _note = MutableLiveData<Note?>(null)
     val note: LiveData<Note?> = _note
+
+    lateinit var layoutManager: LayoutManager
+
+    init {
+
+    }
 
 
     private fun getAllNotes() = repository.getAllSavedNotes()

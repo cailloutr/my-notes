@@ -2,6 +2,7 @@ package com.example.mynotes.ui.noteslist
 
 import android.os.Bundle
 import android.view.*
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -10,6 +11,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.R
 import com.example.mynotes.databinding.FragmentNotesListBinding
@@ -20,14 +23,15 @@ import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
 import com.example.mynotes.util.ToastUtil
 import com.google.android.material.snackbar.Snackbar
 
-class NotesListFragment : Fragment() {
 
+class NotesListFragment : Fragment() {
     private var _binding: FragmentNotesListBinding? = null
     val binding get() = _binding!!
-
     private val args: NotesListFragmentArgs by navArgs()
 
     lateinit var hasDeletedANote: NotesListFragmentArgs
+
+    private var isGridLayout: Boolean = false
 
     private val viewModel: NotesListViewModel by activityViewModels {
         NotesListViewModelFactory(
@@ -37,6 +41,7 @@ class NotesListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         hasDeletedANote = args
     }
 
@@ -54,24 +59,63 @@ class NotesListFragment : Fragment() {
 
         setupMenu()
         setupSnackBarUndoAction(view)
-        loadNotesList()
+
+        chooseLayout()
+//        loadNotesList()
         setupAddNoteButton()
         setupEditTextExpandViewButton()
+    }
+
+    private fun chooseLayout() {
+        when (isGridLayout) {
+            true -> {
+                binding.fragmentNotesRecyclerView.layoutManager =
+                    StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+                setupAdapter()
+                loadNotesList()
+            }
+
+            false -> {
+                binding.fragmentNotesRecyclerView.layoutManager =
+                    LinearLayoutManager(context)
+                setupAdapter()
+                loadNotesList()
+            }
+        }
     }
 
     private fun setupMenu() {
         (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.note_list_options_menu, menu)
+
+                val layoutButton = menu.findItem(R.id.note_list_options_menu_layout_style)
+                setIcon(layoutButton)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 if (menuItem.itemId == R.id.note_list_options_menu_item_trash) {
                     navigateToTrashFragment()
                 }
+
+                if (menuItem.itemId == R.id.note_list_options_menu_layout_style) {
+                    isGridLayout = !isGridLayout
+                    chooseLayout()
+                    setIcon(menuItem)
+                }
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    private fun setIcon(menuItem: MenuItem?) {
+        if (menuItem == null) return
+
+        menuItem.icon = if (isGridLayout) {
+            ContextCompat.getDrawable(requireContext(), R.drawable.ic_view_list)
+        } else {
+            ContextCompat.getDrawable(requireContext(), R.drawable.ic_grid_view)
+        }
     }
 
     private fun navigateToTrashFragment() {

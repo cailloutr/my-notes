@@ -4,6 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/note_list_options_menu_layout_style"
+        android:title="@string/note_list_options_menu_layout_style"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_grid_view"
+        android:orderInCategory="1"
+        tools:targetApi="o" />
+
+    <item
         android:id="@+id/note_list_options_menu_item_trash"
         android:title="@string/note_list_options_menu_item_trash"
         app:showAsAction="never"
