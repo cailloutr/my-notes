@@ -9,10 +9,12 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.R
 import com.example.mynotes.databinding.FragmentNotesListBinding
 import com.example.mynotes.ui.enums.FragmentMode
+import com.example.mynotes.ui.noteslist.touchhelper.NoteItemTouchHelperCallback
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
 import com.example.mynotes.util.ToastUtil
@@ -153,12 +155,16 @@ class NotesListFragment : Fragment() {
     }
 
     private fun setupAdapter(): NotesListAdapter {
-        val adapter = NotesListAdapter { note ->
+        val adapter = NotesListAdapter(viewModel) { note ->
             viewModel.loadNote(note)
             viewModel.setFragmentMode(FragmentMode.FRAGMENT_EDIT)
             viewModel.fragmentMode.value?.let { navigateToNewNotesFragment(it) }
         }
         binding.fragmentNotesRecyclerView.adapter = adapter
+
+        val itemTouchHelper = ItemTouchHelper(NoteItemTouchHelperCallback(adapter, viewModel))
+        itemTouchHelper.attachToRecyclerView(binding.fragmentNotesRecyclerView)
+
         return adapter
     }
 

@@ -45,6 +45,38 @@ class NotesListViewModel(
         }
     }
 
+    fun swipePositions(initPosition: Long, finalPosition: Long) {
+        viewModelScope.launch {
+            val notePosition = notesList.value?.get(initPosition.toInt())?.position
+            val targetPosition = notesList.value?.get(finalPosition.toInt())?.position
+            repository.swipePositions(notePosition!!, targetPosition!!)
+        }
+    }
+
+//    fun swipePositions(oldPosition: Long, newPosition: Long) {
+//        viewModelScope.launch {
+//            repository.updatePosition(oldPosition.toInt(), newPosition.toInt())
+//            repository.updatePosition(newPosition.toInt(), oldPosition.toInt())
+//        }
+//    }
+
+    fun updateListPositions(item: Long, target: Long) {
+
+        val itemPosition = notesList.value?.get(item.toInt())?.position
+        val targetPosition = notesList.value?.get(target.toInt())?.position
+
+        if (targetPosition?.compareTo(itemPosition!!)!! > 0) {
+            viewModelScope.launch {
+                repository.moveUpItem(itemPosition!!, targetPosition)
+            }
+        } else if (targetPosition < itemPosition!!) {
+            viewModelScope.launch {
+                repository.moveDownItem(itemPosition, targetPosition)
+            }
+        }
+    }
+
+
     fun clearTrash() {
         viewModelScope.launch {
             repository.clearTrash()
@@ -110,6 +142,14 @@ class NotesListViewModel(
 
     fun setFragmentMode(mode: FragmentMode) {
         _fragmentMode.value = mode
+    }
+
+    fun getListPositions(): String {
+        var msg = ""
+        repeat(notesList.value?.size!!){
+            msg += "${notesList.value!![it].position}, "
+        }
+        return msg
     }
 
 }

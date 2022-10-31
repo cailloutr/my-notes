@@ -1,4 +1,4 @@
-package com.example.mynotes
+package com.example.mynotes.ui.trash
 
 import android.os.Bundle
 import android.view.*
@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
+import com.example.mynotes.MyNotesApplication
+import com.example.mynotes.R
 import com.example.mynotes.databinding.FragmentTrashBinding
 import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.noteslist.NotesListAdapter
@@ -97,7 +99,7 @@ class TrashFragment : Fragment() {
     }
 
     private fun setupAdapter(): NotesListAdapter {
-        val adapter = NotesListAdapter { note ->
+        val adapter = NotesListAdapter(viewModel) { note ->
             viewModel.loadNote(note)
             viewModel.setFragmentMode(FragmentMode.FRAGMENT_TRASH)
             viewModel.fragmentMode.value?.let { navigateToNewNotesFragment(it) }
