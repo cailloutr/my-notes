@@ -25,6 +25,16 @@ import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
 import com.example.mynotes.util.ToastUtil
 import com.google.android.material.snackbar.Snackbar
 
+// TODO: Hold action
+// TODO: Image notes
+// TODO: color options for each note
+// TODO: Other easy options like add checkBoxes for each note as a shopping list
+// TODO: Add markers like topics
+// TODO: Share option
+// TODO: Archive item on swipe
+// TODO: Implement design improvements
+// TODO: fix undo action behavior and Snackbar
+// TODO: auto clear the trash
 
 class NotesListFragment : Fragment() {
     private var _binding: FragmentNotesListBinding? = null
@@ -128,10 +138,12 @@ class NotesListFragment : Fragment() {
     private fun setIcon(menuItem: MenuItem?) {
         if (menuItem == null) return
 
-        menuItem.icon = if (viewModel.isGridLayout) {
-            ContextCompat.getDrawable(requireContext(), R.drawable.ic_view_list)
+        if (viewModel.isGridLayout) {
+            menuItem.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_view_list)
+            menuItem.title = getString(R.string.note_list_options_menu_layout_linear)
         } else {
-            ContextCompat.getDrawable(requireContext(), R.drawable.ic_grid_view)
+            menuItem.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_grid_view)
+            menuItem.title = getString(R.string.note_list_options_menu_layout_grid)
         }
     }
 

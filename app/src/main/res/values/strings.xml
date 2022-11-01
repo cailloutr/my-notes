@@ -30,6 +30,9 @@
     <string name="note_list_snack_bar_message_moved_to_trash">Moved to trash</string>
     <string name="note_list_snack_bar_message_undo">Undo</string>
     <string name="fragment_new_note_trash_menu_restore">Restore</string>
-    <string name="note_list_options_menu_layout_style">Layout Style</string>
+    <string name="note_list_options_menu_layout_grid">Grid Layout</string>
+    <string name="note_list_options_menu_layout_linear">Linear Layout</string>
     <string name="pref_key_layout_manager">layout_manager</string>
+    <string name="fragment_new_note_option_colors">Menu of colors</string>
+    <string name="option_bottom_sheet_colors">Colors</string>
 </resources>

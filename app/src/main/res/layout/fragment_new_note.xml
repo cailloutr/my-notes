@@ -61,13 +61,27 @@
         tools:text="Edited: 08/12/2022" />
 
     <ImageButton
+        android:id="@+id/fragment_new_note_options_colors"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/border_margin"
+        android:padding="4dp"
+        android:clickable="true"
+        android:backgroundTint="@android:color/transparent"
+        android:contentDescription="@string/fragment_new_note_option_colors"
+        android:focusable="true"
+        android:src="@drawable/ic_colors"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
         android:id="@+id/fragment_new_note_options_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/border_margin"
         android:padding="4dp"
         android:clickable="true"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="@android:color/transparent"
         android:contentDescription="@string/fragment_new_note_option_menu"
         android:focusable="true"
         android:src="@drawable/ic_more"

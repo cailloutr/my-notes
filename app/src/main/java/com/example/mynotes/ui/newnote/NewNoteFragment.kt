@@ -1,6 +1,7 @@
 package com.example.mynotes.ui.newnote
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
