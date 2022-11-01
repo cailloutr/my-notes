@@ -1,5 +1,7 @@
 package com.example.mynotes.ui.noteslist
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
 import androidx.core.content.ContextCompat
@@ -33,6 +35,8 @@ class NotesListFragment : Fragment() {
 
     private var isGridLayout: Boolean = false
 
+    lateinit var sharedPref: SharedPreferences
+
     private val viewModel: NotesListViewModel by activityViewModels {
         NotesListViewModelFactory(
             (activity?.application as MyNotesApplication)
@@ -41,6 +45,10 @@ class NotesListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) as SharedPreferences
+
+        isGridLayout = sharedPref.getBoolean(getString(R.string.pref_key_layout_manager), false)
 
         hasDeletedANote = args
     }
@@ -102,10 +110,19 @@ class NotesListFragment : Fragment() {
                     isGridLayout = !isGridLayout
                     chooseLayout()
                     setIcon(menuItem)
+
+                    saveOptionInSharedPreferences()
                 }
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    private fun saveOptionInSharedPreferences() {
+        with(sharedPref.edit()) {
+            this?.putBoolean(getString(R.string.pref_key_layout_manager), isGridLayout)
+            this?.apply()
+        }
     }
 
     private fun setIcon(menuItem: MenuItem?) {
@@ -219,9 +236,5 @@ class NotesListFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        const val TAG = "NotesListFragment"
     }
 }
