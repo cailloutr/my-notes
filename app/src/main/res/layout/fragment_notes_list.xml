@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:spanCount="2"
         tools:itemCount="20"
-        tools:listitem="@layout/item_note" />
+        tools:listitem="@layout/item_note_staggered_layout" />
 
     <View
         android:id="@+id/fragment_notes_divisor"

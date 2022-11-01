@@ -1,14 +1,13 @@
 package com.example.mynotes.ui.viewModel
 
 import androidx.lifecycle.*
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.database.AppDatabase
 import com.example.mynotes.database.model.Note
 import com.example.mynotes.database.repository.NotesRepository
+import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.util.DateUtil
 import kotlinx.coroutines.launch
-import com.example.mynotes.ui.enums.FragmentMode
 
 class NotesListViewModel(
     application: MyNotesApplication,
@@ -29,11 +28,7 @@ class NotesListViewModel(
     private val _note = MutableLiveData<Note?>(null)
     val note: LiveData<Note?> = _note
 
-    lateinit var layoutManager: LayoutManager
-
-    init {
-
-    }
+    var isGridLayout: Boolean = false
 
 
     private fun getAllNotes() = repository.getAllSavedNotes()

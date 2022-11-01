@@ -13,6 +13,6 @@
         app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
         app:spanCount="2"
         tools:itemCount="20"
-        tools:listitem="@layout/item_note" />
+        tools:listitem="@layout/item_note_staggered_layout" />
 
 </FrameLayout>

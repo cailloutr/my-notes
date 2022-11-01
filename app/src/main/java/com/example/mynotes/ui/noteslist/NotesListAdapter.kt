@@ -2,39 +2,71 @@ package com.example.mynotes.ui.noteslist
 
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import androidx.recyclerview.widget.RecyclerView
 import com.example.mynotes.database.model.Note
-import com.example.mynotes.databinding.ItemNoteBinding
+import com.example.mynotes.databinding.ItemNoteLinearLayoutBinding
+import com.example.mynotes.databinding.ItemNoteStaggeredLayoutBinding
 import com.example.mynotes.ui.noteslist.touchhelper.ItemTouchHelperAdapter
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 
 class NotesListAdapter(
     private val viewModel: NotesListViewModel,
     private val onItemClickListener: (Note) -> Unit
-) : ListAdapter<Note, NotesListAdapter.NoteViewHolder>(DiffCallback), ItemTouchHelperAdapter {
+) : ListAdapter<Note, NotesListAdapter.ViewHolder>(DiffCallback), ItemTouchHelperAdapter {
 
-    class NoteViewHolder(private var binding: ItemNoteBinding) : ViewHolder(binding.root) {
+    abstract class ViewHolder(
+        view: View
+    ) : RecyclerView.ViewHolder(view) {
+        abstract fun bind(note: Note)
+    }
 
-        fun bind(note: Note) {
+    class NoteViewHolderLinear(
+        private var binding: ItemNoteLinearLayoutBinding
+        ) : ViewHolder(binding.root) {
+
+        override fun bind(note: Note) {
             binding.itemNoteTitle.text = note.title
             binding.itemNoteDescription.text = note.description
             binding.itemNoteModifiedDate.text = note.modifiedDate
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
-        val view = ItemNoteBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
-        return NoteViewHolder(view)
+    class NoteViewHolderStaggeredGrid(
+        private var binding: ItemNoteStaggeredLayoutBinding
+    ) : ViewHolder(binding.root) {
+
+        override fun bind(note: Note) {
+            binding.itemNoteTitle.text = note.title
+            binding.itemNoteDescription.text = note.description
+            binding.itemNoteModifiedDate.text = note.modifiedDate
+        }
     }
 
-    override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return if (viewModel.isGridLayout) {
+            NoteViewHolderStaggeredGrid(
+                ItemNoteStaggeredLayoutBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+        } else {
+            NoteViewHolderLinear(
+                ItemNoteLinearLayoutBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+        }
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val note = getItem(position)
         holder.bind(note)
 

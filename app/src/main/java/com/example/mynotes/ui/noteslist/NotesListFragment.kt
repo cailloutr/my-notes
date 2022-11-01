@@ -33,7 +33,7 @@ class NotesListFragment : Fragment() {
 
     lateinit var hasDeletedANote: NotesListFragmentArgs
 
-    private var isGridLayout: Boolean = false
+//    private var isGridLayout: Boolean = false
 
     lateinit var sharedPref: SharedPreferences
 
@@ -48,7 +48,7 @@ class NotesListFragment : Fragment() {
 
         sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) as SharedPreferences
 
-        isGridLayout = sharedPref.getBoolean(getString(R.string.pref_key_layout_manager), false)
+        viewModel.isGridLayout = sharedPref.getBoolean(getString(R.string.pref_key_layout_manager), false)
 
         hasDeletedANote = args
     }
@@ -75,7 +75,7 @@ class NotesListFragment : Fragment() {
     }
 
     private fun chooseLayout() {
-        when (isGridLayout) {
+        when (viewModel.isGridLayout) {
             true -> {
                 binding.fragmentNotesRecyclerView.layoutManager =
                     StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
@@ -107,7 +107,7 @@ class NotesListFragment : Fragment() {
                 }
 
                 if (menuItem.itemId == R.id.note_list_options_menu_layout_style) {
-                    isGridLayout = !isGridLayout
+                    viewModel.isGridLayout = !viewModel.isGridLayout
                     chooseLayout()
                     setIcon(menuItem)
 
@@ -120,7 +120,7 @@ class NotesListFragment : Fragment() {
 
     private fun saveOptionInSharedPreferences() {
         with(sharedPref.edit()) {
-            this?.putBoolean(getString(R.string.pref_key_layout_manager), isGridLayout)
+            this?.putBoolean(getString(R.string.pref_key_layout_manager), viewModel.isGridLayout)
             this?.apply()
         }
     }
@@ -128,7 +128,7 @@ class NotesListFragment : Fragment() {
     private fun setIcon(menuItem: MenuItem?) {
         if (menuItem == null) return
 
-        menuItem.icon = if (isGridLayout) {
+        menuItem.icon = if (viewModel.isGridLayout) {
             ContextCompat.getDrawable(requireContext(), R.drawable.ic_view_list)
         } else {
             ContextCompat.getDrawable(requireContext(), R.drawable.ic_grid_view)
