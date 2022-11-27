@@ -1,5 +1,9 @@
 # MyNotes App (ongoing project)
 
+<img src="screenshots/TelaInicial.png" style="width: 390px; height: 844px; display: flex;"/> <img src="screenshots/TelaInicialListGrid.png" style="width: 390px; height: 844px;"/> <img src="screenshots/NovaNota.png" style="width: 390px; height: 844px;"/> <img src="screenshots/TelaDeLixeira.png" style="width: 390px; height: 844px;"/>
+
+
+
 Funcionalidades:
 - Capacidade de criar uma nota rapidamente na tela de listagem de notas e/ou expandir e continuar a criação da nota na tela de NovasNotas
 - Editar notas clicando no item na Listagem de Notas
