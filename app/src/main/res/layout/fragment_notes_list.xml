@@ -6,14 +6,6 @@
     android:layout_height="match_parent"
     tools:context="ui.noteslist.NotesListFragment">
 
-
-    <!--    <View-->
-    <!--        android:id="@+id/fragment_notes_divisor"-->
-    <!--        style="@style/Widget.MyNotes.View.Divisor"-->
-    <!--        app:layout_constraintBottom_toTopOf="@id/fragment_notes_text_input_insert"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent" />-->
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_notes_recycler_view"
         android:layout_width="@dimen/match_constrain"
@@ -29,31 +21,37 @@
         tools:itemCount="20"
         tools:listitem="@layout/item_note_staggered_layout" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fragment_notes_text_input_insert"
-        style="@style/Widget.MyNotes.TextInputLayout.CircularOutlinedBox"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/fragment_notes_text_input_insert_card"
         android:layout_width="@dimen/match_constrain"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/border_margin"
         android:paddingTop="@dimen/fragment_notes_list_text_input_padding"
-        app:boxBackgroundColor="@color/cardview_light_background"
-        app:endIconContentDescription="@string/fragment_note_text_input_end_icon_content_description"
-        app:endIconDrawable="@drawable/ic_open_in_full"
+        app:cardCornerRadius="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/fragment_notes_cardview_button_add_note"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/fragment_notes_text_input_edittext_insert"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/fragment_notes_text_input_insert"
+            style="@style/Widget.MyNotes.TextInputLayout.CircularOutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="1dp"
-            android:hint="@string/fragment_notes_text_input_insert_hint"
-            android:inputType="textMultiLine"
-            android:maxHeight="@dimen/fragment_notes_list_edit_text_max_height"
-            android:textColorHint="#757575" />
+            android:layout_height="match_parent"
+            app:boxBackgroundColor="@color/cardview_light_background"
+            app:endIconContentDescription="@string/fragment_note_text_input_end_icon_content_description"
+            app:endIconDrawable="@drawable/ic_open_in_full">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/fragment_notes_text_input_edittext_insert"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/fragment_notes_text_input_insert_hint"
+                android:inputType="textMultiLine"
+                android:maxHeight="@dimen/fragment_notes_list_edit_text_max_height"
+                android:textColorHint="#757575" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/fragment_notes_cardview_button_add_note"
@@ -61,10 +59,10 @@
         android:layout_height="@dimen/fragment_notes_list_button_add_note_size"
         android:layout_marginEnd="@dimen/border_margin"
         app:cardCornerRadius="@dimen/fragment_notes_list_text_input_radius"
-        app:layout_constraintBottom_toBottomOf="@id/fragment_notes_text_input_insert"
+        app:layout_constraintBottom_toBottomOf="@id/fragment_notes_text_input_insert_card"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/fragment_notes_text_input_insert"
-        app:layout_constraintTop_toTopOf="@id/fragment_notes_text_input_insert">
+        app:layout_constraintStart_toEndOf="@id/fragment_notes_text_input_insert_card"
+        app:layout_constraintTop_toTopOf="@id/fragment_notes_text_input_insert_card">
 
         <ImageButton
             android:id="@+id/fragment_notes_button_add_note"
