@@ -1,8 +1,8 @@
 package com.example.mynotes.ui.newnote
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -13,13 +13,14 @@ import androidx.navigation.fragment.navArgs
 import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.R
 import com.example.mynotes.databinding.FragmentNewNoteBinding
-import com.example.mynotes.ui.NoteOptionModalBottomSheet
+import com.example.mynotes.ui.bottomsheet.NoteOptionModalBottomSheet
+import com.example.mynotes.ui.bottomsheet.colors.ColorsOptionBottomSheet
 import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
+import com.example.mynotes.util.AppBarColor
 import com.example.mynotes.util.ToastUtil
 
-// TODO: issue: click to edit a note, then going back, then clicking to open new Note loads the previous edited note
 
 class NewNoteFragment : Fragment() {
 
@@ -64,7 +65,27 @@ class NewNoteFragment : Fragment() {
             val modalBottomSheet = NoteOptionModalBottomSheet(viewModel = viewModel)
             modalBottomSheet.show(parentFragmentManager, NoteOptionModalBottomSheet.TAG)
         }
+
+        binding.fragmentNewNoteOptionsColors.setOnClickListener {
+            val modalBottomSheet = ColorsOptionBottomSheet() {
+                setThemeColors(it)
+            }
+            modalBottomSheet.show(parentFragmentManager, ColorsOptionBottomSheet.TAG)
+        }
     }
+
+    private fun setThemeColors(color: Int) {
+        binding.root.setBackgroundColor(color)
+        AppBarColor.changeAppBarColor(activity as AppCompatActivity, color)
+        (activity as AppCompatActivity).apply {
+            window.statusBarColor = color
+            window.navigationBarColor = color
+        }
+    }
+
+//    private fun changeAppBarColor(it: Int) {
+//        (activity as AppCompatActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(it))
+//    }
 
     private fun setAppBarTitle() {
 //        val fragmentMode = args.fragmentMode

@@ -1,4 +1,4 @@
-package com.example.mynotes.ui
+package com.example.mynotes.ui.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -27,7 +27,7 @@ class NoteOptionModalBottomSheet(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val deleteOption = view.findViewById<TextView>(R.id.option_menu_bottom_sheet_delete)
+        val deleteOption = view.findViewById<TextView>(R.id.menu_bottom_sheet_colors_label)
         deleteOption.setOnClickListener {
             if (viewModel.note.value?.isTrash == true) {
                 viewModel.deleteNote()

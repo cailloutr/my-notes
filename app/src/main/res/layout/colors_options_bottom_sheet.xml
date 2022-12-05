@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <View
         android:id="@+id/option_menu_bottom_sheet_slider_indicator"
         style="@style/SliderIndicator"
@@ -16,25 +15,34 @@
         android:id="@+id/menu_bottom_sheet_colors_label"
         style="@style/Widget.MyNotes.TextView.OptionsBottomSheet.Item"
         android:layout_marginTop="@dimen/option_bottom_sheet_textview_margintop"
-        android:text="@string/option_bottom_sheet_delete_note"
-        app:drawableStartCompat="@drawable/ic_delete"
+        android:text="@string/colors_options_bottom_sheet_pick_a_color"
+        app:layout_constraintBottom_toTopOf="@id/scrollView_chip_group_colors"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/option_menu_bottom_sheet_slider_indicator" />
+        app:layout_constraintTop_toBottomOf="@id/option_menu_bottom_sheet_slider_indicator" />
 
-    <TextView
-        android:id="@+id/option_menu_bottom_sheet_share"
-        style="@style/Widget.MyNotes.TextView.OptionsBottomSheet.Item"
-        android:layout_marginTop="@dimen/border_margin"
-        android:layout_marginBottom="@dimen/border_margin"
-        android:text="@string/option_bottom_sheet_share_note"
-        app:drawableStartCompat="@drawable/ic_share"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <HorizontalScrollView
+        android:id="@+id/scrollView_chip_group_colors"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:scrollbars="none"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/menu_bottom_sheet_colors_label"
-        app:layout_constraintVertical_bias="0" />
+        app:layout_constraintTop_toBottomOf="@id/menu_bottom_sheet_colors_label">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_colors"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            app:selectionRequired="true"
+            app:singleLine="true"
+            app:singleSelection="true">
+
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

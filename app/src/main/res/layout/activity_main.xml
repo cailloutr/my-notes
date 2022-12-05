@@ -12,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="@dimen/activity_main_toolbar_elevation"
-        android:theme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar" >
-        
+        android:theme="@style/ThemeOverlay.AppCompat.DayNight.ActionBar">
+
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.fragment.app.FragmentContainerView

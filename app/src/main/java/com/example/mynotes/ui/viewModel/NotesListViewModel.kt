@@ -47,7 +47,7 @@ class NotesListViewModel(
         }
     }
 
-    fun swipePositions(initPosition: Long, finalPosition: Long) {
+/*    fun swipePositions(initPosition: Long, finalPosition: Long) {
         viewModelScope.launch {
             val notePosition = notesList.value?.get(initPosition.toInt())?.position
             val targetPosition = notesList.value?.get(finalPosition.toInt())?.position
@@ -55,12 +55,12 @@ class NotesListViewModel(
         }
     }
 
-//    fun swipePositions(oldPosition: Long, newPosition: Long) {
-//        viewModelScope.launch {
-//            repository.updatePosition(oldPosition.toInt(), newPosition.toInt())
-//            repository.updatePosition(newPosition.toInt(), oldPosition.toInt())
-//        }
-//    }
+    fun swipePositions(oldPosition: Long, newPosition: Long) {
+        viewModelScope.launch {
+            repository.updatePosition(oldPosition.toInt(), newPosition.toInt())
+            repository.updatePosition(newPosition.toInt(), oldPosition.toInt())
+        }
+    }
 
     fun updateListPositions(item: Long, target: Long) {
 
@@ -76,7 +76,7 @@ class NotesListViewModel(
                 repository.moveDownItem(itemPosition, targetPosition)
             }
         }
-    }
+    }*/
 
 
     fun clearTrash() {
@@ -146,13 +146,13 @@ class NotesListViewModel(
         _fragmentMode.value = mode
     }
 
-    fun getListPositions(): String {
-        var msg = ""
-        repeat(notesList.value?.size!!){
-            msg += "${notesList.value!![it].position}, "
-        }
-        return msg
-    }
+//    fun getListPositions(): String {
+//        var msg = ""
+//        repeat(notesList.value?.size!!){
+//            msg += "${notesList.value!![it].position}, "
+//        }
+//        return msg
+//    }
 
 }
 

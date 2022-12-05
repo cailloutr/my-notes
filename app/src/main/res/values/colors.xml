@@ -6,5 +6,28 @@
     <color name="red_200">#FFef9a9a</color>
     <color name="red_700">#FFd32f2f</color>
     <color name="black">#FF000000</color>
+    <color name="black_ish">#44000000</color>
+
     <color name="white">#FFFFFFFF</color>
+<!--    <color name="chip_red">#3Df44336</color>-->
+<!--    <color name="chip_blue">#3D2196f3</color>-->
+<!--    <color name="chip_green">#3D4caf50</color>-->
+<!--    <color name="chip_yellow">#3Dffc107</color>-->
+<!--    <color name="chip_pink">#3De91e63</color>-->
+
+    <color name="chip_red">#FFef9a9a</color>
+    <color name="chip_blue">#FF90caf9</color>
+    <color name="chip_green">#FFa5d6a7</color>
+    <color name="chip_yellow">#FFffe082</color>
+    <color name="chip_pink">#FFf48fb1</color>
+
+    <color name="chip_light_red">#3Def9a9a</color>
+    <color name="chip_light_blue">#3D90caf9</color>
+    <color name="chip_light_green">#3Da5d6a7</color>
+    <color name="chip_light_yellow">#3Dffe082</color>
+    <color name="chip_light_pink">#3Df48fb1</color>
+
+
+
+
 </resources>

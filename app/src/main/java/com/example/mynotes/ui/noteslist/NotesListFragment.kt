@@ -2,8 +2,10 @@ package com.example.mynotes.ui.noteslist
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -25,12 +27,12 @@ import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
 import com.example.mynotes.util.ToastUtil
 import com.google.android.material.snackbar.Snackbar
 
-// TODO: Hold action
-// TODO: Image notes
+// TODO: Image notes - Take a photo or choose from the gallery
 // TODO: color options for each note
 // TODO: Other easy options like add checkBoxes for each note as a shopping list
 // TODO: Add markers like topics
 // TODO: Share option
+// TODO: Hold action
 // TODO: Archive item on swipe
 // TODO: Implement design improvements
 // TODO: fix undo action behavior and Snackbar
@@ -42,8 +44,6 @@ class NotesListFragment : Fragment() {
     private val args: NotesListFragmentArgs by navArgs()
 
     lateinit var hasDeletedANote: NotesListFragmentArgs
-
-//    private var isGridLayout: Boolean = false
 
     lateinit var sharedPref: SharedPreferences
 
@@ -61,6 +61,21 @@ class NotesListFragment : Fragment() {
         viewModel.isGridLayout = sharedPref.getBoolean(getString(R.string.pref_key_layout_manager), false)
 
         hasDeletedANote = args
+    }
+
+    override fun onResume() {
+        super.onResume()
+        resetSystemBarColor()
+    }
+
+    private fun resetSystemBarColor() {
+        with(activity as AppCompatActivity) {
+            this.supportActionBar?.setBackgroundDrawable(
+                ColorDrawable(ContextCompat.getColor(requireContext(), R.color.white))
+            )
+            this.window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
+            this.window.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.white)
+        }
     }
 
     override fun onCreateView(

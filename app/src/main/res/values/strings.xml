@@ -35,4 +35,5 @@
     <string name="pref_key_layout_manager">layout_manager</string>
     <string name="fragment_new_note_option_colors">Menu of colors</string>
     <string name="option_bottom_sheet_colors">Colors</string>
+    <string name="colors_options_bottom_sheet_pick_a_color">Pick a color</string>
 </resources>
