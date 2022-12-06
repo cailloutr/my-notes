@@ -12,8 +12,7 @@ import com.google.android.material.chip.Chip
 data class ChipItem(
     val id: Int,
     val text: String,
-    @ColorRes val color: Int,
-    val isChecked: Boolean
+    @ColorRes val color: Int
 ) {
     companion object {
         const val TAG = "ChipItemClass"
@@ -56,9 +55,6 @@ fun ChipItem.toChip(context: Context, viewGroup: ViewGroup): Chip {
     chip.chipStrokeWidth = 3f
     chip.chipStrokeColor = ColorStateList(states, strokeColors)
     chip.text = text
-
-    chip.isChecked = isChecked
-
 
     return chip
 }

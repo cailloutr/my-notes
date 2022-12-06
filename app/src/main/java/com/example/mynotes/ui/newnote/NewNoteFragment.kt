@@ -13,7 +13,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.R
+import com.example.mynotes.databinding.ColorsOptionsBottomSheetBinding
 import com.example.mynotes.databinding.FragmentNewNoteBinding
+import com.example.mynotes.databinding.FragmentNewNoteOptionsBottomSheetBinding
 import com.example.mynotes.ui.bottomsheet.NoteOptionModalBottomSheet
 import com.example.mynotes.ui.bottomsheet.colors.ColorsOptionBottomSheet
 import com.example.mynotes.ui.enums.FragmentMode
@@ -63,17 +65,40 @@ class NewNoteFragment : Fragment() {
 
     private fun setupOptionsModalBottomSheet() {
         binding.fragmentNewNoteOptionsMenu.setOnClickListener {
-            val modalBottomSheet = NoteOptionModalBottomSheet(viewModel = viewModel)
-            modalBottomSheet.show(parentFragmentManager, NoteOptionModalBottomSheet.TAG)
+            openOptionsBottomSheet()
         }
 
         binding.fragmentNewNoteOptionsColors.setOnClickListener {
-            val modalBottomSheet = ColorsOptionBottomSheet(viewModel.note.value?.color) {
+            openColorsOptionBottomSheet()
+        }
+    }
+
+    private fun openOptionsBottomSheet() {
+        val modalBottomSheet = NoteOptionModalBottomSheet(
+            viewModel = viewModel,
+            backgroundColor = viewModel.note.value?.color,
+            binding = FragmentNewNoteOptionsBottomSheetBinding.inflate(
+                layoutInflater,
+                binding.root,
+                false
+            )
+        )
+        modalBottomSheet.show(parentFragmentManager, NoteOptionModalBottomSheet.TAG)
+    }
+
+    private fun openColorsOptionBottomSheet() {
+        val modalBottomSheet = ColorsOptionBottomSheet(
+            backgroundColor = viewModel.note.value?.color, {
                 setThemeColors(it)
                 viewModel.setNoteColor(it)
-            }
-            modalBottomSheet.show(parentFragmentManager, ColorsOptionBottomSheet.TAG)
-        }
+            },
+            binding = ColorsOptionsBottomSheetBinding.inflate(
+                layoutInflater,
+                binding.root,
+                false
+            )
+        )
+        modalBottomSheet.show(parentFragmentManager, ColorsOptionBottomSheet.TAG)
     }
 
     private fun setThemeColors(color: Int?) {

@@ -6,46 +6,48 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
 import com.example.mynotes.databinding.ColorsOptionsBottomSheetBinding
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.example.mynotes.ui.bottomsheet.BaseBottomSheet
 import com.google.android.material.chip.Chip
 
 class ColorsOptionBottomSheet(
+    private val backgroundColor: Int?,
     val onClickListener: (cor: Int) -> Unit,
-) : BottomSheetDialogFragment() {
+    var binding: ColorsOptionsBottomSheetBinding
+) : BaseBottomSheet(backgroundColor, binding.root) {
 
-    private lateinit var binding: ColorsOptionsBottomSheetBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-
-        binding = ColorsOptionsBottomSheetBinding.inflate(inflater, container, false)
-
-//        binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.black_ish))
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setBackgroundColor()
 
         val chipGroup = binding.chipGroupColors
 
-        Colors.listOfColorsChip.forEach {
-            chipGroup.addView(it.toChip(requireContext(), chipGroup))
+        Colors.listOfColorsChip.forEach { chipItem ->
+            chipGroup.addView(chipItem.toChip(requireContext(), chipGroup))
+        }
 
-            for (child in chipGroup.children) {
-                val chip = child.findViewById<Chip>(child.id)
+        chipGroup.children.forEach { child ->
+            val chip = child.findViewById<Chip>(child.id)
 
-                chip.setOnClickListener {
-                    val defaultColor = chip.chipBackgroundColor?.defaultColor
+            val chipDefaultColor = chip.chipBackgroundColor?.defaultColor
 
-                    defaultColor?.let { color ->
-                        onClickListener(color)
-                        setBottomSheetBackgroundColor(color)
-                    }
+            if (chipDefaultColor == backgroundColor) {
+                chipGroup.check(child.id)
+            }
+
+            chip.setOnClickListener {
+                chipDefaultColor?.let { color ->
+                    onClickListener(color)
+                    setBottomSheetBackgroundColor(color)
                 }
             }
         }
