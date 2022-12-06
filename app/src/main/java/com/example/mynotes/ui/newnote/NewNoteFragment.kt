@@ -69,6 +69,7 @@ class NewNoteFragment : Fragment() {
         binding.fragmentNewNoteOptionsColors.setOnClickListener {
             val modalBottomSheet = ColorsOptionBottomSheet() {
                 setThemeColors(it)
+                viewModel.setNoteColor(it)
             }
             modalBottomSheet.show(parentFragmentManager, ColorsOptionBottomSheet.TAG)
         }

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mynotes.R
 import com.example.mynotes.database.model.Note
 import com.example.mynotes.databinding.ItemNoteLinearLayoutBinding
 import com.example.mynotes.databinding.ItemNoteStaggeredLayoutBinding
@@ -32,17 +33,23 @@ class NotesListAdapter(
             binding.itemNoteTitle.text = note.title
             binding.itemNoteDescription.text = note.description
             binding.itemNoteModifiedDate.text = note.modifiedDate
+
+            val color = note.color ?: R.color.white
+            binding.root.setBackgroundColor(color)
         }
     }
 
     class NoteViewHolderStaggeredGrid(
-        private var binding: ItemNoteStaggeredLayoutBinding
+        private var binding: ItemNoteStaggeredLayoutBinding,
     ) : ViewHolder(binding.root) {
 
         override fun bind(note: Note) {
             binding.itemNoteTitle.text = note.title
             binding.itemNoteDescription.text = note.description
             binding.itemNoteModifiedDate.text = note.modifiedDate
+
+            val color = note.color ?: R.color.white
+            binding.root.setBackgroundColor(color)
         }
     }
 
@@ -81,7 +88,7 @@ class NotesListAdapter(
         Log.i("NotesListAdapter", "Current List: ${getCurrentListPositions()}")
     }
 
-    fun getCurrentListPositions(): String {
+    private fun getCurrentListPositions(): String {
         var msg = ""
         repeat(currentList.size) {
             msg += "${currentList[it].position}, "

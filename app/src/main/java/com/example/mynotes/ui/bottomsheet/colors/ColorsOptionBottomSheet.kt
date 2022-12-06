@@ -19,7 +19,7 @@ class ColorsOptionBottomSheet(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
 
         binding = ColorsOptionsBottomSheetBinding.inflate(inflater, container, false)
 
@@ -44,12 +44,16 @@ class ColorsOptionBottomSheet(
 
                     defaultColor?.let { color ->
                         onClickListener(color)
-                        binding.root.setBackgroundColor(color)
+                        setBottomSheetBackgroundColor(color)
                     }
                 }
             }
         }
 
+    }
+
+    private fun setBottomSheetBackgroundColor(color: Int) {
+        binding.root.setBackgroundColor(color)
     }
 
     companion object {

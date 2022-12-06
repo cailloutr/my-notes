@@ -146,13 +146,17 @@ class NotesListViewModel(
         _fragmentMode.value = mode
     }
 
-//    fun getListPositions(): String {
-//        var msg = ""
-//        repeat(notesList.value?.size!!){
-//            msg += "${notesList.value!![it].position}, "
-//        }
-//        return msg
-//    }
+    fun setNoteColor(color: Int) {
+        _note.value?.color = color
+    }
+
+/*    fun getListPositions(): String {
+        var msg = ""
+        repeat(notesList.value?.size!!){
+            msg += "${notesList.value!![it].position}, "
+        }
+        return msg
+    }*/
 
 }
 
