@@ -3,6 +3,7 @@ package com.example.mynotes.ui.newnote
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -67,7 +68,7 @@ class NewNoteFragment : Fragment() {
         }
 
         binding.fragmentNewNoteOptionsColors.setOnClickListener {
-            val modalBottomSheet = ColorsOptionBottomSheet() {
+            val modalBottomSheet = ColorsOptionBottomSheet(viewModel.note.value?.color) {
                 setThemeColors(it)
                 viewModel.setNoteColor(it)
             }
@@ -75,18 +76,15 @@ class NewNoteFragment : Fragment() {
         }
     }
 
-    private fun setThemeColors(color: Int) {
-        binding.root.setBackgroundColor(color)
-        AppBarColor.changeAppBarColor(activity as AppCompatActivity, color)
+    private fun setThemeColors(color: Int?) {
+        val colorId = color ?: ContextCompat.getColor(requireContext(), R.color.white)
+        binding.root.setBackgroundColor(colorId)
+        AppBarColor.changeAppBarColor(activity as AppCompatActivity, colorId)
         (activity as AppCompatActivity).apply {
-            window.statusBarColor = color
-            window.navigationBarColor = color
+            window.statusBarColor = colorId
+            window.navigationBarColor = colorId
         }
     }
-
-//    private fun changeAppBarColor(it: Int) {
-//        (activity as AppCompatActivity).supportActionBar?.setBackgroundDrawable(ColorDrawable(it))
-//    }
 
     private fun setAppBarTitle() {
 //        val fragmentMode = args.fragmentMode
@@ -100,7 +98,11 @@ class NewNoteFragment : Fragment() {
             binding.fragmentNewNoteTextInputEdittextTitle.setText(it?.title)
             binding.fragmentNewNoteTextInputEdittextDescription.setText(it?.description)
             binding.fragmentNewNoteDate.text = it?.modifiedDate
+
+            setThemeColors(it?.color)
         }
+
+
 //        val fragmentMode = args.fragmentMode
         if (fragmentMode == FragmentMode.FRAGMENT_TRASH) {
             binding.apply {
