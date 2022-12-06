@@ -27,7 +27,6 @@ class NotesListAdapter(
         open fun bind(note: Note) {}
 
         fun setBackgroundColor(note: Note, context: Context) {
-
             if (note.color != null) {
                 itemView.setBackgroundColor(note.color!!)
             } else {
