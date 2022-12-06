@@ -5,9 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.mynotes.database.dao.NoteDao
+import com.example.mynotes.database.migrations.MyNotesMigrations
 import com.example.mynotes.database.model.Note
 
-@Database(entities = [Note::class], version = 11, exportSchema = false)
+@Database(entities = [Note::class], version = 12, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun notesDao(): NoteDao
@@ -23,7 +24,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context,
                     AppDatabase::class.java,
                     "app_database")
-                    .fallbackToDestructiveMigration()
+                    .addMigrations(*MyNotesMigrations.ALL_MIGRATIONS)
                     .build()
 
                 INSTANCE = instance
