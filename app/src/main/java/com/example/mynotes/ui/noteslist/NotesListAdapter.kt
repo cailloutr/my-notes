@@ -1,9 +1,11 @@
 package com.example.mynotes.ui.noteslist
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -19,14 +21,24 @@ class NotesListAdapter(
     private val onItemClickListener: (Note) -> Unit
 ) : ListAdapter<Note, NotesListAdapter.ViewHolder>(DiffCallback), ItemTouchHelperAdapter {
 
-    abstract class ViewHolder(
+    open class ViewHolder(
         view: View
     ) : RecyclerView.ViewHolder(view) {
-        abstract fun bind(note: Note)
+        open fun bind(note: Note) {}
+
+        fun setBackgroundColor(note: Note, context: Context) {
+
+            if (note.color != null) {
+                itemView.setBackgroundColor(note.color!!)
+            } else {
+                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
+            }
+        }
     }
 
     class NoteViewHolderLinear(
-        private var binding: ItemNoteLinearLayoutBinding
+        private var binding: ItemNoteLinearLayoutBinding,
+        private val context: Context,
         ) : ViewHolder(binding.root) {
 
         override fun bind(note: Note) {
@@ -34,13 +46,13 @@ class NotesListAdapter(
             binding.itemNoteDescription.text = note.description
             binding.itemNoteModifiedDate.text = note.modifiedDate
 
-            val color = note.color ?: R.color.white
-            binding.root.setBackgroundColor(color)
+            setBackgroundColor(note, context)
         }
     }
 
     class NoteViewHolderStaggeredGrid(
         private var binding: ItemNoteStaggeredLayoutBinding,
+        private val context: Context,
     ) : ViewHolder(binding.root) {
 
         override fun bind(note: Note) {
@@ -48,8 +60,7 @@ class NotesListAdapter(
             binding.itemNoteDescription.text = note.description
             binding.itemNoteModifiedDate.text = note.modifiedDate
 
-            val color = note.color ?: R.color.white
-            binding.root.setBackgroundColor(color)
+            setBackgroundColor(note, context)
         }
     }
 
@@ -60,7 +71,8 @@ class NotesListAdapter(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
-                )
+                ),
+                parent.context
             )
         } else {
             NoteViewHolderLinear(
@@ -68,7 +80,8 @@ class NotesListAdapter(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
-                )
+                ),
+                parent.context
             )
         }
     }
