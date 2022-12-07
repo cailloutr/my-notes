@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -28,9 +29,11 @@ class NotesListAdapter(
 
         fun setBackgroundColor(note: Note, context: Context) {
             if (note.color != null) {
-                itemView.setBackgroundColor(note.color!!)
+                (itemView as CardView).setCardBackgroundColor(note.color!!)
             } else {
-                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
+                (itemView as CardView).setCardBackgroundColor(
+                    ContextCompat.getColor(context, R.color.white)
+                )
             }
         }
     }

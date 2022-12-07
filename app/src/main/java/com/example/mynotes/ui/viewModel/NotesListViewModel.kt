@@ -119,6 +119,10 @@ class NotesListViewModel(
     }
 
     fun updateViewModelNote(title: String = "", description: String) {
+        if (_note.value?.id == null) {
+            createEmptyNote()
+        }
+
         _note.value?.title = title
         _note.value?.description = description
         _note.value?.modifiedDate = DateUtil.getFormattedDate()
