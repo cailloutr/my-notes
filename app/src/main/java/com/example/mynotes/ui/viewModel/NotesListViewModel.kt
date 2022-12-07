@@ -119,19 +119,9 @@ class NotesListViewModel(
     }
 
     fun updateViewModelNote(title: String = "", description: String) {
-        if (note.value?.id != null) {
-            _note.value?.title = title
-            _note.value?.description = description
-            _note.value?.modifiedDate = DateUtil.getFormattedDate()
-        } else {
-            val note = Note(
-                title = title,
-                description = description,
-                modifiedDate = DateUtil.getFormattedDate(),
-                isTrash = false
-            )
-            _note.value = note
-        }
+        _note.value?.title = title
+        _note.value?.description = description
+        _note.value?.modifiedDate = DateUtil.getFormattedDate()
     }
 
     fun loadNote(note: Note) {
@@ -148,6 +138,15 @@ class NotesListViewModel(
 
     fun setNoteColor(color: Int) {
         _note.value?.color = color
+    }
+
+    fun createEmptyNote() {
+        _note.value = Note(
+            title = "",
+            description = "",
+            modifiedDate = null,
+            isTrash = false
+        )
     }
 
 /*    fun getListPositions(): String {

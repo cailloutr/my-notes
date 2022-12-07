@@ -57,13 +57,20 @@ class NewNoteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+
         setAppBarTitle()
         setupMenu()
+
+        if (fragmentMode == FragmentMode.FRAGMENT_NEW) {
+            viewModel.createEmptyNote()
+        }
+
         loadNoteFromViewModel()
-        setupOptionsModalBottomSheet()
+        setupBottomSheet()
     }
 
-    private fun setupOptionsModalBottomSheet() {
+    private fun setupBottomSheet() {
         binding.fragmentNewNoteOptionsMenu.setOnClickListener {
             openOptionsBottomSheet()
         }
@@ -123,7 +130,6 @@ class NewNoteFragment : Fragment() {
             binding.fragmentNewNoteTextInputEdittextTitle.setText(it?.title)
             binding.fragmentNewNoteTextInputEdittextDescription.setText(it?.description)
             binding.fragmentNewNoteDate.text = it?.modifiedDate
-
             setThemeColors(it?.color)
         }
 
@@ -133,6 +139,7 @@ class NewNoteFragment : Fragment() {
             binding.apply {
                 fragmentNewNoteTextInputEdittextTitle.isEnabled = false
                 fragmentNewNoteTextInputEdittextDescription.isEnabled = false
+                fragmentNewNoteOptionsColors.isEnabled = false
             }
         }
     }
