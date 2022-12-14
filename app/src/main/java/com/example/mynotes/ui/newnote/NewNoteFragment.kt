@@ -62,9 +62,9 @@ class NewNoteFragment : Fragment() {
         setAppBarTitle()
         setupMenu()
 
-        if (fragmentMode == FragmentMode.FRAGMENT_NEW) {
-            viewModel.createEmptyNote()
-        }
+//        if (fragmentMode == FragmentMode.FRAGMENT_NEW) {
+////            viewModel.createEmptyNote()
+//        }
 
         loadNoteFromViewModel()
         setupBottomSheet()

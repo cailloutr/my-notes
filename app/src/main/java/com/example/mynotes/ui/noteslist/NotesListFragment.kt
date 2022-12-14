@@ -196,7 +196,6 @@ class NotesListFragment : Fragment() {
 
     private fun setupEditTextExpandViewButton() {
         binding.fragmentNotesTextInputInsert.setEndIconOnClickListener {
-            viewModel.clearNote()
             saveDescriptionInViewModel()
             cleanEditTextInsertNote()
             viewModel.setFragmentMode(FragmentMode.FRAGMENT_NEW)
