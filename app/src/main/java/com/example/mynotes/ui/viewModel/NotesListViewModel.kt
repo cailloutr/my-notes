@@ -119,9 +119,9 @@ class NotesListViewModel(
     }
 
     fun updateViewModelNote(title: String = "", description: String) {
-        if (_note.value?.id == null) {
-            createEmptyNote()
-        }
+//        if (_note.value?.id == null) {
+//            createEmptyNote()
+//        }
 
         _note.value?.title = title
         _note.value?.description = description
@@ -152,14 +152,6 @@ class NotesListViewModel(
             isTrash = false
         )
     }
-
-/*    fun getListPositions(): String {
-        var msg = ""
-        repeat(notesList.value?.size!!){
-            msg += "${notesList.value!![it].position}, "
-        }
-        return msg
-    }*/
 
 }
 

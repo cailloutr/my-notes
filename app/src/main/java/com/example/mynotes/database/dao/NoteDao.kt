@@ -20,7 +20,7 @@ interface NoteDao {
     @Query("UPDATE Note SET is_trash = 0 WHERE is_trash = 1")
     suspend fun restoreAllItems()
 
-    @Query("UPDATE Note SET position = CASE position WHEN :initPosition THEN :finalPosition WHEN :finalPosition THEN :initPosition ELSE position END")
+/*    @Query("UPDATE Note SET position = CASE position WHEN :initPosition THEN :finalPosition WHEN :finalPosition THEN :initPosition ELSE position END")
     suspend fun swipePositions(initPosition: Long, finalPosition: Long)
 //
 //    @Query("UPDATE Note SET position = :newPosition WHERE position = :oldPosition")
@@ -46,7 +46,7 @@ interface NoteDao {
     suspend fun updatePositionDown3(item: Long)
 
 
-
+*/
     @Query("UPDATE Note SET position = (id)")
     suspend fun insertPosition()
 

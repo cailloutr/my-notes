@@ -56,14 +56,11 @@ class NewNoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-
         setAppBarTitle()
         setupMenu()
 
 //        if (fragmentMode == FragmentMode.FRAGMENT_NEW) {
-////            viewModel.createEmptyNote()
+//            viewModel.createEmptyNote()
 //        }
 
         loadNoteFromViewModel()
@@ -133,8 +130,6 @@ class NewNoteFragment : Fragment() {
             setThemeColors(it?.color)
         }
 
-
-//        val fragmentMode = args.fragmentMode
         if (fragmentMode == FragmentMode.FRAGMENT_TRASH) {
             binding.apply {
                 fragmentNewNoteTextInputEdittextTitle.isEnabled = false

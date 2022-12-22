@@ -21,7 +21,6 @@ import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.R
 import com.example.mynotes.databinding.FragmentNotesListBinding
 import com.example.mynotes.ui.enums.FragmentMode
-import com.example.mynotes.ui.noteslist.touchhelper.NoteItemTouchHelperCallback
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
 import com.example.mynotes.util.ToastUtil
@@ -196,6 +195,7 @@ class NotesListFragment : Fragment() {
 
     private fun setupEditTextExpandViewButton() {
         binding.fragmentNotesTextInputInsert.setEndIconOnClickListener {
+            viewModel.createEmptyNote()
             saveDescriptionInViewModel()
             cleanEditTextInsertNote()
             viewModel.setFragmentMode(FragmentMode.FRAGMENT_NEW)
@@ -218,7 +218,6 @@ class NotesListFragment : Fragment() {
         val description = binding.fragmentNotesTextInputEdittextInsert.text.toString()
 
         if (description.isNotEmpty()) {
-            viewModel.clearNote()
             viewModel.updateViewModelNote(description = description)
             return true
         }
@@ -228,7 +227,7 @@ class NotesListFragment : Fragment() {
 
     private fun setupAddNoteButton() {
         binding.fragmentNotesButtonAddNote.setOnClickListener {
-
+            viewModel.createEmptyNote()
             if (saveDescriptionInViewModel()) {
                 viewModel.saveNote()
                 cleanEditTextInsertNote()
@@ -248,9 +247,6 @@ class NotesListFragment : Fragment() {
             viewModel.fragmentMode.value?.let { navigateToNewNotesFragment(it) }
         }
         binding.fragmentNotesRecyclerView.adapter = adapter
-
-        val itemTouchHelper = ItemTouchHelper(NoteItemTouchHelperCallback(adapter, viewModel))
-        itemTouchHelper.attachToRecyclerView(binding.fragmentNotesRecyclerView)
 
         return adapter
     }
