@@ -57,6 +57,6 @@ interface NoteDao {
     suspend fun update(note: Note)
 
     @Delete
-    suspend fun delete(note: Note)
+    suspend fun delete(vararg note: Note)
 
 }

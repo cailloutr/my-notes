@@ -105,6 +105,12 @@ class NotesListViewModel(
         return true
     }
 
+    fun deleteSelectedNotes(listOfItemToDelete: List<Note>) {
+        viewModelScope.launch {
+            repository.delete(*listOfItemToDelete.toTypedArray())
+        }
+    }
+
     fun moveNoteToTrash(): Boolean {
         if (note.value?.id == null) {
             return false

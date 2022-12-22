@@ -1,11 +1,17 @@
 package com.example.mynotes.ui.noteslist
 
 import android.content.Context
+import android.util.Log
+import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.util.contains
+import androidx.core.util.forEach
+import androidx.core.util.remove
+import androidx.core.util.size
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -17,13 +23,19 @@ import com.example.mynotes.ui.viewModel.NotesListViewModel
 
 class NotesListAdapter(
     private val viewModel: NotesListViewModel,
-    private val onItemClickListener: (Note) -> Unit
+    private val onItemClickToSelectListener: (Note?, SparseBooleanArray) -> Unit,
+    private val deleteSelectedItemsListener: (List<Note>) -> Unit
 ) : ListAdapter<Note, NotesListAdapter.ViewHolder>(DiffCallback) {
+
+    private val TAG: String = "NoteListAdapter"
+    private val itemStateArray = SparseBooleanArray()
+    private var isSelectedMode = false
 
     open class ViewHolder(
         view: View
     ) : RecyclerView.ViewHolder(view) {
-        open fun bind(note: Note) {}
+
+        open fun bind(note: Note, isSelected: Boolean) {}
 
         fun setBackgroundColor(note: Note, context: Context) {
             if (note.color != null) {
@@ -37,28 +49,30 @@ class NotesListAdapter(
     }
 
     class NoteViewHolderLinear(
-        private var binding: ItemNoteLinearLayoutBinding,
+        val binding: ItemNoteLinearLayoutBinding,
         private val context: Context,
         ) : ViewHolder(binding.root) {
 
-        override fun bind(note: Note) {
+        override fun bind(note: Note, isSelected: Boolean) {
             binding.itemNoteTitle.text = note.title
             binding.itemNoteDescription.text = note.description
             binding.itemNoteModifiedDate.text = note.modifiedDate
+            binding.root.isSelected = isSelected
 
             setBackgroundColor(note, context)
         }
     }
 
     class NoteViewHolderStaggeredGrid(
-        private var binding: ItemNoteStaggeredLayoutBinding,
+        val binding: ItemNoteStaggeredLayoutBinding,
         private val context: Context,
     ) : ViewHolder(binding.root) {
 
-        override fun bind(note: Note) {
+        override fun bind(note: Note, isSelected: Boolean) {
             binding.itemNoteTitle.text = note.title
             binding.itemNoteDescription.text = note.description
             binding.itemNoteModifiedDate.text = note.modifiedDate
+            binding.root.isSelected = isSelected
 
             setBackgroundColor(note, context)
         }
@@ -88,11 +102,68 @@ class NotesListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val note = getItem(position)
-        holder.bind(note)
+        holder.bind(note, itemStateArray[holder.adapterPosition, false])
+
+        holder.itemView.setOnLongClickListener {
+            if (!isSelectedMode) {
+                if (itemStateArray.contains(holder.adapterPosition)) {
+                    itemStateArray.remove(holder.adapterPosition, false)
+                } else {
+                    itemStateArray.put(holder.adapterPosition, true)
+                }
+                changeViewState(it)
+
+                onItemClickToSelectListener(null, itemStateArray)
+            }
+
+            isSelectedMode = true
+            Log.i(TAG, "onBindViewHolder: itemStateArray: $itemStateArray")
+            true
+        }
 
         holder.itemView.setOnClickListener {
-            onItemClickListener(note)
+            if (isSelectedMode) {
+                if (itemStateArray.contains(holder.adapterPosition)) {
+                    itemStateArray.remove(holder.adapterPosition, true)
+                } else {
+                    itemStateArray.put(holder.adapterPosition, true)
+                }
+                changeViewState(it)
+
+                if (itemStateArray.size == 0) {
+                    isSelectedMode = false
+                }
+
+                onItemClickToSelectListener(null, itemStateArray)
+                Log.i(TAG, "onBindViewHolder: itemStateArray: $itemStateArray")
+            }
         }
+    }
+
+    private fun changeViewState(view: View) {
+        view.isSelected = !view.isSelected
+    }
+
+    fun resetStateArray() {
+        for (index in itemStateArray.size - 1 downTo 0) {
+            val position = itemStateArray.keyAt(index)
+            itemStateArray.removeAt(index)
+            notifyItemChanged(position)
+        }
+        isSelectedMode = false
+        onItemClickToSelectListener(null, itemStateArray)
+    }
+
+    fun deleteSelectedItems(){
+        val listOfItemToDelete = mutableListOf<Note>()
+        itemStateArray.forEach { key, _ ->
+            listOfItemToDelete.add(currentList[key])
+        }
+
+        deleteSelectedItemsListener(listOfItemToDelete)
+        itemStateArray.clear()
+        onItemClickToSelectListener(null, itemStateArray)
+
     }
 
     companion object {

@@ -2,6 +2,7 @@ package com.example.mynotes.ui.trash
 
 import android.os.Bundle
 import android.view.*
+import androidx.core.util.size
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -99,11 +100,30 @@ class TrashFragment : Fragment() {
     }
 
     private fun setupAdapter(): NotesListAdapter {
-        val adapter = NotesListAdapter(viewModel) { note ->
-            viewModel.loadNote(note)
-            viewModel.setFragmentMode(FragmentMode.FRAGMENT_TRASH)
-            viewModel.fragmentMode.value?.let { navigateToNewNotesFragment(it) }
-        }
+        val adapter = NotesListAdapter(viewModel, { note, itemStateArray ->
+            if (note != null) {
+                viewModel.loadNote(note)
+                viewModel.setFragmentMode(FragmentMode.FRAGMENT_TRASH)
+                viewModel.fragmentMode.value?.let { navigateToNewNotesFragment(it) }
+            } else {
+                when (itemStateArray.size) {
+                    1 -> {
+//                        if (actionMode == null) {
+//                            actionMode = startSupportActionMode(callback)
+//                        }
+//                        actionMode?.title = it.size.toString()
+                    }
+                    0 -> {
+//                        actionMode?.finish()
+//                        actionMode = null
+                    }
+                    else -> {
+//                        actionMode?.title = it.size.toString()
+                    }
+                }
+            }
+
+        }, {})
         binding.fragmentTrashRecyclerView.adapter = adapter
         return adapter
     }

@@ -32,7 +32,7 @@ class NotesRepository(private val appDatabase: AppDatabase) {
         appDatabase.notesDao().update(note)
     }
 
-    suspend fun delete(note: Note) {
-        appDatabase.notesDao().delete(note)
+    suspend fun delete(vararg note: Note) {
+        appDatabase.notesDao().delete(*note)
     }
 }

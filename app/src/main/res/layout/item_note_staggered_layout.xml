@@ -8,11 +8,14 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/border_margin"
     app:cardCornerRadius="12dp"
+
     android:minWidth="@dimen/item_note_cardView_max_width">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:minWidth="197dp"
+        android:background="@drawable/card_state_selector"
         android:padding="@dimen/border_margin">
 
         <TextView

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.util.size
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -14,7 +15,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.mynotes.MyNotesApplication
@@ -38,13 +38,15 @@ import com.google.android.material.snackbar.Snackbar
 // TODO: auto clear the trash
 
 class NotesListFragment : Fragment() {
+    private val TAG: String = "NoteListFragment"
+    private lateinit var adapter: NotesListAdapter
     private var _binding: FragmentNotesListBinding? = null
     val binding get() = _binding!!
     private val args: NotesListFragmentArgs by navArgs()
 
     lateinit var hasDeletedANote: NotesListFragmentArgs
-
     lateinit var sharedPref: SharedPreferences
+    private var actionMode: ActionMode? = null
 
     private val viewModel: NotesListViewModel by activityViewModels {
         NotesListViewModelFactory(
@@ -91,9 +93,7 @@ class NotesListFragment : Fragment() {
 
         setupMenu()
         setupSnackBarUndoAction(view)
-
         chooseLayout()
-//        loadNotesList()
         setupAddNoteButton()
         setupEditTextExpandViewButton()
     }
@@ -240,19 +240,69 @@ class NotesListFragment : Fragment() {
         }
     }
 
+    private fun cleanEditTextInsertNote() {
+        binding.fragmentNotesTextInputEdittextInsert.text?.clear()
+    }
+
     private fun setupAdapter(): NotesListAdapter {
-        val adapter = NotesListAdapter(viewModel) { note ->
-            viewModel.loadNote(note)
-            viewModel.setFragmentMode(FragmentMode.FRAGMENT_EDIT)
-            viewModel.fragmentMode.value?.let { navigateToNewNotesFragment(it) }
-        }
+        adapter = NotesListAdapter(viewModel, { note, itemStateArray ->
+            if (note != null) {
+                viewModel.loadNote(note)
+                viewModel.setFragmentMode(FragmentMode.FRAGMENT_EDIT)
+                viewModel.fragmentMode.value?.let { navigateToNewNotesFragment(it) }
+            } else {
+                when (itemStateArray.size) {
+                    1 -> {
+                        if (actionMode == null) {
+                            actionMode = activity?.startActionMode(callback)
+                        }
+                        actionMode?.title = itemStateArray.size.toString()
+                    }
+                    0 -> {
+                        actionMode?.finish()
+                        actionMode = null
+                    }
+                    else -> {
+                        actionMode?.title = itemStateArray.size.toString()
+                    }
+                }
+            }
+        }, { listOfItemToDelete ->
+            viewModel.deleteSelectedNotes(listOfItemToDelete)
+        })
         binding.fragmentNotesRecyclerView.adapter = adapter
 
         return adapter
     }
 
-    private fun cleanEditTextInsertNote() {
-        binding.fragmentNotesTextInputEdittextInsert.text?.clear()
+    private val callback = object : ActionMode.Callback {
+
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            activity?.menuInflater?.inflate(R.menu.contextual_action_bar, menu)
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            return false
+        }
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+            return when (item?.itemId) {
+                R.id.delete -> {
+                    adapter.deleteSelectedItems()
+                    true
+                }
+                R.id.more -> {
+                    // Handle more item (inside overflow menu) press
+                    true
+                }
+                else -> false
+            }
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            adapter.resetStateArray()
+        }
     }
 
     override fun onDestroyView() {
