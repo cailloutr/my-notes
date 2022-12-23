@@ -21,6 +21,7 @@ import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.R
 import com.example.mynotes.databinding.FragmentNotesListBinding
 import com.example.mynotes.ui.enums.FragmentMode
+import com.example.mynotes.ui.enums.LayoutMode
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
 import com.example.mynotes.util.ToastUtil
@@ -59,7 +60,7 @@ class NotesListFragment : Fragment() {
 
         sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) as SharedPreferences
 
-        viewModel.isGridLayout = sharedPref.getBoolean(getString(R.string.pref_key_layout_manager), false)
+        viewModel.layoutMode.value = sharedPref.getBoolean(getString(R.string.pref_key_layout_manager), false)
 
         hasDeletedANote = args
     }
@@ -99,15 +100,15 @@ class NotesListFragment : Fragment() {
     }
 
     private fun chooseLayout() {
-        when (viewModel.isGridLayout) {
-            true -> {
+        when (viewModel.layoutMode) {
+            LayoutMode.STAGGERED_GRID_LAYOUT -> {
                 binding.fragmentNotesRecyclerView.layoutManager =
                     StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
                 setupAdapter()
                 loadNotesList()
             }
 
-            false -> {
+            LayoutMode.LINEAR_LAYOUT -> {
                 binding.fragmentNotesRecyclerView.layoutManager =
                     LinearLayoutManager(context)
                 setupAdapter()
@@ -131,7 +132,12 @@ class NotesListFragment : Fragment() {
                 }
 
                 if (menuItem.itemId == R.id.note_list_options_menu_layout_style) {
-                    viewModel.isGridLayout = !viewModel.isGridLayout
+                    viewModel.layoutMode =
+                        if (viewModel.layoutMode == LayoutMode.STAGGERED_GRID_LAYOUT) {
+                            LayoutMode.LINEAR_LAYOUT
+                        } else {
+                            LayoutMode.STAGGERED_GRID_LAYOUT
+                        }
                     chooseLayout()
                     setIcon(menuItem)
 
@@ -144,7 +150,7 @@ class NotesListFragment : Fragment() {
 
     private fun saveOptionInSharedPreferences() {
         with(sharedPref.edit()) {
-            this?.putBoolean(getString(R.string.pref_key_layout_manager), viewModel.isGridLayout)
+            this?.putBoolean(getString(R.string.pref_key_layout_manager), viewModel.layoutMode.value)
             this?.apply()
         }
     }
@@ -152,7 +158,7 @@ class NotesListFragment : Fragment() {
     private fun setIcon(menuItem: MenuItem?) {
         if (menuItem == null) return
 
-        if (viewModel.isGridLayout) {
+        if (viewModel.layoutMode.value) {
             menuItem.icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_view_list)
             menuItem.title = getString(R.string.note_list_options_menu_layout_linear)
         } else {
@@ -245,7 +251,7 @@ class NotesListFragment : Fragment() {
     }
 
     private fun setupAdapter(): NotesListAdapter {
-        adapter = NotesListAdapter(viewModel, { note, itemStateArray ->
+        adapter = NotesListAdapter(viewModel.layoutMode, { note, itemStateArray ->
             if (note != null) {
                 viewModel.loadNote(note)
                 viewModel.setFragmentMode(FragmentMode.FRAGMENT_EDIT)
@@ -268,7 +274,7 @@ class NotesListFragment : Fragment() {
                 }
             }
         }, { listOfItemToDelete ->
-            viewModel.deleteSelectedNotes(listOfItemToDelete)
+            viewModel.moveSelectedItemsToTrash(listOfItemToDelete)
         })
         binding.fragmentNotesRecyclerView.adapter = adapter
 
@@ -289,7 +295,7 @@ class NotesListFragment : Fragment() {
         override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
             return when (item?.itemId) {
                 R.id.delete -> {
-                    adapter.deleteSelectedItems()
+                    adapter.moveSelectedItemsToTrash()
                     true
                 }
                 R.id.more -> {

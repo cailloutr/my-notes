@@ -1,6 +1,7 @@
 package com.example.mynotes.ui.noteslist
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
@@ -19,12 +20,12 @@ import com.example.mynotes.R
 import com.example.mynotes.database.model.Note
 import com.example.mynotes.databinding.ItemNoteLinearLayoutBinding
 import com.example.mynotes.databinding.ItemNoteStaggeredLayoutBinding
-import com.example.mynotes.ui.viewModel.NotesListViewModel
+import com.example.mynotes.ui.enums.LayoutMode
 
 class NotesListAdapter(
-    private val viewModel: NotesListViewModel,
+    private val layoutMode: LayoutMode,
     private val onItemClickToSelectListener: (Note?, SparseBooleanArray) -> Unit,
-    private val deleteSelectedItemsListener: (List<Note>) -> Unit
+    private val SelectedItemsActionListener: (List<Note>) -> Unit
 ) : ListAdapter<Note, NotesListAdapter.ViewHolder>(DiffCallback) {
 
     private val TAG: String = "NoteListAdapter"
@@ -49,7 +50,7 @@ class NotesListAdapter(
     }
 
     class NoteViewHolderLinear(
-        val binding: ItemNoteLinearLayoutBinding,
+        private val binding: ItemNoteLinearLayoutBinding,
         private val context: Context,
         ) : ViewHolder(binding.root) {
 
@@ -64,7 +65,7 @@ class NotesListAdapter(
     }
 
     class NoteViewHolderStaggeredGrid(
-        val binding: ItemNoteStaggeredLayoutBinding,
+        private val binding: ItemNoteStaggeredLayoutBinding,
         private val context: Context,
     ) : ViewHolder(binding.root) {
 
@@ -79,7 +80,7 @@ class NotesListAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return if (viewModel.isGridLayout) {
+        return if (layoutMode == LayoutMode.STAGGERED_GRID_LAYOUT) {
             NoteViewHolderStaggeredGrid(
                 ItemNoteStaggeredLayoutBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -136,6 +137,8 @@ class NotesListAdapter(
 
                 onItemClickToSelectListener(null, itemStateArray)
                 Log.i(TAG, "onBindViewHolder: itemStateArray: $itemStateArray")
+            } else {
+                onItemClickToSelectListener(note, itemStateArray)
             }
         }
     }
@@ -147,7 +150,9 @@ class NotesListAdapter(
     fun resetStateArray() {
         for (index in itemStateArray.size - 1 downTo 0) {
             val position = itemStateArray.keyAt(index)
-            itemStateArray.removeAt(index)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                itemStateArray.removeAt(index)
+            }
             notifyItemChanged(position)
         }
         isSelectedMode = false
@@ -160,10 +165,21 @@ class NotesListAdapter(
             listOfItemToDelete.add(currentList[key])
         }
 
-        deleteSelectedItemsListener(listOfItemToDelete)
+        SelectedItemsActionListener(listOfItemToDelete)
         itemStateArray.clear()
         onItemClickToSelectListener(null, itemStateArray)
+        isSelectedMode = false
+    }
 
+    fun moveSelectedItemsToTrash() {
+        val listOfItemToDelete = mutableListOf<Note>()
+        itemStateArray.forEach { key, _ ->
+            listOfItemToDelete.add(currentList[key])
+        }
+        SelectedItemsActionListener(listOfItemToDelete)
+        itemStateArray.clear()
+        onItemClickToSelectListener(null, itemStateArray)
+        isSelectedMode = false
     }
 
     companion object {

@@ -11,7 +11,7 @@ import com.example.mynotes.databinding.FragmentNewNoteOptionsBottomSheetBinding
 import com.example.mynotes.ui.newnote.NewNoteFragmentDirections
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 
-
+//TODO: Mover a lógica das ações para fora da classe
 class NoteOptionModalBottomSheet(
     backgroundColor: Int?,
     private val viewModel: NotesListViewModel,

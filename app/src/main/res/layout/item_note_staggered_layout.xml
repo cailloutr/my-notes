@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    android:id="@+id/staggered_card_view_container"
+<androidx.cardview.widget.CardView android:id="@+id/staggered_card_view_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/border_margin"
-    app:cardCornerRadius="12dp"
-
-    android:minWidth="@dimen/item_note_cardView_max_width">
+    app:cardCornerRadius="@dimen/card_corner_radius"
+    android:minWidth="@dimen/item_note_cardView_min_width">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:minWidth="197dp"
+        android:minWidth="@dimen/item_note_cardView_min_width"
         android:background="@drawable/card_state_selector"
         android:padding="@dimen/border_margin">
 

@@ -23,6 +23,8 @@ class TrashFragment : Fragment() {
 
     private var _binding: FragmentTrashBinding? = null
     val binding get() = _binding!!
+    private var actionMode: ActionMode? = null
+    private lateinit var adapter: NotesListAdapter
 
     private val viewModel: NotesListViewModel by activityViewModels {
         NotesListViewModelFactory(
@@ -56,7 +58,10 @@ class TrashFragment : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
                     R.id.trash_list_menu_option_clear_trash -> {
-                        showClearTrashConfirmationDialog()
+                        showClearTrashConfirmationDialog(
+                            resources.getString(R.string.trash_list_menu_option_clear_trash),
+                            resources.getString(R.string.clear_trash_dialog_confirm)
+                        ) { viewModel.clearTrash() }
                     }
                     R.id.trash_list_menu_option_restore_all -> {
                         viewModel.restoreAllNotesFromTrash()
@@ -67,21 +72,23 @@ class TrashFragment : Fragment() {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    private fun showClearTrashConfirmationDialog() {
+    private fun showClearTrashConfirmationDialog(title: String, message: String, operacao: () -> Unit) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle(resources.getString(R.string.trash_list_menu_option_clear_trash))
-            .setMessage(resources.getString(
-                R.string.fragment_trash_confirmation_dialog_clear_trash_message)
-            )
-            .setNegativeButton(resources.getString(
-                R.string.clear_trash_dialog_cancel)
+            .setTitle(title)
+            .setMessage(message)
+            .setNegativeButton(
+                resources.getString(
+                    R.string.clear_trash_dialog_cancel
+                )
             ) { _, _ ->
                 // Close Dialog
             }
-            .setPositiveButton(resources.getString(
-                R.string.clear_trash_dialog_confirm)
+            .setPositiveButton(
+                resources.getString(
+                    R.string.clear_trash_dialog_confirm
+                )
             ) { _, _ ->
-                viewModel.clearTrash()
+                operacao()
             }
             .show()
     }
@@ -100,7 +107,7 @@ class TrashFragment : Fragment() {
     }
 
     private fun setupAdapter(): NotesListAdapter {
-        val adapter = NotesListAdapter(viewModel, { note, itemStateArray ->
+        adapter = NotesListAdapter(viewModel.layoutMode, { note, itemStateArray ->
             if (note != null) {
                 viewModel.loadNote(note)
                 viewModel.setFragmentMode(FragmentMode.FRAGMENT_TRASH)
@@ -108,24 +115,63 @@ class TrashFragment : Fragment() {
             } else {
                 when (itemStateArray.size) {
                     1 -> {
-//                        if (actionMode == null) {
-//                            actionMode = startSupportActionMode(callback)
-//                        }
-//                        actionMode?.title = it.size.toString()
+                        if (actionMode == null) {
+                            actionMode = activity?.startActionMode(callback)
+                        }
+                        actionMode?.title = itemStateArray.size.toString()
                     }
                     0 -> {
-//                        actionMode?.finish()
-//                        actionMode = null
+                        actionMode?.finish()
+                        actionMode = null
                     }
                     else -> {
-//                        actionMode?.title = it.size.toString()
+                        actionMode?.title = itemStateArray.size.toString()
                     }
                 }
             }
 
-        }, {})
+        }, { listOfItemToDelete ->
+            viewModel.deleteSelectedNotes(listOfItemToDelete)
+        })
         binding.fragmentTrashRecyclerView.adapter = adapter
         return adapter
+    }
+
+    private val callback = object : ActionMode.Callback {
+
+        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            activity?.menuInflater?.inflate(R.menu.contextual_action_bar, menu)
+            return true
+        }
+
+        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+            return false
+        }
+
+        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+            return when (item?.itemId) {
+                R.id.delete -> {
+                    showClearTrashConfirmationDialog(
+                        title = getString(
+                            R.string.trash_fragment_delete_selected_notes_dialog_title
+                        ),
+                        message = getString(
+                            R.string.trash_fragment_delete_selected_notes_dialog_message
+                        )
+                    ) { adapter.deleteSelectedItems() }
+                    true
+                }
+                R.id.more -> {
+                    //Todo: Restore all selected items
+                    true
+                }
+                else -> false
+            }
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            adapter.resetStateArray()
+        }
     }
 
     override fun onDestroyView() {

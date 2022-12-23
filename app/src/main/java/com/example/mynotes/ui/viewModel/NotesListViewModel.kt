@@ -6,6 +6,7 @@ import com.example.mynotes.database.AppDatabase
 import com.example.mynotes.database.model.Note
 import com.example.mynotes.database.repository.NotesRepository
 import com.example.mynotes.ui.enums.FragmentMode
+import com.example.mynotes.ui.enums.LayoutMode
 import com.example.mynotes.util.DateUtil
 import kotlinx.coroutines.launch
 
@@ -13,6 +14,7 @@ class NotesListViewModel(
     application: MyNotesApplication,
 ) : ViewModel() {
 
+    private val TAG: String = "NoteListViewModel"
     private val repository = NotesRepository(AppDatabase.getDatabase(application))
 
     private val _notesList = getAllNotes()
@@ -28,7 +30,7 @@ class NotesListViewModel(
     private val _note = MutableLiveData<Note?>(null)
     val note: LiveData<Note?> = _note
 
-    var isGridLayout: Boolean = false
+    var layoutMode: LayoutMode = LayoutMode.STAGGERED_GRID_LAYOUT
 
 
     private fun getAllNotes() = repository.getAllSavedNotes()
@@ -118,6 +120,17 @@ class NotesListViewModel(
 
         _note.value?.isTrash = true
         return true
+    }
+
+    fun moveSelectedItemsToTrash(listOfItem: List<Note>) {
+        val list = listOfItem.toMutableList()
+        list.forEach {
+            it.isTrash = true
+        }
+
+        viewModelScope.launch {
+            repository.update(*list.toTypedArray())
+        }
     }
 
     fun retrieveNoteFromTrash() {

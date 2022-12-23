@@ -28,8 +28,8 @@ class NotesRepository(private val appDatabase: AppDatabase) {
         appDatabase.notesDao().insertPosition()
     }
 
-    suspend fun update(note: Note) {
-        appDatabase.notesDao().update(note)
+    suspend fun update(vararg note: Note) {
+        appDatabase.notesDao().update(*note)
     }
 
     suspend fun delete(vararg note: Note) {
