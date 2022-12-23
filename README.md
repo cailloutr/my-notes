@@ -1,6 +1,6 @@
 # MyNotes App (ongoing project)
 
-<img src="screenshots/TelaInicial.png" style="width: 390px; height: 844px; display: flex;"/> <img src="screenshots/TelaInicialListGrid.png" style="width: 390px; height: 844px;"/> <img src="screenshots/NovaNota.png" style="width: 390px; height: 844px;"/> <img src="screenshots/TelaDeLixeira.png" style="width: 390px; height: 844px;"/>
+<img src="screenshots/HomeScreen.png" style="width: 390px; height: 844px; display: flex;"/> <img src="screenshots/EditScreen.png" style="width: 390px; height: 844px;"/> <img src="screenshots/ColorSheet.png" style="width: 390px; height: 844px;"/> <img src="screenshots/SelectItems.png" style="width: 390px; height: 844px;"/>
 
 
 
@@ -11,4 +11,4 @@ Funcionalidades:
 - Restaurar, todos ou individualmente, os itens da lixeira
 - Apagar definitivamente, todos ou individualmente, os itens da lixeira
 - As notas são salvas localmente no dispositivos usando o Room
-- Reordenar as notas na listagem segurando um item e arrastando
+- Segurar uma nota para selecionar uma ou mais notas e executar ações como deletar ou restaurar
