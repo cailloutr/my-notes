@@ -42,4 +42,5 @@
     <string name="more">More</string>
     <string name="trash_fragment_delete_selected_notes_dialog_title">Delete selected notes</string>
     <string name="trash_fragment_delete_selected_notes_dialog_message">Are you sure you want proceed?</string>
+    <string name="note_list_fragment_move_to_trash_snackbar">Moved to trash</string>
 </resources>

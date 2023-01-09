@@ -60,7 +60,9 @@ class TrashFragment : Fragment() {
                     R.id.trash_list_menu_option_clear_trash -> {
                         showClearTrashConfirmationDialog(
                             resources.getString(R.string.trash_list_menu_option_clear_trash),
-                            resources.getString(R.string.clear_trash_dialog_confirm)
+                            resources.getString(
+                                R.string.fragment_trash_confirmation_dialog_clear_trash_message
+                            )
                         ) { viewModel.clearTrash() }
                     }
                     R.id.trash_list_menu_option_restore_all -> {

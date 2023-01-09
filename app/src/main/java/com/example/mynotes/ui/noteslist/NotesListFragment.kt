@@ -27,12 +27,11 @@ import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
 import com.example.mynotes.util.ToastUtil
 import com.google.android.material.snackbar.Snackbar
 
+// TODO: Coordinator layout
 // TODO: Image notes - Take a photo or choose from the gallery
-// TODO: color options for each note
 // TODO: Other easy options like add checkBoxes for each note as a shopping list
 // TODO: Add markers like topics
 // TODO: Share option
-// TODO: Hold action
 // TODO: Archive item on swipe
 // TODO: Implement design improvements
 // TODO: fix undo action behavior and Snackbar
@@ -60,7 +59,8 @@ class NotesListFragment : Fragment() {
 
         sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) as SharedPreferences
 
-        viewModel.layoutMode.value = sharedPref.getBoolean(getString(R.string.pref_key_layout_manager), false)
+        viewModel.layoutMode.value =
+            sharedPref.getBoolean(getString(R.string.pref_key_layout_manager), false)
 
         hasDeletedANote = args
     }
@@ -150,7 +150,10 @@ class NotesListFragment : Fragment() {
 
     private fun saveOptionInSharedPreferences() {
         with(sharedPref.edit()) {
-            this?.putBoolean(getString(R.string.pref_key_layout_manager), viewModel.layoutMode.value)
+            this?.putBoolean(
+                getString(R.string.pref_key_layout_manager),
+                viewModel.layoutMode.value
+            )
             this?.apply()
         }
     }
@@ -179,7 +182,8 @@ class NotesListFragment : Fragment() {
             Snackbar.make(
                 view.findViewById(R.id.fragment_notes_button_add_note),
                 getString(R.string.note_list_snack_bar_message_moved_to_trash),
-                Snackbar.LENGTH_LONG)
+                Snackbar.LENGTH_LONG
+            )
                 .setAction(getString(R.string.note_list_snack_bar_message_undo)) {
                     undoDeleteNote()
                 }
@@ -275,6 +279,11 @@ class NotesListFragment : Fragment() {
             }
         }, { listOfItemToDelete ->
             viewModel.moveSelectedItemsToTrash(listOfItemToDelete)
+            Snackbar.make(
+                binding.fragmentNotesCardviewButtonAddNote,
+                getString(R.string.note_list_fragment_move_to_trash_snackbar),
+                Snackbar.LENGTH_SHORT
+            ).show()
         })
         binding.fragmentNotesRecyclerView.adapter = adapter
 

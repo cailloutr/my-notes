@@ -19,7 +19,7 @@
         app:layout_constraintVertical_bias="1.0"
         app:spanCount="2"
         tools:itemCount="20"
-        tools:listitem="@layout/item_note_staggered_layout" />
+        tools:listitem="@layout/item_note_staggered_layout"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/fragment_notes_text_input_insert_card"
