@@ -1,6 +1,7 @@
 package com.example.mynotes.ui.newnote
 
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -11,6 +12,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.R
 import com.example.mynotes.databinding.ColorsOptionsBottomSheetBinding
@@ -43,6 +46,13 @@ class NewNoteFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fragmentMode = args.fragmentMode
+
+        val animation = TransitionInflater.from(requireContext())
+            .inflateTransition(android.R.transition.move)
+        animation.duration = 200L
+
+        sharedElementEnterTransition = animation
+        sharedElementReturnTransition = animation
     }
 
     override fun onCreateView(
@@ -51,12 +61,15 @@ class NewNoteFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentNewNoteBinding.inflate(inflater, container, false)
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
         return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setAppBarTitle()
+
+        setupAppBar()
         setupMenu()
 
 //        if (fragmentMode == FragmentMode.FRAGMENT_NEW) {
@@ -115,8 +128,11 @@ class NewNoteFragment : Fragment() {
         }
     }
 
-    private fun setAppBarTitle() {
-//        val fragmentMode = args.fragmentMode
+    private fun setupAppBar() {
+        val navController = findNavController()
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        binding.toolbar.setupWithNavController(navController, appBarConfiguration)
+
         if (fragmentMode == FragmentMode.FRAGMENT_EDIT) {
             activity?.title = getString(R.string.app_bar_title_edit_note)
         }

@@ -13,6 +13,7 @@ import androidx.core.util.contains
 import androidx.core.util.forEach
 import androidx.core.util.remove
 import androidx.core.util.size
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -24,8 +25,8 @@ import com.example.mynotes.ui.enums.LayoutMode
 
 class NotesListAdapter(
     private val layoutMode: LayoutMode,
-    private val onItemClickToSelectListener: (Note?, SparseBooleanArray) -> Unit,
-    private val SelectedItemsActionListener: (List<Note>) -> Unit
+    private val onItemClickToSelectListener: (Note?, SparseBooleanArray, View?, View?, View?) -> Unit,
+    private val SelectedItemsActionListener: (List<Note>) -> Unit,
 ) : ListAdapter<Note, NotesListAdapter.ViewHolder>(DiffCallback) {
 
     private val TAG: String = "NoteListAdapter"
@@ -35,8 +36,21 @@ class NotesListAdapter(
     open class ViewHolder(
         view: View
     ) : RecyclerView.ViewHolder(view) {
+        val title: View = view.findViewById(R.id.item_note_title)
+        val description: View = view.findViewById(R.id.item_note_description)
+        val container: View = view.rootView
 
-        open fun bind(note: Note, isSelected: Boolean) {}
+        open fun bind(note: Note, isSelected: Boolean) {
+            ViewCompat.setTransitionName(
+                title, note.id.toString() + note.title
+            )
+            ViewCompat.setTransitionName(
+                description, note.id.toString() + note.description
+            )
+            ViewCompat.setTransitionName(
+                container, note.id.toString() + "_container"
+            )
+        }
 
         fun setBackgroundColor(note: Note, context: Context) {
             if (note.color != null) {
@@ -55,6 +69,7 @@ class NotesListAdapter(
         ) : ViewHolder(binding.root) {
 
         override fun bind(note: Note, isSelected: Boolean) {
+            super.bind(note, isSelected)
             binding.itemNoteTitle.text = note.title
             binding.itemNoteDescription.text = note.description
             binding.itemNoteModifiedDate.text = note.modifiedDate
@@ -70,6 +85,7 @@ class NotesListAdapter(
     ) : ViewHolder(binding.root) {
 
         override fun bind(note: Note, isSelected: Boolean) {
+            super.bind(note, isSelected)
             binding.itemNoteTitle.text = note.title
             binding.itemNoteDescription.text = note.description
             binding.itemNoteModifiedDate.text = note.modifiedDate
@@ -114,7 +130,7 @@ class NotesListAdapter(
                 }
                 changeViewState(it)
 
-                onItemClickToSelectListener(null, itemStateArray)
+                onItemClickToSelectListener(null, itemStateArray, null, null, null)
             }
 
             isSelectedMode = true
@@ -135,10 +151,16 @@ class NotesListAdapter(
                     isSelectedMode = false
                 }
 
-                onItemClickToSelectListener(null, itemStateArray)
+                onItemClickToSelectListener(null, itemStateArray, null, null, null)
                 Log.i(TAG, "onBindViewHolder: itemStateArray: $itemStateArray")
             } else {
-                onItemClickToSelectListener(note, itemStateArray)
+                onItemClickToSelectListener(
+                    note,
+                    itemStateArray,
+                    holder.title,
+                    holder.description,
+                    holder.container
+                )
             }
         }
     }
@@ -156,7 +178,7 @@ class NotesListAdapter(
             notifyItemChanged(position)
         }
         isSelectedMode = false
-        onItemClickToSelectListener(null, itemStateArray)
+        onItemClickToSelectListener(null, itemStateArray, null, null, null)
     }
 
     fun deleteSelectedItems(){
@@ -167,7 +189,7 @@ class NotesListAdapter(
 
         SelectedItemsActionListener(listOfItemToDelete)
         itemStateArray.clear()
-        onItemClickToSelectListener(null, itemStateArray)
+        onItemClickToSelectListener(null, itemStateArray, null, null, null)
         isSelectedMode = false
     }
 
@@ -178,7 +200,7 @@ class NotesListAdapter(
         }
         SelectedItemsActionListener(listOfItemToDelete)
         itemStateArray.clear()
-        onItemClickToSelectListener(null, itemStateArray)
+        onItemClickToSelectListener(null, itemStateArray, null, null, null)
         isSelectedMode = false
     }
 

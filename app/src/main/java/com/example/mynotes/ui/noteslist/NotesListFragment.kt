@@ -10,11 +10,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.util.size
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.mynotes.MyNotesApplication
@@ -86,11 +90,19 @@ class NotesListFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentNotesListBinding.inflate(inflater, container, false)
+
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val navController = findNavController()
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        binding.toolbar.setupWithNavController(navController, appBarConfiguration)
+
+        postponeEnterTransition()
 
         setupMenu()
         setupSnackBarUndoAction(view)
@@ -176,6 +188,30 @@ class NotesListFragment : Fragment() {
         )
     }
 
+    private fun navigateToNewNotesFragment(fragmentMode: FragmentMode) {
+        val action =
+            NotesListFragmentDirections.actionNotesListFragmentToNewNoteFragment(fragmentMode)
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToNewNotesFragmentExtras(
+        fragmentMode: FragmentMode,
+        extrasArray: ArrayList<View>
+    ) {
+        val navigatorExtras = FragmentNavigatorExtras(
+            extrasArray[0] to "fragment_new_note_title",
+            extrasArray[1] to "fragment_new_note_description",
+            extrasArray[2] to "fragment_new_note_container"
+        )
+
+        val action =
+            NotesListFragmentDirections.actionNotesListFragmentToNewNoteFragment(fragmentMode)
+        findNavController().navigate(
+            action,
+            navigatorExtras
+        )
+    }
+
     private fun setupSnackBarUndoAction(view: View) {
 //        val hasDeletedANote = args.hasDeletedANote
         if (hasDeletedANote.hasDeletedANote) {
@@ -200,6 +236,12 @@ class NotesListFragment : Fragment() {
         val adapter = setupAdapter()
         viewModel.notesList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
+
+            // Start the transition once all views have been
+            // measured and laid out
+            (view?.parent as? ViewGroup)?.doOnPreDraw {
+                startPostponedEnterTransition()
+            }
         }
     }
 
@@ -213,12 +255,6 @@ class NotesListFragment : Fragment() {
                 navigateToNewNotesFragment(fragmentMode)
             }
         }
-    }
-
-    private fun navigateToNewNotesFragment(fragmentMode: FragmentMode) {
-        val action =
-            NotesListFragmentDirections.actionNotesListFragmentToNewNoteFragment(fragmentMode)
-        findNavController().navigate(action)
     }
 
     /**
@@ -255,36 +291,52 @@ class NotesListFragment : Fragment() {
     }
 
     private fun setupAdapter(): NotesListAdapter {
-        adapter = NotesListAdapter(viewModel.layoutMode, { note, itemStateArray ->
-            if (note != null) {
-                viewModel.loadNote(note)
-                viewModel.setFragmentMode(FragmentMode.FRAGMENT_EDIT)
-                viewModel.fragmentMode.value?.let { navigateToNewNotesFragment(it) }
-            } else {
-                when (itemStateArray.size) {
-                    1 -> {
-                        if (actionMode == null) {
-                            actionMode = activity?.startActionMode(callback)
+        adapter = NotesListAdapter(
+            viewModel.layoutMode,
+            { note, itemStateArray, title, description, container ->
+                if (note != null) {
+                    viewModel.loadNote(note)
+                    viewModel.setFragmentMode(FragmentMode.FRAGMENT_EDIT)
+
+                    val extras = arrayListOf<View>()
+                    if (title != null) {
+                        extras.add(title)
+                    }
+                    if (description != null) {
+                        extras.add(description)
+                    }
+                    if (container != null) {
+                        extras.add(container)
+                    }
+                    viewModel.fragmentMode.value?.let {
+                        navigateToNewNotesFragmentExtras(it, extras)
+                    }
+                } else {
+                    when (itemStateArray.size) {
+                        1 -> {
+                            if (actionMode == null) {
+                                actionMode = activity?.startActionMode(callback)
+                            }
+                            actionMode?.title = itemStateArray.size.toString()
                         }
-                        actionMode?.title = itemStateArray.size.toString()
-                    }
-                    0 -> {
-                        actionMode?.finish()
-                        actionMode = null
-                    }
-                    else -> {
-                        actionMode?.title = itemStateArray.size.toString()
+                        0 -> {
+                            actionMode?.finish()
+                            actionMode = null
+                        }
+                        else -> {
+                            actionMode?.title = itemStateArray.size.toString()
+                        }
                     }
                 }
-            }
-        }, { listOfItemToDelete ->
-            viewModel.moveSelectedItemsToTrash(listOfItemToDelete)
-            Snackbar.make(
-                binding.fragmentNotesCardviewButtonAddNote,
-                getString(R.string.note_list_fragment_move_to_trash_snackbar),
-                Snackbar.LENGTH_SHORT
-            ).show()
-        })
+            },
+            { listOfItemToDelete ->
+                viewModel.moveSelectedItemsToTrash(listOfItemToDelete)
+                Snackbar.make(
+                    binding.fragmentNotesCardviewButtonAddNote,
+                    getString(R.string.note_list_fragment_move_to_trash_snackbar),
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            })
         binding.fragmentNotesRecyclerView.adapter = adapter
 
         return adapter

@@ -1,98 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:transitionName="fragment_new_note_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     tools:context=".ui.newnote.NewNoteFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.newnote.NewNoteFragment">
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
+    </androidx.appcompat.widget.Toolbar>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fragment_new_note_textInput_title"
-            style="@style/Widget.MyNotes.TextInputLayout.OutlinedBox.BorderlessEditText"
-            android:layout_width="@dimen/match_constrain"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/border_margin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fragment_new_note_textInput_title"
+        style="@style/Widget.MyNotes.TextInputLayout.OutlinedBox.BorderlessEditText"
+        android:layout_width="@dimen/match_constrain"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/border_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fragment_new_note_textInput_edittext_title"
-                style="@style/Widget.MyNotes.TextInputEditText.OutlinedBox.BorderlessEditText.Title"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/fragment_new_note_edittext_hint_title" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/fragment_new_note_textInput_edittext_title"
+            style="@style/Widget.MyNotes.TextInputEditText.OutlinedBox.BorderlessEditText.Title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/fragment_new_note_edittext_hint_title"
+            android:transitionName="fragment_new_note_title" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/fragment_new_note_textInput_description"
-            style="@style/Widget.MyNotes.TextInputLayout.OutlinedBox.BorderlessEditText"
-            android:layout_width="@dimen/match_constrain"
-            android:layout_height="@dimen/match_constrain"
-            android:layout_marginTop="@dimen/border_margin"
-            android:layout_marginBottom="@dimen/border_margin"
-            app:layout_constraintBottom_toTopOf="@id/fragment_new_note_options_menu"
-            app:layout_constraintEnd_toEndOf="@id/fragment_new_note_textInput_title"
-            app:layout_constraintStart_toStartOf="@id/fragment_new_note_textInput_title"
-            app:layout_constraintTop_toBottomOf="@id/fragment_new_note_textInput_title">
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/fragment_new_note_textInput_description"
+        style="@style/Widget.MyNotes.TextInputLayout.OutlinedBox.BorderlessEditText"
+        android:layout_width="@dimen/match_constrain"
+        android:layout_height="@dimen/match_constrain"
+        android:layout_marginTop="@dimen/border_margin"
+        android:layout_marginBottom="@dimen/border_margin"
+        app:layout_constraintBottom_toTopOf="@id/fragment_new_note_options_menu"
+        app:layout_constraintEnd_toEndOf="@id/fragment_new_note_textInput_title"
+        app:layout_constraintStart_toStartOf="@id/fragment_new_note_textInput_title"
+        app:layout_constraintTop_toBottomOf="@id/fragment_new_note_textInput_title">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/fragment_new_note_textInput_edittext_description"
-                style="@style/Widget.MyNotes.TextInputEditText.OutlinedBox.BorderlessEditText.Description"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="top"
-                android:hint="@string/fragment_new_note_edittext_hint_description"
-                android:inputType="textMultiLine" />
-        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/fragment_new_note_textInput_edittext_description"
+            style="@style/Widget.MyNotes.TextInputEditText.OutlinedBox.BorderlessEditText.Description"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top"
+            android:hint="@string/fragment_new_note_edittext_hint_description"
+            android:inputType="textMultiLine"
+            android:transitionName="fragment_new_note_description" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/fragment_new_note_date"
-            style="@style/Widget.MyNotes.TextView.Date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/border_margin"
-            app:layout_constraintBottom_toBottomOf="@id/fragment_new_note_options_menu"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/fragment_new_note_options_menu"
-            tools:text="Edited: 08/12/2022" />
+    <TextView
+        android:id="@+id/fragment_new_note_date"
+        style="@style/Widget.MyNotes.TextView.Date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/border_margin"
+        app:layout_constraintBottom_toBottomOf="@id/fragment_new_note_options_menu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/fragment_new_note_options_menu"
+        tools:text="Edited: 08/12/2022" />
 
-        <ImageButton
-            android:id="@+id/fragment_new_note_options_colors"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/border_margin"
-            android:backgroundTint="@android:color/transparent"
-            android:clickable="true"
-            android:contentDescription="@string/fragment_new_note_option_colors"
-            android:focusable="true"
-            android:padding="4dp"
-            android:src="@drawable/ic_colors"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+    <ImageButton
+        android:id="@+id/fragment_new_note_options_colors"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/border_margin"
+        android:backgroundTint="@android:color/transparent"
+        android:clickable="true"
+        android:contentDescription="@string/fragment_new_note_option_colors"
+        android:focusable="true"
+        android:padding="4dp"
+        android:src="@drawable/ic_colors"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <ImageButton
-            android:id="@+id/fragment_new_note_options_menu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/border_margin"
-            android:backgroundTint="@android:color/transparent"
-            android:clickable="true"
-            android:contentDescription="@string/fragment_new_note_option_menu"
-            android:focusable="true"
-            android:padding="4dp"
-            android:src="@drawable/ic_more"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+    <ImageButton
+        android:id="@+id/fragment_new_note_options_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/border_margin"
+        android:backgroundTint="@android:color/transparent"
+        android:clickable="true"
+        android:contentDescription="@string/fragment_new_note_option_menu"
+        android:focusable="true"
+        android:padding="4dp"
+        android:src="@drawable/ic_more"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
