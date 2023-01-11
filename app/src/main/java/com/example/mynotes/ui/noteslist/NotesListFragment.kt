@@ -2,7 +2,6 @@ package com.example.mynotes.ui.noteslist
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +27,7 @@ import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.enums.LayoutMode
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
+import com.example.mynotes.util.AppBarColorUtil.Companion.resetSystemBarColor
 import com.example.mynotes.util.ToastUtil
 import com.google.android.material.snackbar.Snackbar
 
@@ -69,21 +69,6 @@ class NotesListFragment : Fragment() {
         hasDeletedANote = args
     }
 
-    override fun onResume() {
-        super.onResume()
-        resetSystemBarColor()
-    }
-
-    private fun resetSystemBarColor() {
-        with(activity as AppCompatActivity) {
-            this.supportActionBar?.setBackgroundDrawable(
-                ColorDrawable(ContextCompat.getColor(requireContext(), R.color.white))
-            )
-            this.window.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
-            this.window.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.white)
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -98,10 +83,7 @@ class NotesListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val navController = findNavController()
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-        binding.toolbar.setupWithNavController(navController, appBarConfiguration)
-
+        setuptAppBar()
         postponeEnterTransition()
 
         setupMenu()
@@ -109,6 +91,17 @@ class NotesListFragment : Fragment() {
         chooseLayout()
         setupAddNoteButton()
         setupEditTextExpandViewButton()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        resetSystemBarColor(activity as AppCompatActivity)
+    }
+
+    private fun setuptAppBar() {
+        val navController = findNavController()
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        binding.toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 
     private fun chooseLayout() {

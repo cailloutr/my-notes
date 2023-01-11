@@ -1,7 +1,6 @@
 package com.example.mynotes.ui.newnote
 
 import android.os.Bundle
-import android.transition.TransitionInflater
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -24,7 +23,8 @@ import com.example.mynotes.ui.bottomsheet.colors.ColorsOptionBottomSheet
 import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
-import com.example.mynotes.util.AppBarColor
+import com.example.mynotes.util.AppBarColorUtil
+import com.example.mynotes.util.NoteItemAnimationUtil
 import com.example.mynotes.util.ToastUtil
 
 
@@ -47,10 +47,11 @@ class NewNoteFragment : Fragment() {
         super.onCreate(savedInstanceState)
         fragmentMode = args.fragmentMode
 
-        val animation = TransitionInflater.from(requireContext())
-            .inflateTransition(android.R.transition.move)
-        animation.duration = 200L
+        setInOutAnimation()
+    }
 
+    private fun setInOutAnimation() {
+        val animation = NoteItemAnimationUtil.setAnimation(requireContext())
         sharedElementEnterTransition = animation
         sharedElementReturnTransition = animation
     }
@@ -121,7 +122,7 @@ class NewNoteFragment : Fragment() {
     private fun setThemeColors(color: Int?) {
         val colorId = color ?: ContextCompat.getColor(requireContext(), R.color.white)
         binding.root.setBackgroundColor(colorId)
-        AppBarColor.changeAppBarColor(activity as AppCompatActivity, colorId)
+        AppBarColorUtil.changeAppBarColor(activity as AppCompatActivity, colorId)
         (activity as AppCompatActivity).apply {
             window.statusBarColor = colorId
             window.navigationBarColor = colorId
