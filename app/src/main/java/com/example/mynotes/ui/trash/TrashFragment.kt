@@ -22,6 +22,7 @@ import com.example.mynotes.ui.noteslist.NotesListAdapter
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
 import com.example.mynotes.util.AppBarColorUtil
+import com.example.mynotes.util.WindowUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 
@@ -50,6 +51,7 @@ class TrashFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        WindowUtil.resetWindow(requireActivity() as AppCompatActivity)
 
         postponeEnterTransition()
         setuptAppBar()
@@ -130,12 +132,6 @@ class TrashFragment : Fragment() {
                 startPostponedEnterTransition()
             }
         }
-    }
-
-    private fun navigateToNewNotesFragment(fragmentMode: FragmentMode) {
-        val action =
-            TrashFragmentDirections.actionTrashFragmentToNewNoteFragment(fragmentMode)
-        findNavController().navigate(action)
     }
 
     private fun navigateToNewNotesFragmentExtras(

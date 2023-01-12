@@ -26,6 +26,7 @@ import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
 import com.example.mynotes.util.AppBarColorUtil
 import com.example.mynotes.util.NoteItemAnimationUtil
 import com.example.mynotes.util.ToastUtil
+import com.example.mynotes.util.WindowUtil
 
 
 class NewNoteFragment : Fragment() {
@@ -69,7 +70,7 @@ class NewNoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        WindowUtil.setNoLimitsWindow(requireActivity() as AppCompatActivity)
         setupAppBar()
         setupMenu()
 
@@ -123,10 +124,10 @@ class NewNoteFragment : Fragment() {
         val colorId = color ?: ContextCompat.getColor(requireContext(), R.color.white)
         binding.root.setBackgroundColor(colorId)
         AppBarColorUtil.changeAppBarColor(activity as AppCompatActivity, colorId)
-        (activity as AppCompatActivity).apply {
-            window.statusBarColor = colorId
-            window.navigationBarColor = colorId
-        }
+//        (activity as AppCompatActivity).apply {
+//            window.statusBarColor = colorId
+//            window.navigationBarColor = colorId
+//        }
     }
 
     private fun setupAppBar() {
@@ -209,6 +210,14 @@ class NewNoteFragment : Fragment() {
         )
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+//        requireActivity().window.apply {
+//            clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+//            addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
+//        }
+    }
 
     companion object {
         const val TAG = "NewNoteFragment"

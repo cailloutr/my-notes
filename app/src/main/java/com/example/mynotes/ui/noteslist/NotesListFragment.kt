@@ -29,6 +29,7 @@ import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
 import com.example.mynotes.util.AppBarColorUtil.Companion.resetSystemBarColor
 import com.example.mynotes.util.ToastUtil
+import com.example.mynotes.util.WindowUtil
 import com.google.android.material.snackbar.Snackbar
 
 // TODO: Coordinator layout
@@ -82,6 +83,7 @@ class NotesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        WindowUtil.resetWindow(requireActivity() as AppCompatActivity)
 
         setuptAppBar()
         postponeEnterTransition()

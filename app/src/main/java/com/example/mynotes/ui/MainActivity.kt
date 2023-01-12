@@ -3,7 +3,6 @@ package com.example.mynotes.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
-import androidx.navigation.ui.AppBarConfiguration
 import com.example.mynotes.databinding.ActivityMainBinding
 import com.example.mynotes.ui.newnote.NewNoteFragmentDirections
 
@@ -25,6 +24,8 @@ class MainActivity : AppCompatActivity() {
 //        navController = navHostFragment.navController
 //        appBarConfiguration = AppBarConfiguration(navController.graph)
 //        binding.toolbar.setupWithNavController(navController, appBarConfiguration)
+
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
