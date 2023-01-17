@@ -52,9 +52,14 @@ class NewNoteFragment : Fragment() {
     }
 
     private fun setInOutAnimation() {
-        val animation = NoteItemAnimationUtil.setAnimation(requireContext())
-        sharedElementEnterTransition = animation
-        sharedElementReturnTransition = animation
+        if (fragmentMode == FragmentMode.FRAGMENT_EDIT || fragmentMode == FragmentMode.FRAGMENT_TRASH) {
+            val animation = NoteItemAnimationUtil.setMoveTransitionAnimation(requireContext())
+            sharedElementEnterTransition = animation
+            sharedElementReturnTransition = animation
+        } else {
+            enterTransition = NoteItemAnimationUtil.setSlideBottomTopTransition(requireContext())
+            exitTransition = NoteItemAnimationUtil.setSlideFromTopBottomTransition(requireContext())
+        }
     }
 
     override fun onCreateView(
@@ -63,15 +68,13 @@ class NewNoteFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentNewNoteBinding.inflate(inflater, container, false)
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        setupAppBar()
         return binding.root
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         WindowUtil.setNoLimitsWindow(requireActivity() as AppCompatActivity)
-        setupAppBar()
         setupMenu()
 
 //        if (fragmentMode == FragmentMode.FRAGMENT_NEW) {
@@ -124,13 +127,14 @@ class NewNoteFragment : Fragment() {
         val colorId = color ?: ContextCompat.getColor(requireContext(), R.color.white)
         binding.root.setBackgroundColor(colorId)
         AppBarColorUtil.changeAppBarColor(activity as AppCompatActivity, colorId)
-//        (activity as AppCompatActivity).apply {
-//            window.statusBarColor = colorId
-//            window.navigationBarColor = colorId
-//        }
+        /*  (activity as AppCompatActivity).apply {
+            window.statusBarColor = colorId
+            window.navigationBarColor = colorId
+        }*/
     }
 
     private fun setupAppBar() {
+        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
         val navController = findNavController()
         val appBarConfiguration = AppBarConfiguration(navController.graph)
         binding.toolbar.setupWithNavController(navController, appBarConfiguration)
@@ -201,7 +205,8 @@ class NewNoteFragment : Fragment() {
             viewModel.clearNote()
         }
 
-        navigateToNoteListFragment()
+//        navigateToNoteListFragment()
+        findNavController().navigateUp()
     }
 
     private fun navigateToNoteListFragment() {
@@ -213,10 +218,6 @@ class NewNoteFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-//        requireActivity().window.apply {
-//            clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-//            addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN)
-//        }
     }
 
     companion object {

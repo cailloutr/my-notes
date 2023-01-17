@@ -76,8 +76,8 @@ class NotesListFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentNotesListBinding.inflate(inflater, container, false)
-
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        setupAppBar()
         return binding.root
     }
 
@@ -85,9 +85,7 @@ class NotesListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         WindowUtil.resetWindow(requireActivity() as AppCompatActivity)
 
-        setuptAppBar()
         postponeEnterTransition()
-
         setupMenu()
         setupSnackBarUndoAction(view)
         chooseLayout()
@@ -100,7 +98,7 @@ class NotesListFragment : Fragment() {
         resetSystemBarColor(activity as AppCompatActivity)
     }
 
-    private fun setuptAppBar() {
+    private fun setupAppBar() {
         val navController = findNavController()
         val appBarConfiguration = AppBarConfiguration(navController.graph)
         binding.toolbar.setupWithNavController(navController, appBarConfiguration)
@@ -206,6 +204,8 @@ class NotesListFragment : Fragment() {
             navigatorExtras
         )
     }
+
+
 
     private fun setupSnackBarUndoAction(view: View) {
 //        val hasDeletedANote = args.hasDeletedANote

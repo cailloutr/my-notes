@@ -190,7 +190,6 @@ class TrashFragment : Fragment() {
                         }
                     }
                 }
-
             },
             { listOfItemToDelete ->
                 viewModel.deleteSelectedNotes(listOfItemToDelete)
