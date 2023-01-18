@@ -202,7 +202,7 @@ class NewNoteFragment : Fragment() {
         } else {
             viewModel.updateViewModelNote(title.toString(), description.toString())
             viewModel.saveNote()
-            viewModel.clearNote()
+//            viewModel.clearNote()
         }
 
 //        navigateToNoteListFragment()
