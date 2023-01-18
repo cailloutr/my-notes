@@ -26,7 +26,7 @@ import com.example.mynotes.ui.enums.LayoutMode
 class NotesListAdapter(
     private val layoutMode: LayoutMode,
     private val onItemClickToSelectListener: (Note?, SparseBooleanArray, View?, View?, View?) -> Unit,
-    private val SelectedItemsActionListener: (List<Note>) -> Unit,
+    private val SelectedItemsActionListener: (List<Note>, Int?) -> Unit,
 ) : ListAdapter<Note, NotesListAdapter.ViewHolder>(DiffCallback) {
 
     private val TAG: String = "NoteListAdapter"
@@ -181,24 +181,13 @@ class NotesListAdapter(
         onItemClickToSelectListener(null, itemStateArray, null, null, null)
     }
 
-    fun deleteSelectedItems(){
-        val listOfItemToDelete = mutableListOf<Note>()
+    fun returnSelectedItems(id: Int?){
+        val listOfItem = mutableListOf<Note>()
         itemStateArray.forEach { key, _ ->
-            listOfItemToDelete.add(currentList[key])
+            listOfItem.add(currentList[key])
         }
 
-        SelectedItemsActionListener(listOfItemToDelete)
-        itemStateArray.clear()
-        onItemClickToSelectListener(null, itemStateArray, null, null, null)
-        isSelectedMode = false
-    }
-
-    fun moveSelectedItemsToTrash() {
-        val listOfItemToDelete = mutableListOf<Note>()
-        itemStateArray.forEach { key, _ ->
-            listOfItemToDelete.add(currentList[key])
-        }
-        SelectedItemsActionListener(listOfItemToDelete)
+        SelectedItemsActionListener(listOfItem, id)
         itemStateArray.clear()
         onItemClickToSelectListener(null, itemStateArray, null, null, null)
         isSelectedMode = false

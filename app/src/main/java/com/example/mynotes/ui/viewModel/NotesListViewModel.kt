@@ -137,6 +137,15 @@ class NotesListViewModel(
         _note.value?.isTrash = false
     }
 
+    fun restoreSelectedNotes(listOfSelectedItems: List<Note>) {
+        for (note in listOfSelectedItems) {
+            note.isTrash = false
+        }
+        viewModelScope.launch {
+            repository.update(*listOfSelectedItems.toTypedArray())
+        }
+    }
+
     fun updateViewModelNote(title: String = "", description: String) {
 //        if (_note.value?.id == null) {
 //            createEmptyNote()

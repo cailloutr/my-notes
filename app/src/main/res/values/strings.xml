@@ -43,4 +43,21 @@
     <string name="trash_fragment_delete_selected_notes_dialog_title">Delete selected notes</string>
     <string name="trash_fragment_delete_selected_notes_dialog_message">Are you sure you want proceed?</string>
     <string name="note_list_fragment_move_to_trash_snackbar">Moved to trash</string>
+    <string name="empty_trash_image_content_description">Trash is empty</string>
+    <string name="empty_trash_label">Trash is Empty</string>
+    <string name="content_description_restore_all">Restore all selected items</string>
+    <string name="trash_fragment_restore_selected_notes_dialog_title">Restore selected items</string>
+    <string name="trash_fragment_restore_selected_notes_dialog_message">Restore all selected items?</string>
+    <string name="snackbar_message_trash_cleaned">Trash cleaned</string>
+    <string name="snackbar_message_restore_all">All items restored</string>
+
+    <plurals name="snackbar_message_notes_restored">
+        <item quantity="one">Note restored</item>
+        <item quantity="other">Notes restored</item>
+    </plurals>
+
+    <plurals name="snackbar_message_notes_deleted">
+        <item quantity="one">Note deleted</item>
+        <item quantity="other">Notes deleted</item>
+    </plurals>
 </resources>

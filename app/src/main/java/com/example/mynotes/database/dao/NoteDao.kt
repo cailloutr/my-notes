@@ -47,6 +47,7 @@ interface NoteDao {
 
 
 */
+
     @Query("UPDATE Note SET position = (id)")
     suspend fun insertPosition()
 

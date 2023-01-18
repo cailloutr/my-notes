@@ -207,11 +207,12 @@ class NotesListFragment : Fragment() {
 
 
 
+    //TODO: fix undo action
     private fun setupSnackBarUndoAction(view: View) {
 //        val hasDeletedANote = args.hasDeletedANote
         if (hasDeletedANote.hasDeletedANote) {
             Snackbar.make(
-                view.findViewById(R.id.fragment_notes_button_add_note),
+                binding.fragmentNotesCardviewButtonAddNote,
                 getString(R.string.note_list_snack_bar_message_moved_to_trash),
                 Snackbar.LENGTH_LONG
             )
@@ -324,8 +325,8 @@ class NotesListFragment : Fragment() {
                     }
                 }
             },
-            { listOfItemToDelete ->
-                viewModel.moveSelectedItemsToTrash(listOfItemToDelete)
+            { listOfItems, _ ->
+                viewModel.moveSelectedItemsToTrash(listOfItems)
                 Snackbar.make(
                     binding.fragmentNotesCardviewButtonAddNote,
                     getString(R.string.note_list_fragment_move_to_trash_snackbar),
@@ -340,7 +341,7 @@ class NotesListFragment : Fragment() {
     private val callback = object : ActionMode.Callback {
 
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-            activity?.menuInflater?.inflate(R.menu.contextual_action_bar, menu)
+            activity?.menuInflater?.inflate(R.menu.notes_list_fragment_contextual_action_bar, menu)
             return true
         }
 
@@ -351,11 +352,7 @@ class NotesListFragment : Fragment() {
         override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
             return when (item?.itemId) {
                 R.id.delete -> {
-                    adapter.moveSelectedItemsToTrash()
-                    true
-                }
-                R.id.more -> {
-                    // Handle more item (inside overflow menu) press
+                    adapter.returnSelectedItems(null)
                     true
                 }
                 else -> false

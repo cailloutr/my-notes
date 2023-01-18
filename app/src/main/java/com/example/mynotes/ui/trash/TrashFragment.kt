@@ -16,6 +16,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.R
+import com.example.mynotes.database.model.Note
 import com.example.mynotes.databinding.FragmentTrashBinding
 import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.noteslist.NotesListAdapter
@@ -24,6 +25,7 @@ import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
 import com.example.mynotes.util.AppBarColorUtil
 import com.example.mynotes.util.WindowUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 
 
 class TrashFragment : Fragment() {
@@ -80,15 +82,17 @@ class TrashFragment : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 when (menuItem.itemId) {
                     R.id.trash_list_menu_option_clear_trash -> {
-                        showClearTrashConfirmationDialog(
+                        showConfirmationDialog(
                             resources.getString(R.string.trash_list_menu_option_clear_trash),
                             resources.getString(
                                 R.string.fragment_trash_confirmation_dialog_clear_trash_message
                             )
                         ) { viewModel.clearTrash() }
+                        showSnackBar(getString(R.string.snackbar_message_trash_cleaned))
                     }
                     R.id.trash_list_menu_option_restore_all -> {
                         viewModel.restoreAllNotesFromTrash()
+                        showSnackBar(getString(R.string.snackbar_message_restore_all))
                     }
                 }
                 return true
@@ -96,10 +100,10 @@ class TrashFragment : Fragment() {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    private fun showClearTrashConfirmationDialog(
+    private fun showConfirmationDialog(
         title: String,
         message: String,
-        operacao: () -> Unit
+        operation: () -> Unit
     ) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(title)
@@ -116,7 +120,7 @@ class TrashFragment : Fragment() {
                     R.string.clear_trash_dialog_confirm
                 )
             ) { _, _ ->
-                operacao()
+                operation()
             }
             .show()
     }
@@ -126,11 +130,23 @@ class TrashFragment : Fragment() {
         viewModel.trashList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
 
+            hideEmptyRecyclerVIew(it)
+
             // Start the transition once all views have been
             // measured and laid out
             (view?.parent as? ViewGroup)?.doOnPreDraw {
                 startPostponedEnterTransition()
             }
+        }
+    }
+
+    private fun hideEmptyRecyclerVIew(it: List<Note>) {
+        if (it.isEmpty()) {
+            binding.fragmentTrashRecyclerView.visibility = View.GONE
+            binding.fragmentTrashEmptyTrashView.visibility = View.VISIBLE
+        } else {
+            binding.fragmentTrashRecyclerView.visibility = View.VISIBLE
+            binding.fragmentTrashEmptyTrashView.visibility = View.GONE
         }
     }
 
@@ -191,17 +207,38 @@ class TrashFragment : Fragment() {
                     }
                 }
             },
-            { listOfItemToDelete ->
-                viewModel.deleteSelectedNotes(listOfItemToDelete)
+            { listOfSelectedItems, id ->
+                val message = if (id == R.id.delete) {
+                    viewModel.deleteSelectedNotes(listOfSelectedItems)
+                    resources.getQuantityString(
+                        R.plurals.snackbar_message_notes_deleted,
+                        listOfSelectedItems.size
+                    )
+                } else {
+                    viewModel.restoreSelectedNotes(listOfSelectedItems)
+                    resources.getQuantityString(
+                        R.plurals.snackbar_message_notes_restored,
+                        listOfSelectedItems.size
+                    )
+                }
+                showSnackBar(message)
             })
         binding.fragmentTrashRecyclerView.adapter = adapter
         return adapter
     }
 
+    private fun showSnackBar(message: String) {
+        Snackbar.make(
+            binding.root,
+            message,
+            Snackbar.LENGTH_LONG
+        ).show()
+    }
+
     private val callback = object : ActionMode.Callback {
 
         override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-            activity?.menuInflater?.inflate(R.menu.contextual_action_bar, menu)
+            activity?.menuInflater?.inflate(R.menu.trash_fragment_contextual_action_bar, menu)
             return true
         }
 
@@ -212,18 +249,25 @@ class TrashFragment : Fragment() {
         override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
             return when (item?.itemId) {
                 R.id.delete -> {
-                    showClearTrashConfirmationDialog(
+                    showConfirmationDialog(
                         title = getString(
                             R.string.trash_fragment_delete_selected_notes_dialog_title
                         ),
                         message = getString(
                             R.string.trash_fragment_delete_selected_notes_dialog_message
                         )
-                    ) { adapter.deleteSelectedItems() }
+                    ) { adapter.returnSelectedItems(item.itemId) }
                     true
                 }
-                R.id.more -> {
-                    //Todo: Restore all selected items
+                R.id.restore -> {
+                    showConfirmationDialog(
+                        title = getString(
+                            R.string.trash_fragment_restore_selected_notes_dialog_title
+                        ),
+                        message = getString(
+                            R.string.trash_fragment_restore_selected_notes_dialog_message
+                        )
+                    ) { adapter.returnSelectedItems(item.itemId) }
                     true
                 }
                 else -> false
