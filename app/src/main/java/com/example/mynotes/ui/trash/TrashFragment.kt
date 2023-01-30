@@ -209,13 +209,13 @@ class TrashFragment : Fragment() {
             },
             { listOfSelectedItems, id ->
                 val message = if (id == R.id.delete) {
-                    viewModel.deleteSelectedNotes(listOfSelectedItems)
+                    viewModel.deleteSelectedNotes(listOfSelectedItems.values.toList())
                     resources.getQuantityString(
                         R.plurals.snackbar_message_notes_deleted,
                         listOfSelectedItems.size
                     )
                 } else {
-                    viewModel.restoreSelectedNotes(listOfSelectedItems)
+                    viewModel.restoreSelectedNotes(listOfSelectedItems.values.toList())
                     resources.getQuantityString(
                         R.plurals.snackbar_message_notes_restored,
                         listOfSelectedItems.size

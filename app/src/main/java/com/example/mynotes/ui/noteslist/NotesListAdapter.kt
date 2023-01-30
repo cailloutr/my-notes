@@ -26,7 +26,7 @@ import com.example.mynotes.ui.enums.LayoutMode
 class NotesListAdapter(
     private val layoutMode: LayoutMode,
     private val onItemClickToSelectListener: (Note?, SparseBooleanArray, View?, View?, View?) -> Unit,
-    private val SelectedItemsActionListener: (List<Note>, Int?) -> Unit,
+    private val selectedItemsActionListener: (Map<Int, Note>, Int?) -> Unit,
 ) : ListAdapter<Note, NotesListAdapter.ViewHolder>(DiffCallback) {
 
     private val TAG: String = "NoteListAdapter"
@@ -182,12 +182,14 @@ class NotesListAdapter(
     }
 
     fun returnSelectedItems(id: Int?){
-        val listOfItem = mutableListOf<Note>()
+        val map = mutableMapOf<Int, Note>()
+//        val listOfItem = mutableListOf<Note>()
         itemStateArray.forEach { key, _ ->
-            listOfItem.add(currentList[key])
+            map[key] = currentList[key]
+//            listOfItem.add(currentList[key])
         }
 
-        SelectedItemsActionListener(listOfItem, id)
+        selectedItemsActionListener(map, id)
         itemStateArray.clear()
         onItemClickToSelectListener(null, itemStateArray, null, null, null)
         isSelectedMode = false

@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.R
+import com.example.mynotes.database.model.Note
 import com.example.mynotes.databinding.FragmentNotesListBinding
 import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.enums.LayoutMode
@@ -32,18 +33,17 @@ import com.example.mynotes.util.ToastUtil
 import com.example.mynotes.util.WindowUtil
 import com.google.android.material.snackbar.Snackbar
 
-// TODO: Coordinator layout
 // TODO: Image notes - Take a photo or choose from the gallery
 // TODO: Other easy options like add checkBoxes for each note as a shopping list
 // TODO: Add markers like topics
 // TODO: Share option
 // TODO: Archive item on swipe
 // TODO: Implement design improvements
-// TODO: fix undo action behavior and Snackbar
 // TODO: auto clear the trash
 
+//private const val TAG: String = "NoteListFragment"
+
 class NotesListFragment : Fragment() {
-    private val TAG: String = "NoteListFragment"
     private lateinit var adapter: NotesListAdapter
     private var _binding: FragmentNotesListBinding? = null
     val binding get() = _binding!!
@@ -87,7 +87,7 @@ class NotesListFragment : Fragment() {
 
         postponeEnterTransition()
         setupMenu()
-        setupSnackBarUndoAction(view)
+//        setupSnackBarUndoAction(view)
         chooseLayout()
         setupAddNoteButton()
         setupEditTextExpandViewButton()
@@ -205,29 +205,6 @@ class NotesListFragment : Fragment() {
         )
     }
 
-
-
-    //TODO: fix undo action
-    private fun setupSnackBarUndoAction(view: View) {
-//        val hasDeletedANote = args.hasDeletedANote
-        if (hasDeletedANote.hasDeletedANote) {
-            Snackbar.make(
-                binding.fragmentNotesCardviewButtonAddNote,
-                getString(R.string.note_list_snack_bar_message_moved_to_trash),
-                Snackbar.LENGTH_LONG
-            )
-                .setAction(getString(R.string.note_list_snack_bar_message_undo)) {
-                    undoDeleteNote()
-                }
-                .show()
-        }
-    }
-
-    private fun undoDeleteNote() {
-        viewModel.retrieveNoteFromTrash()
-        viewModel.saveNote()
-    }
-
     private fun loadNotesList() {
         val adapter = setupAdapter()
         viewModel.notesList.observe(viewLifecycleOwner) {
@@ -290,20 +267,15 @@ class NotesListFragment : Fragment() {
         adapter = NotesListAdapter(
             viewModel.layoutMode,
             { note, itemStateArray, title, description, container ->
+                // If note != null them it means that user wants to open the note to read/edit
+                // else the user is selecting multiple notes
                 if (note != null) {
                     viewModel.loadNote(note)
                     viewModel.setFragmentMode(FragmentMode.FRAGMENT_EDIT)
 
                     val extras = arrayListOf<View>()
-                    if (title != null) {
-                        extras.add(title)
-                    }
-                    if (description != null) {
-                        extras.add(description)
-                    }
-                    if (container != null) {
-                        extras.add(container)
-                    }
+                    setupNavigatorExtrar(title, extras, description, container)
+
                     viewModel.fragmentMode.value?.let {
                         navigateToNewNotesFragmentExtras(it, extras)
                     }
@@ -326,16 +298,64 @@ class NotesListFragment : Fragment() {
                 }
             },
             { listOfItems, _ ->
-                viewModel.moveSelectedItemsToTrash(listOfItems)
-                Snackbar.make(
+                var undoAction = false
+                removeNotesFromCurrentList(listOfItems)
+
+                val snackbar = Snackbar.make(
                     binding.fragmentNotesCardviewButtonAddNote,
                     getString(R.string.note_list_fragment_move_to_trash_snackbar),
                     Snackbar.LENGTH_SHORT
-                ).show()
-            })
-        binding.fragmentNotesRecyclerView.adapter = adapter
+                ).setAction(R.string.note_list_snack_bar_message_undo) {
+                    undoRemoveAction(listOfItems)
+                    undoAction = true
+                }.addCallback(object : Snackbar.Callback(){
+                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                        super.onDismissed(transientBottomBar, event)
 
+                        if (!undoAction) {
+                            viewModel.moveSelectedItemsToTrash(listOfItems.values.toList())
+                        }
+                    }
+                })
+
+                snackbar.show()
+            })
+
+        binding.fragmentNotesRecyclerView.adapter = adapter
         return adapter
+    }
+
+    private fun setupNavigatorExtrar(
+        title: View?,
+        extras: ArrayList<View>,
+        description: View?,
+        container: View?
+    ) {
+        if (title != null) {
+            extras.add(title)
+        }
+        if (description != null) {
+            extras.add(description)
+        }
+        if (container != null) {
+            extras.add(container)
+        }
+    }
+
+    private fun undoRemoveAction(
+        listOfItems: Map<Int, Note>
+    ) {
+        val mutableList = adapter.currentList.toMutableList()
+        listOfItems.forEach {
+            mutableList.add(it.key, it.value)
+        }
+        adapter.submitList(mutableList)
+    }
+
+    private fun removeNotesFromCurrentList(listOfItems: Map<Int, Note>) {
+        val mutableList = adapter.currentList.toMutableList()
+        mutableList.removeAll(listOfItems.values)
+        adapter.submitList(mutableList)
     }
 
     private val callback = object : ActionMode.Callback {
