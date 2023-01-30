@@ -97,16 +97,32 @@ class NewNoteFragment : Fragment() {
 
     private fun openOptionsBottomSheet() {
         val modalBottomSheet = NoteOptionModalBottomSheet(
-            viewModel = viewModel,
             backgroundColor = viewModel.note.value?.color,
             binding = FragmentNewNoteOptionsBottomSheetBinding.inflate(
                 layoutInflater,
                 binding.root,
                 false
-            )
+            ),
+            listener = {
+                if (viewModel.note.value?.isTrash == true) {
+                    viewModel.deleteNote()
+                    navigateToTrashFragment()
+                } else {
+                    viewModel.moveNoteToTrash()
+                    viewModel.saveNote()
+                    navigateToNoteListFragment()
+                }
+            }
         )
         modalBottomSheet.show(parentFragmentManager, NoteOptionModalBottomSheet.TAG)
     }
+
+    private fun navigateToTrashFragment() {
+        findNavController().navigate(
+            NewNoteFragmentDirections.actionNewNoteFragmentToTrashFragment()
+        )
+    }
+
 
     private fun openColorsOptionBottomSheet() {
         val modalBottomSheet = ColorsOptionBottomSheet(

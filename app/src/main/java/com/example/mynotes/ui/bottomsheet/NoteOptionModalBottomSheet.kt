@@ -5,26 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.navigation.fragment.findNavController
 import com.example.mynotes.R
 import com.example.mynotes.databinding.FragmentNewNoteOptionsBottomSheetBinding
-import com.example.mynotes.ui.newnote.NewNoteFragmentDirections
-import com.example.mynotes.ui.viewModel.NotesListViewModel
 
-//TODO: Mover a lógica das ações para fora da classe
 class NoteOptionModalBottomSheet(
     backgroundColor: Int?,
-    private val viewModel: NotesListViewModel,
-    private var binding: FragmentNewNoteOptionsBottomSheetBinding
+    private var binding: FragmentNewNoteOptionsBottomSheetBinding,
+    private val listener: () -> Unit
 ) : BaseBottomSheet(backgroundColor, binding.root) {
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-
         return binding.root
     }
 
@@ -35,30 +29,10 @@ class NoteOptionModalBottomSheet(
 
         val deleteOption = view.findViewById<TextView>(R.id.menu_bottom_sheet_colors_label)
         deleteOption.setOnClickListener {
-            if (viewModel.note.value?.isTrash == true) {
-                viewModel.deleteNote()
-                navigateToTrashFragment()
-            } else {
-                viewModel.moveNoteToTrash()
-                viewModel.saveNote()
-                navigateToNoteListFragment()
-            }
+            listener()
             dismiss()
         }
     }
-
-    private fun navigateToTrashFragment() {
-        findNavController().navigate(
-            NewNoteFragmentDirections.actionNewNoteFragmentToTrashFragment()
-        )
-    }
-
-    private fun navigateToNoteListFragment() {
-        findNavController().navigate(
-            NewNoteFragmentDirections.actionNewNoteFragmentToNotesListFragment(true)
-        )
-    }
-
 
     companion object {
         const val TAG = "ModalBottomSheet"

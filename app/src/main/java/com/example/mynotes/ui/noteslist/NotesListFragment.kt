@@ -15,7 +15,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -47,9 +46,7 @@ class NotesListFragment : Fragment() {
     private lateinit var adapter: NotesListAdapter
     private var _binding: FragmentNotesListBinding? = null
     val binding get() = _binding!!
-    private val args: NotesListFragmentArgs by navArgs()
 
-    lateinit var hasDeletedANote: NotesListFragmentArgs
     lateinit var sharedPref: SharedPreferences
     private var actionMode: ActionMode? = null
 
@@ -67,7 +64,6 @@ class NotesListFragment : Fragment() {
         viewModel.layoutMode.value =
             sharedPref.getBoolean(getString(R.string.pref_key_layout_manager), false)
 
-        hasDeletedANote = args
     }
 
     override fun onCreateView(
