@@ -2,7 +2,6 @@ package com.example.mynotes.ui.noteslist
 
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +30,10 @@ class NotesListAdapter(
 
     private val TAG: String = "NoteListAdapter"
     private val itemStateArray = SparseBooleanArray()
+
+    /**
+     * Defines if the user had a long click so the next click will select a new item instead of open a note
+     * */
     private var isSelectedMode = false
 
     open class ViewHolder(
@@ -134,7 +137,6 @@ class NotesListAdapter(
             }
 
             isSelectedMode = true
-            Log.i(TAG, "onBindViewHolder: itemStateArray: $itemStateArray")
             true
         }
 
@@ -152,7 +154,6 @@ class NotesListAdapter(
                 }
 
                 onItemClickToSelectListener(null, itemStateArray, null, null, null)
-                Log.i(TAG, "onBindViewHolder: itemStateArray: $itemStateArray")
             } else {
                 onItemClickToSelectListener(
                     note,
@@ -183,10 +184,8 @@ class NotesListAdapter(
 
     fun returnSelectedItems(id: Int?){
         val map = mutableMapOf<Int, Note>()
-//        val listOfItem = mutableListOf<Note>()
         itemStateArray.forEach { key, _ ->
             map[key] = currentList[key]
-//            listOfItem.add(currentList[key])
         }
 
         selectedItemsActionListener(map, id)

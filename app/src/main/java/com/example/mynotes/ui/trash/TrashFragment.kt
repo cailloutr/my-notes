@@ -172,6 +172,7 @@ class TrashFragment : Fragment() {
         adapter = NotesListAdapter(
             viewModel.layoutMode,
             { note, itemStateArray, title, description, container ->
+                // Handle the click on a note to open
                 if (note != null) {
                     viewModel.loadNote(note)
                     viewModel.setFragmentMode(FragmentMode.FRAGMENT_TRASH)
@@ -190,6 +191,7 @@ class TrashFragment : Fragment() {
                         navigateToNewNotesFragmentExtras(it, extras)
                     }
                 } else {
+                    // Handle the selection of items
                     when (itemStateArray.size) {
                         1 -> {
                             if (actionMode == null) {
@@ -207,6 +209,7 @@ class TrashFragment : Fragment() {
                     }
                 }
             },
+            // handle the deletion of notes
             { listOfSelectedItems, id ->
                 val message = if (id == R.id.delete) {
                     viewModel.deleteSelectedNotes(listOfSelectedItems.values.toList())

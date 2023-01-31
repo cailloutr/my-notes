@@ -19,11 +19,6 @@ data class ChipItem(
     }
 }
 
-//fun ChipItem.getHexColor(context: Context): String {
-//    //.replaceRange(0..1, "3D")
-//    return Integer.toHexString(ContextCompat.getColor(context, color))
-//}
-
 fun ChipItem.toChip(context: Context, viewGroup: ViewGroup): Chip {
 
     val chip = LayoutInflater

@@ -22,9 +22,9 @@ interface NoteDao {
 
 /*    @Query("UPDATE Note SET position = CASE position WHEN :initPosition THEN :finalPosition WHEN :finalPosition THEN :initPosition ELSE position END")
     suspend fun swipePositions(initPosition: Long, finalPosition: Long)
-//
-//    @Query("UPDATE Note SET position = :newPosition WHERE position = :oldPosition")
-//    suspend fun updatePosition(oldPosition: Int, newPosition: Int)
+
+    @Query("UPDATE Note SET position = :newPosition WHERE position = :oldPosition")
+    suspend fun updatePosition(oldPosition: Int, newPosition: Int)
 
     @Query("UPDATE Note SET position = (position+1) WHERE position > :target")
     suspend fun updatePositionUp1(target: Long)

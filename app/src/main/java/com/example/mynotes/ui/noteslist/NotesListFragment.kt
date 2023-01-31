@@ -33,11 +33,10 @@ import com.example.mynotes.util.WindowUtil
 import com.google.android.material.snackbar.Snackbar
 
 // TODO: Image notes - Take a photo or choose from the gallery
-// TODO: Other easy options like add checkBoxes for each note as a shopping list
+// TODO: Other options like add checkBoxes for each note as a shopping list
 // TODO: Add markers like topics
 // TODO: Share option
 // TODO: Archive item on swipe
-// TODO: Implement design improvements
 // TODO: auto clear the trash
 
 //private const val TAG: String = "NoteListFragment"
@@ -83,7 +82,6 @@ class NotesListFragment : Fragment() {
 
         postponeEnterTransition()
         setupMenu()
-//        setupSnackBarUndoAction(view)
         chooseLayout()
         setupAddNoteButton()
         setupEditTextExpandViewButton()
@@ -124,7 +122,7 @@ class NotesListFragment : Fragment() {
                 menuInflater.inflate(R.menu.note_list_options_menu, menu)
 
                 val layoutButton = menu.findItem(R.id.note_list_options_menu_layout_style)
-                setIcon(layoutButton)
+                setLayoutModeIcon(layoutButton)
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -140,7 +138,7 @@ class NotesListFragment : Fragment() {
                             LayoutMode.STAGGERED_GRID_LAYOUT
                         }
                     chooseLayout()
-                    setIcon(menuItem)
+                    setLayoutModeIcon(menuItem)
 
                     saveOptionInSharedPreferences()
                 }
@@ -159,7 +157,7 @@ class NotesListFragment : Fragment() {
         }
     }
 
-    private fun setIcon(menuItem: MenuItem?) {
+    private fun setLayoutModeIcon(menuItem: MenuItem?) {
         if (menuItem == null) return
 
         if (viewModel.layoutMode.value) {
@@ -263,19 +261,19 @@ class NotesListFragment : Fragment() {
         adapter = NotesListAdapter(
             viewModel.layoutMode,
             { note, itemStateArray, title, description, container ->
-                // If note != null them it means that user wants to open the note to read/edit
-                // else the user is selecting multiple notes
+                // Handles a single click to open a note
                 if (note != null) {
                     viewModel.loadNote(note)
                     viewModel.setFragmentMode(FragmentMode.FRAGMENT_EDIT)
 
                     val extras = arrayListOf<View>()
-                    setupNavigatorExtrar(title, extras, description, container)
+                    setupSharedElementsExtras(title, extras, description, container)
 
                     viewModel.fragmentMode.value?.let {
                         navigateToNewNotesFragmentExtras(it, extras)
                     }
                 } else {
+                    // Handle the selection of multiples items
                     when (itemStateArray.size) {
                         1 -> {
                             if (actionMode == null) {
@@ -293,6 +291,7 @@ class NotesListFragment : Fragment() {
                     }
                 }
             },
+            // Handles the action delete on the selected items
             { listOfItems, _ ->
                 var undoAction = false
                 removeNotesFromCurrentList(listOfItems)
@@ -311,6 +310,8 @@ class NotesListFragment : Fragment() {
                         if (!undoAction) {
                             viewModel.moveSelectedItemsToTrash(listOfItems.values.toList())
                         }
+
+                        undoAction = false
                     }
                 })
 
@@ -321,7 +322,7 @@ class NotesListFragment : Fragment() {
         return adapter
     }
 
-    private fun setupNavigatorExtrar(
+    private fun setupSharedElementsExtras(
         title: View?,
         extras: ArrayList<View>,
         description: View?,
