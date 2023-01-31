@@ -1,8 +1,10 @@
 package com.example.mynotes.ui.viewModel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.mynotes.MyNotesApplication
-import com.example.mynotes.database.AppDatabase
 import com.example.mynotes.database.model.Note
 import com.example.mynotes.database.repository.NotesRepository
 import com.example.mynotes.ui.enums.FragmentMode
@@ -12,10 +14,10 @@ import kotlinx.coroutines.launch
 
 class NotesListViewModel(
     application: MyNotesApplication,
+    private val repository: NotesRepository
 ) : ViewModel() {
 
     private val TAG: String = "NoteListViewModel"
-    private val repository = NotesRepository(AppDatabase.getDatabase(application))
 
     private val _notesList = getAllNotes()
     val notesList: LiveData<List<Note>> = _notesList
@@ -179,15 +181,15 @@ class NotesListViewModel(
 
 }
 
-class NotesListViewModelFactory(
-    private val application: MyNotesApplication,
-) : ViewModelProvider.Factory {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(NotesListViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return NotesListViewModel(application) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}
+//class NotesListViewModelFactory(
+//    private val application: MyNotesApplication,
+//) : ViewModelProvider.Factory {
+//
+//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//        if (modelClass.isAssignableFrom(NotesListViewModel::class.java)) {
+//            @Suppress("UNCHECKED_CAST")
+//            return NotesListViewModel(application) as T
+//        }
+//        throw IllegalArgumentException("Unknown ViewModel class")
+//    }
+//}

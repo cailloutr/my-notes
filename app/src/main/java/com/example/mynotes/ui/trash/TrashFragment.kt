@@ -8,24 +8,22 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.R
 import com.example.mynotes.database.model.Note
 import com.example.mynotes.databinding.FragmentTrashBinding
 import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.noteslist.NotesListAdapter
 import com.example.mynotes.ui.viewModel.NotesListViewModel
-import com.example.mynotes.ui.viewModel.NotesListViewModelFactory
 import com.example.mynotes.util.AppBarColorUtil
 import com.example.mynotes.util.WindowUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 
 class TrashFragment : Fragment() {
@@ -35,11 +33,13 @@ class TrashFragment : Fragment() {
     private var actionMode: ActionMode? = null
     private lateinit var adapter: NotesListAdapter
 
-    private val viewModel: NotesListViewModel by activityViewModels {
-        NotesListViewModelFactory(
-            (activity?.application as MyNotesApplication)
-        )
-    }
+//    private val viewModel: NotesListViewModel by activityViewModels {
+//        NotesListViewModelFactory(
+//            (activity?.application as MyNotesApplication)
+//        )
+//    }
+
+    private val viewModel: NotesListViewModel by activityViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
