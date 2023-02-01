@@ -6,6 +6,7 @@ import com.example.mynotes.database.AppDatabase
 import com.example.mynotes.database.dao.NoteDao
 import com.example.mynotes.database.migrations.MyNotesMigrations
 import com.example.mynotes.database.repository.NotesRepository
+import com.example.mynotes.ui.MainActivity
 import com.example.mynotes.ui.newnote.NewNoteFragment
 import com.example.mynotes.ui.noteslist.NotesListFragment
 import com.example.mynotes.ui.trash.TrashFragment
@@ -17,6 +18,7 @@ val uiModule = module {
     factory<NewNoteFragment> { NewNoteFragment() }
     factory<NotesListFragment> { NotesListFragment() }
     factory<TrashFragment> { TrashFragment() }
+    single<MainActivity> { MainActivity() }
 }
 
 val viewModelModule = module {

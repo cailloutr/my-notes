@@ -47,11 +47,11 @@ class NotesListFragment : Fragment() {
     lateinit var sharedPref: SharedPreferences
     private var actionMode: ActionMode? = null
 
-//    private val viewModel: NotesListViewModel by activityViewModels {
-//        NotesListViewModelFactory(
-//            (activity?.application as MyNotesApplication)
-//        )
-//    }
+/*    private val viewModel: NotesListViewModel by activityViewModels {
+        NotesListViewModelFactory(
+            (activity?.application as MyNotesApplication)
+        )
+    }*/
 
     private val viewModel: NotesListViewModel by activityViewModel()
 
@@ -60,9 +60,25 @@ class NotesListFragment : Fragment() {
 
         sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) as SharedPreferences
 
-        viewModel.layoutMode.value =
-            sharedPref.getBoolean(getString(R.string.pref_key_layout_manager), false)
+        getSharedPreferenceLayoutMode()
+    }
 
+    private fun getSharedPreferenceLayoutMode() {
+        val defaultSharedPrefValue: String = LayoutMode.STAGGERED_GRID_LAYOUT.name
+        val layout: String = if (sharedPref.contains(getString(R.string.pref_key_layout_manager))) {
+            sharedPref.getString(
+                getString(R.string.pref_key_layout_manager),
+                defaultSharedPrefValue
+            ).toString()
+        } else {
+            LayoutMode.STAGGERED_GRID_LAYOUT.name
+        }
+
+        viewModel.layoutMode = if (layout == LayoutMode.STAGGERED_GRID_LAYOUT.name) {
+            LayoutMode.STAGGERED_GRID_LAYOUT
+        } else {
+            LayoutMode.LINEAR_LAYOUT
+        }
     }
 
     override fun onCreateView(
@@ -139,7 +155,6 @@ class NotesListFragment : Fragment() {
                         }
                     chooseLayout()
                     setLayoutModeIcon(menuItem)
-
                     saveOptionInSharedPreferences()
                 }
                 return true
@@ -148,13 +163,13 @@ class NotesListFragment : Fragment() {
     }
 
     private fun saveOptionInSharedPreferences() {
-        with(sharedPref.edit()) {
-            this?.putBoolean(
-                getString(R.string.pref_key_layout_manager),
-                viewModel.layoutMode.value
-            )
-            this?.apply()
-        }
+        val sharedPrefEditor = sharedPref.edit()
+        sharedPrefEditor.putString(
+            getString(R.string.pref_key_layout_manager),
+            viewModel.layoutMode.name
+        )
+
+        sharedPrefEditor.apply()
     }
 
     private fun setLayoutModeIcon(menuItem: MenuItem?) {
@@ -303,7 +318,7 @@ class NotesListFragment : Fragment() {
                 ).setAction(R.string.note_list_snack_bar_message_undo) {
                     undoRemoveAction(listOfItems)
                     undoAction = true
-                }.addCallback(object : Snackbar.Callback(){
+                }.addCallback(object : Snackbar.Callback() {
                     override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                         super.onDismissed(transientBottomBar, event)
 
