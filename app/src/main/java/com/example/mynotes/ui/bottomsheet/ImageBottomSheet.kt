@@ -4,21 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import com.example.mynotes.R
-import com.example.mynotes.databinding.FragmentNewNoteOptionsBottomSheetBinding
+import com.example.mynotes.databinding.ImageBottomSheetBinding
 
-class NoteOptionModalBottomSheet(
+class ImageBottomSheet(
     backgroundColor: Int?,
-    private var binding: FragmentNewNoteOptionsBottomSheetBinding,
-    private val listener: () -> Unit
+    private val binding: ImageBottomSheetBinding,
+    private val operation: (Operation) -> Unit
 ) : BaseBottomSheet(backgroundColor, binding.root) {
 
-    val TAG = "ModalBottomSheet"
+    val TAG = "ImageBottomSheet"
+
+    enum class Operation {
+        CAMERA, GALLERY
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         return binding.root
     }
@@ -28,10 +31,10 @@ class NoteOptionModalBottomSheet(
 
         setBackgroundColor()
 
-        val deleteOption = view.findViewById<TextView>(R.id.menu_bottom_sheet_camera)
-        deleteOption.setOnClickListener {
-            listener()
+        binding.optionMenuBottomSheetGallery.setOnClickListener {
+            operation(Operation.GALLERY)
             dismiss()
         }
+
     }
 }

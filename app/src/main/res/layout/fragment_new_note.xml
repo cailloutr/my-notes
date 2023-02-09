@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:transitionName="fragment_new_note_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="28dp"
     android:paddingBottom="26dp"
+    android:transitionName="fragment_new_note_container"
     tools:context=".ui.newnote.NewNoteFragment">
 
     <androidx.appcompat.widget.Toolbar
@@ -21,6 +21,18 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <ImageView
+        android:id="@+id/fragment_new_note_image"
+        android:layout_width="0dp"
+        android:layout_height="250dp"
+        android:contentDescription="@string/fragment_new_note_image_content_desc"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        tools:src="@tools:sample/avatars" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/fragment_new_note_textInput_title"
         style="@style/Widget.MyNotes.TextInputLayout.OutlinedBox.BorderlessEditText"
@@ -29,7 +41,7 @@
         android:layout_margin="@dimen/border_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toBottomOf="@id/fragment_new_note_image">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/fragment_new_note_textInput_edittext_title"
@@ -89,6 +101,20 @@
         android:src="@drawable/ic_colors"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/fragment_new_note_options_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/border_margin"
+        android:backgroundTint="@android:color/transparent"
+        android:clickable="true"
+        android:contentDescription="@string/fragment_new_note_option_photo"
+        android:focusable="true"
+        android:padding="4dp"
+        android:src="@drawable/ic_photo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/fragment_new_note_options_colors" />
 
     <ImageButton
         android:id="@+id/fragment_new_note_options_menu"

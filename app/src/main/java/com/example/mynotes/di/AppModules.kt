@@ -22,7 +22,7 @@ val uiModule = module {
 }
 
 val viewModelModule = module {
-    viewModel<NotesListViewModel> { NotesListViewModel(get(), get()) }
+    viewModel<NotesListViewModel> { NotesListViewModel(get()) }
 }
 
 val databaseModule = module {

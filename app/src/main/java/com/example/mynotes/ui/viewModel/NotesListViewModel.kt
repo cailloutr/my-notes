@@ -1,23 +1,28 @@
 package com.example.mynotes.ui.viewModel
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.os.Environment
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.database.model.Note
 import com.example.mynotes.database.repository.NotesRepository
 import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.enums.LayoutMode
 import com.example.mynotes.util.DateUtil
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 class NotesListViewModel(
-    application: MyNotesApplication,
     private val repository: NotesRepository
 ) : ViewModel() {
-
     private val TAG: String = "NoteListViewModel"
+    private val ALBUM_NAME = "notes"
 
     private val _notesList = getAllNotes()
     val notesList: LiveData<List<Note>> = _notesList
@@ -49,6 +54,46 @@ class NotesListViewModel(
                 note.value?.let { repository.update(it) }
             }
         }
+    }
+
+    private fun getAppSpecificAlbumStorageDir(context: Context): File {
+        // Get the pictures directory that's inside the app-specific directory on
+        // external storage.
+        val file = File(
+            context.getExternalFilesDir(
+                Environment.DIRECTORY_PICTURES
+            ), ALBUM_NAME
+        )
+        if (!file.mkdirs()) {
+            Log.e(TAG, "Directory not created")
+        }
+        return file
+    }
+
+    //TODO: Delete Image
+    fun saveImageInAppSpecificAlbumStorageDir(bitmap: Bitmap?, context: Context): String {
+        var baos: OutputStream? = null
+        val path = "${getAppSpecificAlbumStorageDir(context)}/${note.value?.id}.jpg"
+        val file = File(path)
+        try {
+            baos = FileOutputStream(file)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+
+        try {
+            baos?.flush()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        try {
+            baos?.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return path
     }
 
 /*    fun swipePositions(initPosition: Long, finalPosition: Long) {
@@ -148,10 +193,15 @@ class NotesListViewModel(
         }
     }
 
-    fun updateViewModelNote(title: String = "", description: String) {
+    fun updateViewModelNote(title: String = "", description: String, imagePath: String = "") {
         _note.value?.title = title
         _note.value?.description = description
         _note.value?.modifiedDate = DateUtil.getFormattedDate()
+        _note.value?.imageUrl = imagePath
+    }
+
+    fun updateViewModelNoteHasImage(hasImage: Boolean) {
+        _note.value?.hasImage = hasImage
     }
 
     fun loadNote(note: Note) {
@@ -181,15 +231,16 @@ class NotesListViewModel(
 
 }
 
-//class NotesListViewModelFactory(
-//    private val application: MyNotesApplication,
-//) : ViewModelProvider.Factory {
-//
-//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//        if (modelClass.isAssignableFrom(NotesListViewModel::class.java)) {
-//            @Suppress("UNCHECKED_CAST")
-//            return NotesListViewModel(application) as T
-//        }
-//        throw IllegalArgumentException("Unknown ViewModel class")
-//    }
-//}
+/*
+class NotesListViewModelFactory(
+    private val application: MyNotesApplication,
+) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(NotesListViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return NotesListViewModel(application) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}*/

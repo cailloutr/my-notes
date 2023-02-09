@@ -171,22 +171,14 @@ class TrashFragment : Fragment() {
     private fun setupAdapter(): NotesListAdapter {
         adapter = NotesListAdapter(
             viewModel.layoutMode,
-            { note, itemStateArray, title, description, container ->
+            { note, itemStateArray, title, description, container, image ->
                 // Handle the click on a note to open
                 if (note != null) {
                     viewModel.loadNote(note)
                     viewModel.setFragmentMode(FragmentMode.FRAGMENT_TRASH)
 
-                    val extras = arrayListOf<View>()
-                    if (title != null) {
-                        extras.add(title)
-                    }
-                    if (description != null) {
-                        extras.add(description)
-                    }
-                    if (container != null) {
-                        extras.add(container)
-                    }
+                    val extras = setupSharedElementsExtras(title, description, container, image)
+
                     viewModel.fragmentMode.value?.let {
                         navigateToNewNotesFragmentExtras(it, extras)
                     }
@@ -228,6 +220,28 @@ class TrashFragment : Fragment() {
             })
         binding.fragmentTrashRecyclerView.adapter = adapter
         return adapter
+    }
+
+    private fun setupSharedElementsExtras(
+        title: View?,
+        description: View?,
+        container: View?,
+        image: View?
+    ): ArrayList<View> {
+        val extras: ArrayList<View> = arrayListOf()
+        if (title != null) {
+            extras.add(title)
+        }
+        if (description != null) {
+            extras.add(description)
+        }
+        if (container != null) {
+            extras.add(container)
+        }
+        if (image != null) {
+            extras.add(image)
+        }
+        return extras
     }
 
     private fun showSnackBar(message: String) {

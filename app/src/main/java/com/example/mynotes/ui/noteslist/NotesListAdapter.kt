@@ -6,6 +6,7 @@ import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.util.contains
@@ -21,14 +22,16 @@ import com.example.mynotes.database.model.Note
 import com.example.mynotes.databinding.ItemNoteLinearLayoutBinding
 import com.example.mynotes.databinding.ItemNoteStaggeredLayoutBinding
 import com.example.mynotes.ui.enums.LayoutMode
+import com.example.mynotes.ui.extensions.loadStartImage
+
+//private const val TAG: String = "NoteListAdapter"
 
 class NotesListAdapter(
     private val layoutMode: LayoutMode,
-    private val onItemClickToSelectListener: (Note?, SparseBooleanArray, View?, View?, View?) -> Unit,
+    private val onItemClickToSelectListener: (Note?, SparseBooleanArray, View?, View?, View?, View?) -> Unit,
     private val selectedItemsActionListener: (Map<Int, Note>, Int?) -> Unit,
 ) : ListAdapter<Note, NotesListAdapter.ViewHolder>(DiffCallback) {
 
-    private val TAG: String = "NoteListAdapter"
     private val itemStateArray = SparseBooleanArray()
 
     /**
@@ -41,6 +44,7 @@ class NotesListAdapter(
     ) : RecyclerView.ViewHolder(view) {
         val title: View = view.findViewById(R.id.item_note_title)
         val description: View = view.findViewById(R.id.item_note_description)
+        val image: View = view.findViewById(R.id.item_note_image)
         val container: View = view.rootView
 
         open fun bind(note: Note, isSelected: Boolean) {
@@ -53,6 +57,9 @@ class NotesListAdapter(
             ViewCompat.setTransitionName(
                 container, note.id.toString() + "_container"
             )
+            ViewCompat.setTransitionName(
+                image, note.id.toString() + note.imageUrl
+            )
         }
 
         fun setBackgroundColor(note: Note, context: Context) {
@@ -64,12 +71,23 @@ class NotesListAdapter(
                 )
             }
         }
+
+         fun setImage(note: Note) {
+             val imageView = itemView.findViewById<ImageView>(R.id.item_note_image)
+             imageView.visibility = if (note.hasImage) View.VISIBLE else View.GONE
+
+            if (!note.imageUrl.isNullOrEmpty()) {
+                imageView.apply {
+                    loadStartImage(note.imageUrl, "${note.imageUrl}")
+                }
+            }
+        }
     }
 
     class NoteViewHolderLinear(
         private val binding: ItemNoteLinearLayoutBinding,
         private val context: Context,
-        ) : ViewHolder(binding.root) {
+    ) : ViewHolder(binding.root) {
 
         override fun bind(note: Note, isSelected: Boolean) {
             super.bind(note, isSelected)
@@ -78,6 +96,7 @@ class NotesListAdapter(
             binding.itemNoteModifiedDate.text = note.modifiedDate
             binding.root.isSelected = isSelected
 
+            setImage(note)
             setBackgroundColor(note, context)
         }
     }
@@ -94,6 +113,7 @@ class NotesListAdapter(
             binding.itemNoteModifiedDate.text = note.modifiedDate
             binding.root.isSelected = isSelected
 
+            setImage(note)
             setBackgroundColor(note, context)
         }
     }
@@ -133,7 +153,7 @@ class NotesListAdapter(
                 }
                 changeViewState(it)
 
-                onItemClickToSelectListener(null, itemStateArray, null, null, null)
+                onItemClickToSelectListener(null, itemStateArray, null, null, null, null)
             }
 
             isSelectedMode = true
@@ -153,14 +173,15 @@ class NotesListAdapter(
                     isSelectedMode = false
                 }
 
-                onItemClickToSelectListener(null, itemStateArray, null, null, null)
+                onItemClickToSelectListener(null, itemStateArray, null, null, null, null)
             } else {
                 onItemClickToSelectListener(
                     note,
                     itemStateArray,
                     holder.title,
                     holder.description,
-                    holder.container
+                    holder.container,
+                    holder.image
                 )
             }
         }
@@ -179,10 +200,10 @@ class NotesListAdapter(
             notifyItemChanged(position)
         }
         isSelectedMode = false
-        onItemClickToSelectListener(null, itemStateArray, null, null, null)
+        onItemClickToSelectListener(null, itemStateArray, null, null, null, null)
     }
 
-    fun returnSelectedItems(id: Int?){
+    fun returnSelectedItems(id: Int?) {
         val map = mutableMapOf<Int, Note>()
         itemStateArray.forEach { key, _ ->
             map[key] = currentList[key]
@@ -190,7 +211,7 @@ class NotesListAdapter(
 
         selectedItemsActionListener(map, id)
         itemStateArray.clear()
-        onItemClickToSelectListener(null, itemStateArray, null, null, null)
+        onItemClickToSelectListener(null, itemStateArray, null, null, null, null)
         isSelectedMode = false
     }
 

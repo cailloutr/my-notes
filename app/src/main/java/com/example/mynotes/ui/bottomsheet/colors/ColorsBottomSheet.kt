@@ -5,16 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
-import com.example.mynotes.databinding.ColorsOptionsBottomSheetBinding
+import com.example.mynotes.databinding.ColorsBottomSheetBinding
 import com.example.mynotes.ui.bottomsheet.BaseBottomSheet
 import com.google.android.material.chip.Chip
 
-class ColorsOptionBottomSheet(
+class ColorsBottomSheet(
     private val backgroundColor: Int?,
     val onClickListener: (cor: Int) -> Unit,
-    var binding: ColorsOptionsBottomSheetBinding
+    var binding: ColorsBottomSheetBinding
 ) : BaseBottomSheet(backgroundColor, binding.root) {
 
+    val TAG = "ColorsBottomSheet"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,10 +57,6 @@ class ColorsOptionBottomSheet(
 
     private fun setBottomSheetBackgroundColor(color: Int) {
         binding.root.setBackgroundColor(color)
-    }
-
-    companion object {
-        const val TAG = "ColorsOptionBottomSheet"
     }
 
 }

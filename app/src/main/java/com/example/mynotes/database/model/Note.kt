@@ -13,5 +13,7 @@ data class Note(
     @ColumnInfo(name = "modified_data") var modifiedDate: String?,
     @ColumnInfo(name = "is_trash") var isTrash: Boolean? = false,
     var position: Long? = 0,
-    @ColorRes var color: Int? = null
+    @ColorRes var color: Int? = null,
+    @ColumnInfo(name = "image_url") var imageUrl: String? = null,
+    @ColumnInfo(name = "has_image") var hasImage: Boolean = false
 )

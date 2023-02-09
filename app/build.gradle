@@ -64,6 +64,12 @@ dependencies {
     // Koin main features for Android
     implementation "io.insert-koin:koin-android:$koin_android_version"
 
+    // Coil
+    implementation("io.coil-kt:coil:$coil_version")
+
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:$data_store_version")
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

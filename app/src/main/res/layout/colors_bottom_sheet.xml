@@ -13,7 +13,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/menu_bottom_sheet_colors_label"
+        android:id="@+id/menu_bottom_sheet_camera"
         style="@style/Widget.MyNotes.TextView.OptionsBottomSheet.Item"
         android:layout_marginTop="@dimen/option_bottom_sheet_textview_margintop"
         android:text="@string/colors_options_bottom_sheet_pick_a_color"
@@ -30,7 +30,7 @@
         android:scrollbars="none"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/menu_bottom_sheet_colors_label">
+        app:layout_constraintTop_toBottomOf="@id/menu_bottom_sheet_camera">
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chip_group_colors"

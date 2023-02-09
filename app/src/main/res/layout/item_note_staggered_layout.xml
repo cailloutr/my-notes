@@ -1,20 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView android:id="@+id/staggered_card_view_container"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/staggered_card_view_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/border_margin"
-    app:cardCornerRadius="@dimen/card_corner_radius"
-    android:minWidth="@dimen/item_note_cardView_min_width">
+    android:minWidth="@dimen/item_note_cardView_min_width"
+    app:cardCornerRadius="@dimen/card_corner_radius">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:minWidth="@dimen/item_note_cardView_min_width"
         android:background="@drawable/card_state_selector"
+        android:minWidth="@dimen/item_note_cardView_min_width"
         android:padding="@dimen/border_margin">
+
+        <ImageView
+            android:id="@+id/item_note_image"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:background="@drawable/rounded_image"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/item_note_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/item_note_title"
@@ -25,7 +38,7 @@
             android:ellipsize="end"
             android:maxLines="2"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/item_note_image"
             tools:text="@sample/notas.json/notes/title" />
 
         <TextView

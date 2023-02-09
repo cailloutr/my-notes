@@ -59,20 +59,47 @@ class NotesListFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) as SharedPreferences
-
         getSharedPreferenceLayoutMode()
+
+/*        lifecycleScope.launch {
+
+            val preferences = context?.dataStore?.data
+            if (preferences == null) {
+                saveLayoutModeInDataStore()
+            }
+
+            preferences?.collect {
+                it[layoutManagerPreferences]?.let { layoutMode ->
+                    layoutMode.let {
+                        viewModel.layoutMode =
+                            if (layoutMode == LayoutMode.STAGGERED_GRID_LAYOUT.name) {
+                                LayoutMode.STAGGERED_GRID_LAYOUT
+                            } else {
+                                LayoutMode.LINEAR_LAYOUT
+                            }
+                    }
+                }
+            }
+        }*/
     }
+
+/*    private suspend fun saveLayoutModeInDataStore() {
+        context?.dataStore?.edit { settings ->
+            settings[layoutManagerPreferences] = viewModel.layoutMode.name
+        }
+    }*/
 
     private fun getSharedPreferenceLayoutMode() {
         val defaultSharedPrefValue: String = LayoutMode.STAGGERED_GRID_LAYOUT.name
-        val layout: String = if (sharedPref.contains(getString(R.string.pref_key_layout_manager))) {
-            sharedPref.getString(
-                getString(R.string.pref_key_layout_manager),
-                defaultSharedPrefValue
-            ).toString()
-        } else {
-            LayoutMode.STAGGERED_GRID_LAYOUT.name
+
+        if (!(sharedPref.contains(getString(R.string.pref_key_layout_manager)))) {
+            saveOptionInSharedPreferences()
         }
+
+        val layout: String = sharedPref.getString(
+            getString(R.string.pref_key_layout_manager),
+            defaultSharedPrefValue
+        ).toString()
 
         viewModel.layoutMode = if (layout == LayoutMode.STAGGERED_GRID_LAYOUT.name) {
             LayoutMode.STAGGERED_GRID_LAYOUT
@@ -155,6 +182,9 @@ class NotesListFragment : Fragment() {
                         }
                     chooseLayout()
                     setLayoutModeIcon(menuItem)
+/*                    lifecycleScope.launch {
+                        saveLayoutModeInDataStore()
+                    }*/
                     saveOptionInSharedPreferences()
                 }
                 return true
@@ -275,14 +305,13 @@ class NotesListFragment : Fragment() {
     private fun setupAdapter(): NotesListAdapter {
         adapter = NotesListAdapter(
             viewModel.layoutMode,
-            { note, itemStateArray, title, description, container ->
+            { note, itemStateArray, title, description, container, image ->
                 // Handles a single click to open a note
                 if (note != null) {
                     viewModel.loadNote(note)
                     viewModel.setFragmentMode(FragmentMode.FRAGMENT_EDIT)
 
-                    val extras = arrayListOf<View>()
-                    setupSharedElementsExtras(title, extras, description, container)
+                    val extras = setupSharedElementsExtras(title, description, container, image)
 
                     viewModel.fragmentMode.value?.let {
                         navigateToNewNotesFragmentExtras(it, extras)
@@ -339,10 +368,11 @@ class NotesListFragment : Fragment() {
 
     private fun setupSharedElementsExtras(
         title: View?,
-        extras: ArrayList<View>,
         description: View?,
-        container: View?
-    ) {
+        container: View?,
+        image: View?
+    ): ArrayList<View> {
+        val extras: ArrayList<View> = arrayListOf()
         if (title != null) {
             extras.add(title)
         }
@@ -352,6 +382,10 @@ class NotesListFragment : Fragment() {
         if (container != null) {
             extras.add(container)
         }
+        if (image != null) {
+            extras.add(image)
+        }
+        return extras
     }
 
     private fun undoRemoveAction(

@@ -14,6 +14,20 @@
         android:background="@drawable/card_state_selector"
         android:padding="@dimen/border_margin">
 
+        <ImageView
+            android:id="@+id/item_note_image"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
+            android:background="@drawable/rounded_image"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+
         <TextView
             android:id="@+id/item_note_title"
             style="@style/Widget.MyNotes.TextView.Title"
@@ -22,7 +36,7 @@
             android:layout_margin="@dimen/item_note_title_margin"
             android:ellipsize="end"
             android:maxLines="1"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/item_note_image"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@sample/notas.json/notes/title" />
 

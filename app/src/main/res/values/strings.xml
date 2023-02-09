@@ -50,6 +50,10 @@
     <string name="trash_fragment_restore_selected_notes_dialog_message">Restore all selected items?</string>
     <string name="snackbar_message_trash_cleaned">Trash cleaned</string>
     <string name="snackbar_message_restore_all">All items restored</string>
+    <string name="fragment_new_note_image_content_desc">Note\'s image</string>
+    <string name="fragment_new_note_option_photo">Add new photo</string>
+    <string name="image_bottom_sheet_camera">Take a photo</string>
+    <string name="image_bottom_sheet_gallery">Choose from galerry</string>
 
     <plurals name="snackbar_message_notes_restored">
         <item quantity="one">Note restored</item>
