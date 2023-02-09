@@ -72,9 +72,9 @@ class NotesListAdapter(
             }
         }
 
-         fun setImage(note: Note) {
-             val imageView = itemView.findViewById<ImageView>(R.id.item_note_image)
-             imageView.visibility = if (note.hasImage) View.VISIBLE else View.GONE
+        fun setImage(note: Note) {
+            val imageView = itemView.findViewById<ImageView>(R.id.item_note_image)
+            imageView.visibility = if (note.hasImage) View.VISIBLE else View.GONE
 
             if (!note.imageUrl.isNullOrEmpty()) {
                 imageView.apply {

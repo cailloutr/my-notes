@@ -37,8 +37,10 @@ class NotesListViewModel(
     private val _note = MutableLiveData<Note?>(null)
     val note: LiveData<Note?> = _note
 
-    var layoutMode: LayoutMode = LayoutMode.STAGGERED_GRID_LAYOUT
+    private val _hasImage = MutableLiveData<Boolean>(false)
+    val hasImage: LiveData<Boolean> = _hasImage
 
+    var layoutMode: LayoutMode = LayoutMode.STAGGERED_GRID_LAYOUT
 
     private fun getAllNotes() = repository.getAllSavedNotes()
 
@@ -70,10 +72,23 @@ class NotesListViewModel(
         return file
     }
 
-    //TODO: Delete Image
+    fun deleteImageInAppSpecificAlbumStorageDir(context: Context) {
+        val path = getImagePath(context)
+        val file = File(path)
+
+        if (file.exists()) {
+            try {
+                val fileDeleted = file.delete()
+                Log.d(TAG, "deleteImageInAppSpecificAlbumStorageDir: $fileDeleted")
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     fun saveImageInAppSpecificAlbumStorageDir(bitmap: Bitmap?, context: Context): String {
         var baos: OutputStream? = null
-        val path = "${getAppSpecificAlbumStorageDir(context)}/${note.value?.id}.jpg"
+        val path = getImagePath(context)
         val file = File(path)
         try {
             baos = FileOutputStream(file)
@@ -95,6 +110,9 @@ class NotesListViewModel(
 
         return path
     }
+
+    fun getImagePath(context: Context) =
+        "${getAppSpecificAlbumStorageDir(context)}/${note.value?.id}.jpg"
 
 /*    fun swipePositions(initPosition: Long, finalPosition: Long) {
         viewModelScope.launch {
@@ -193,19 +211,32 @@ class NotesListViewModel(
         }
     }
 
-    fun updateViewModelNote(title: String = "", description: String, imagePath: String = "") {
+    fun updateViewModelNote(
+        title: String = "",
+        description: String,
+        imagePath: String = "",
+        hasImage: Boolean? = false
+    ) {
         _note.value?.title = title
         _note.value?.description = description
         _note.value?.modifiedDate = DateUtil.getFormattedDate()
         _note.value?.imageUrl = imagePath
+        hasImage?.let {
+            _note.value?.hasImage = hasImage
+        }
     }
 
     fun updateViewModelNoteHasImage(hasImage: Boolean) {
-        _note.value?.hasImage = hasImage
+        setHasImageValue(hasImage)
+    }
+
+    private fun setHasImageValue(hasImage: Boolean) {
+        _hasImage.value = hasImage
     }
 
     fun loadNote(note: Note) {
         _note.value = note
+        setHasImageValue(note.hasImage)
     }
 
     fun clearNote() {

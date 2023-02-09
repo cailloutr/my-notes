@@ -54,6 +54,7 @@
     <string name="fragment_new_note_option_photo">Add new photo</string>
     <string name="image_bottom_sheet_camera">Take a photo</string>
     <string name="image_bottom_sheet_gallery">Choose from galerry</string>
+    <string name="fragment_new_note_delete_content_description">Close / Delete image</string>
 
     <plurals name="snackbar_message_notes_restored">
         <item quantity="one">Note restored</item>

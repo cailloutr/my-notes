@@ -21,17 +21,34 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <ImageView
-        android:id="@+id/fragment_new_note_image"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/fragment_new_note_image_container"
         android:layout_width="0dp"
         android:layout_height="250dp"
-        android:contentDescription="@string/fragment_new_note_image_content_desc"
-        android:scaleType="centerCrop"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        tools:src="@tools:sample/avatars" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <ImageView
+            android:id="@+id/fragment_new_note_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/fragment_new_note_image_content_desc"
+            android:scaleType="centerCrop"
+            tools:src="@tools:sample/avatars" />
+
+        <ImageButton
+            android:id="@+id/fragment_new_note_image_delete"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="end"
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_image"
+            android:backgroundTint="@color/amber_500"
+            android:contentDescription="@string/fragment_new_note_delete_content_description"
+            android:src="@drawable/ic_close" />
+    </androidx.cardview.widget.CardView>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/fragment_new_note_textInput_title"
@@ -41,7 +58,7 @@
         android:layout_margin="@dimen/border_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fragment_new_note_image">
+        app:layout_constraintTop_toBottomOf="@id/fragment_new_note_image_container">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/fragment_new_note_textInput_edittext_title"

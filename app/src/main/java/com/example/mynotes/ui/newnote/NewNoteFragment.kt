@@ -83,7 +83,7 @@ class NewNoteFragment : Fragment() {
                 // Callback is invoked after the user selects a media item or closes the
                 // photo picker.
                 if (uri != null) {
-                    binding.fragmentNewNoteImage.visibility = View.VISIBLE
+                    binding.fragmentNewNoteImageContainer.visibility = View.VISIBLE
                     binding.fragmentNewNoteImage.loadImage(uri)
 
                     viewModel.updateViewModelNoteHasImage(true)
@@ -115,8 +115,15 @@ class NewNoteFragment : Fragment() {
             viewModel.createEmptyNote()
         }*/
 
+        setupDeleteImageButton()
         loadNoteFromViewModel()
         setupBottomSheet()
+    }
+
+    private fun setupDeleteImageButton() {
+        binding.fragmentNewNoteImageDelete.setOnClickListener {
+            viewModel.updateViewModelNoteHasImage(false)
+        }
     }
 
     private fun setupBottomSheet() {
@@ -235,10 +242,9 @@ class NewNoteFragment : Fragment() {
             binding.fragmentNewNoteDate.text = it?.modifiedDate
             setThemeColors(it?.color)
 
-            if (!it?.imageUrl.isNullOrEmpty()) {
-                binding.fragmentNewNoteImage.apply {
-                    visibility = View.VISIBLE
-                    loadEndImage(it?.imageUrl, it?.imageUrl!!)
+            if (it?.hasImage == true) {
+                if (!it.imageUrl.isNullOrEmpty()) {
+                    binding.fragmentNewNoteImage.loadEndImage(it.imageUrl, it.imageUrl!!)
                 }
             }
 
@@ -249,6 +255,14 @@ class NewNoteFragment : Fragment() {
                     fragmentNewNoteOptionsColors.isEnabled = false
                     fragmentNewNoteOptionsPhoto.isEnabled = false
                 }
+            }
+        }
+
+        viewModel.hasImage.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.fragmentNewNoteImageContainer.visibility = View.VISIBLE
+            } else {
+                binding.fragmentNewNoteImageContainer.visibility = View.GONE
             }
         }
     }
@@ -293,18 +307,20 @@ class NewNoteFragment : Fragment() {
                 getString(R.string.notes_list_fragment_toast_empty_note)
             )
         } else {
-            val imagePath = if (viewModel.note.value?.hasImage == true) {
+            val imagePath = if (viewModel.hasImage.value == true) {
                 val imageView = binding.fragmentNewNoteImage
                 val bitmap = imageView.drawable.toBitmapOrNull(250, 250)
                 viewModel.saveImageInAppSpecificAlbumStorageDir(bitmap, requireContext())
             } else {
+                viewModel.deleteImageInAppSpecificAlbumStorageDir(requireContext())
                 ""
             }
 
             viewModel.updateViewModelNote(
                 title = title.toString(),
                 description = description.toString(),
-                imagePath = imagePath
+                imagePath = imagePath,
+                hasImage = viewModel.hasImage.value
             )
             viewModel.saveNote()
         }
