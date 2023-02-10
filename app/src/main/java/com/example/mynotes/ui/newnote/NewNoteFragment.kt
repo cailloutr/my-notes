@@ -27,7 +27,6 @@ import com.example.mynotes.ui.bottomsheet.ImageBottomSheet
 import com.example.mynotes.ui.bottomsheet.NoteOptionModalBottomSheet
 import com.example.mynotes.ui.bottomsheet.colors.ColorsBottomSheet
 import com.example.mynotes.ui.enums.FragmentMode
-import com.example.mynotes.ui.extensions.loadEndImage
 import com.example.mynotes.ui.extensions.loadImage
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.util.AppBarColorUtil
@@ -244,7 +243,8 @@ class NewNoteFragment : Fragment() {
 
             if (it?.hasImage == true) {
                 if (!it.imageUrl.isNullOrEmpty()) {
-                    binding.fragmentNewNoteImage.loadEndImage(it.imageUrl, it.imageUrl!!)
+//                    binding.fragmentNewNoteImage.loadEndImage(it.imageUrl, it.imageUrl!!)
+                    binding.fragmentNewNoteImage.loadImage(it.imageUrl)
                 }
             }
 

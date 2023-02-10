@@ -22,7 +22,7 @@ import com.example.mynotes.database.model.Note
 import com.example.mynotes.databinding.ItemNoteLinearLayoutBinding
 import com.example.mynotes.databinding.ItemNoteStaggeredLayoutBinding
 import com.example.mynotes.ui.enums.LayoutMode
-import com.example.mynotes.ui.extensions.loadStartImage
+import com.example.mynotes.ui.extensions.loadImage
 
 //private const val TAG: String = "NoteListAdapter"
 
@@ -78,7 +78,8 @@ class NotesListAdapter(
 
             if (!note.imageUrl.isNullOrEmpty()) {
                 imageView.apply {
-                    loadStartImage(note.imageUrl, "${note.imageUrl}")
+//                    loadStartImage(note.imageUrl, "${note.imageUrl}")
+                    loadImage(note.imageUrl)
                 }
             }
         }
