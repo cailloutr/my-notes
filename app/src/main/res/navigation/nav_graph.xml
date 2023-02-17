@@ -39,6 +39,9 @@
             app:destination="@id/trashFragment"
             app:popUpTo="@id/trashFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_newNoteFragment_to_imageFullScreenFragment2"
+            app:destination="@id/imageFullScreenFragment2" />
     </fragment>
     <fragment
         android:id="@+id/trashFragment"
@@ -48,5 +51,16 @@
         <action
             android:id="@+id/action_trashFragment_to_newNoteFragment"
             app:destination="@id/newNoteFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/imageFullScreenFragment2"
+        android:name="com.example.mynotes.ui.newnote.ImageFullScreenFragment"
+        tools:layout="@layout/fragment_image_full_screen">
+        <argument
+            android:name="imageUrl"
+            app:argType="string" />
+        <argument
+            android:name="color"
+            app:argType="integer" />
     </fragment>
 </navigation>

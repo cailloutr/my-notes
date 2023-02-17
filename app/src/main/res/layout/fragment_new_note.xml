@@ -34,8 +34,11 @@
             android:id="@+id/fragment_new_note_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clickable="true"
             android:contentDescription="@string/fragment_new_note_image_content_desc"
+            android:focusable="true"
             android:scaleType="centerCrop"
+            android:transitionName="new_note_image"
             tools:src="@tools:sample/avatars" />
 
         <ImageButton

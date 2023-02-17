@@ -65,4 +65,6 @@
         <item quantity="one">Note deleted</item>
         <item quantity="other">Notes deleted</item>
     </plurals>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

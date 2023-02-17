@@ -2,8 +2,7 @@
 <resources>
 
     <style name="Widget.MyNotes.TextView.Title" parent="Widget.MaterialComponents.TextView">
-        <item
-            name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline4
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Headline4
         </item>
     </style>
 
@@ -15,8 +14,7 @@
         <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Caption</item>
     </style>
 
-    <style name="Widget.MyNotes.TextInputLayout.CircularOutlinedBox"
-        parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+    <style name="Widget.MyNotes.TextInputLayout.CircularOutlinedBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
         <item name="boxCornerRadiusBottomEnd">@dimen/fragment_notes_list_text_input_radius</item>
         <item name="boxCornerRadiusBottomStart">@dimen/fragment_notes_list_text_input_radius</item>
         <item name="boxCornerRadiusTopEnd">@dimen/fragment_notes_list_text_input_radius</item>
@@ -27,21 +25,18 @@
     </style>
 
 
-    <style name="Widget.MyNotes.TextInputLayout.OutlinedBox.BorderlessEditText"
-        parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="Widget.MyNotes.TextInputLayout.OutlinedBox.BorderlessEditText" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeWidth">0dp</item>
         <item name="boxStrokeWidthFocused">0dp</item>
         <item name="hintEnabled">false</item>
     </style>
 
-    <style name="Widget.MyNotes.TextInputEditText.OutlinedBox.BorderlessEditText.Title"
-        parent="Widget.MyNotes.TextView.Title">
+    <style name="Widget.MyNotes.TextInputEditText.OutlinedBox.BorderlessEditText.Title" parent="Widget.MyNotes.TextView.Title">
         <item name="android:inputType">textMultiLine</item>
         <item name="maxHeight">@dimen/fragment_new_note_edittext_title_max_height</item>
     </style>
 
-    <style name="Widget.MyNotes.TextInputEditText.OutlinedBox.BorderlessEditText.Description"
-        parent="Widget.MyNotes.TextView.Description">
+    <style name="Widget.MyNotes.TextInputEditText.OutlinedBox.BorderlessEditText.Description" parent="Widget.MyNotes.TextView.Description">
         <item name="android:inputType">textMultiLine</item>
         <item name="android:gravity">top</item>
     </style>
@@ -116,6 +111,17 @@
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/white</item>
         <item name="colorOnPrimary">@color/black</item>
+    </style>
+
+    <style name="Widget.Theme.MyNotes.ButtonBar.Fullscreen" parent="">
+        <item name="android:background">@color/black_overlay</item>
+        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
+    </style>
+    
+    <style name="Widget.MyNotes.Toolbar.Transparent" parent="Widget.AppCompat.Toolbar">
+        <item name="backgroundColor">@android:color/transparent</item>
+        <item name="titleTextAppearance">?attr/textAppearanceHeadline6</item>
+        <item name="subtitleTextAppearance">?attr/textAppearanceSubtitle1</item>
     </style>
 
 </resources>

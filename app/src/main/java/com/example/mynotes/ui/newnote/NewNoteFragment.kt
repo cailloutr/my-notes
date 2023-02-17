@@ -13,6 +13,7 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
@@ -217,10 +218,6 @@ class NewNoteFragment : Fragment() {
         val colorId = color ?: ContextCompat.getColor(requireContext(), R.color.white)
         binding.root.setBackgroundColor(colorId)
         AppBarColorUtil.changeAppBarColor(activity as AppCompatActivity, colorId)
-        /*  (activity as AppCompatActivity).apply {
-            window.statusBarColor = colorId
-            window.navigationBarColor = colorId
-        }*/
     }
 
     private fun setupAppBar() {
@@ -235,16 +232,31 @@ class NewNoteFragment : Fragment() {
     }
 
     private fun loadNoteFromViewModel() {
-        viewModel.note.observe(viewLifecycleOwner) {
-            binding.fragmentNewNoteTextInputEdittextTitle.setText(it?.title)
-            binding.fragmentNewNoteTextInputEdittextDescription.setText(it?.description)
-            binding.fragmentNewNoteDate.text = it?.modifiedDate
-            setThemeColors(it?.color)
+        viewModel.note.observe(viewLifecycleOwner) { note ->
+            binding.fragmentNewNoteTextInputEdittextTitle.setText(note?.title)
+            binding.fragmentNewNoteTextInputEdittextDescription.setText(note?.description)
+            binding.fragmentNewNoteDate.text = note?.modifiedDate
+            setThemeColors(note?.color)
 
-            if (it?.hasImage == true) {
-                if (!it.imageUrl.isNullOrEmpty()) {
+            if (note?.hasImage == true) {
+                if (!note.imageUrl.isNullOrEmpty()) {
 //                    binding.fragmentNewNoteImage.loadEndImage(it.imageUrl, it.imageUrl!!)
-                    binding.fragmentNewNoteImage.loadImage(it.imageUrl)
+                    binding.fragmentNewNoteImage.loadImage(note.imageUrl)
+
+                    binding.fragmentNewNoteImage.setOnClickListener {
+                        val navigatorExtras = FragmentNavigatorExtras(
+                            binding.fragmentNewNoteImage to "full_screen_image"
+                        )
+
+                        val color = note.color ?: R.color.white
+                        findNavController().navigate(
+                            NewNoteFragmentDirections.actionNewNoteFragmentToImageFullScreenFragment2(
+                                note.imageUrl.toString(),
+                                color
+                            ),
+                            navigatorExtras
+                        )
+                    }
                 }
             }
 

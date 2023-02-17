@@ -31,6 +31,7 @@ import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 // TODO: Image notes - Take a photo or choose from the gallery
+// TODO: Change the id of the model to use UUID
 // TODO: Other options like add checkBoxes for each note as a shopping list
 // TODO: Add markers like topics
 // TODO: Share option

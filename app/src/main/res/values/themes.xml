@@ -10,7 +10,7 @@
         <item name="colorSecondaryVariant">@color/red_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <!-- Customize your theme here. -->
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
@@ -26,5 +26,10 @@
 
     <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
+    </style>
+
+    <style name="ThemeOverlay.MyNotes.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/black</item>
+        <item name="fullscreenTextColor">@color/white</item>
     </style>
 </resources>
