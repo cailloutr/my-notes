@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmapOrNull
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -108,7 +109,10 @@ class NewNoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        WindowUtil.setNoLimitsWindow(requireActivity() as AppCompatActivity)
+//        WindowUtil.setNoLimitsWindow(requireActivity() as AppCompatActivity)
+
+        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
+        WindowUtil.implementsSystemBarInsets(binding.toolbar, binding.fragmentNewNoteFooter)
         setupMenu()
 
 /*        if (fragmentMode == FragmentMode.FRAGMENT_NEW) {
@@ -240,7 +244,6 @@ class NewNoteFragment : Fragment() {
 
             if (note?.hasImage == true) {
                 if (!note.imageUrl.isNullOrEmpty()) {
-//                    binding.fragmentNewNoteImage.loadEndImage(it.imageUrl, it.imageUrl!!)
                     binding.fragmentNewNoteImage.loadImage(note.imageUrl)
 
                     binding.fragmentNewNoteImage.setOnClickListener {

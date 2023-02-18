@@ -5,10 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -18,6 +16,7 @@ import com.example.mynotes.databinding.FragmentImageFullScreenBinding
 import com.example.mynotes.ui.extensions.loadImage
 import com.example.mynotes.util.AppBarColorUtil
 import com.example.mynotes.util.NoteItemAnimationUtil
+import com.example.mynotes.util.WindowUtil.Companion.implementsStatusBarInsets
 
 //private const val TAG = "ImageFullScreenFragment"
 
@@ -63,7 +62,7 @@ class ImageFullScreenFragment : Fragment() {
 //        WindowUtil.setNoLimitsWindow(requireActivity() as AppCompatActivity)
 
         WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
-        implementsStatusBarInsets()
+        implementsStatusBarInsets(binding.toolbar)
         setThemeColor()
 
         binding.fragmentImageFullScreenImage.loadImage(args.imageUrl)
@@ -85,25 +84,6 @@ class ImageFullScreenFragment : Fragment() {
         }
     }
 
-    private fun implementsStatusBarInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { view, windowInsets ->
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-            // Apply the insets as a margin to the view. Here the system is setting
-            // only the bottom, left, and right dimensions, but apply whichever insets are
-            // appropriate to your layout. You can also update the view padding
-            // if that's more appropriate.
-
-
-            view.updatePadding(
-                top = insets.top,
-            )
-
-            // Return CONSUMED if you don't want want the window insets to keep being
-            // passed down to descendant views.
-            WindowInsetsCompat.CONSUMED
-        }
-    }
-
     private fun setThemeColor() {
         val colorId = args.color
         AppBarColorUtil.changeAppBarColor(activity as AppCompatActivity, colorId)
@@ -114,7 +94,6 @@ class ImageFullScreenFragment : Fragment() {
         val navController = findNavController()
         val appBarConfiguration = AppBarConfiguration(navController.graph)
         binding.toolbar.setupWithNavController(navController, appBarConfiguration)
-        AppBarColorUtil.resetSystemBarColor(requireActivity() as AppCompatActivity)
     }
 
     override fun onDestroyView() {

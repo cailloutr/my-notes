@@ -19,8 +19,6 @@ import com.example.mynotes.databinding.FragmentTrashBinding
 import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.noteslist.NotesListAdapter
 import com.example.mynotes.ui.viewModel.NotesListViewModel
-import com.example.mynotes.util.AppBarColorUtil
-import com.example.mynotes.util.WindowUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -53,18 +51,13 @@ class TrashFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        WindowUtil.resetWindow(requireActivity() as AppCompatActivity)
+//        WindowUtil.resetWindow(requireActivity() as AppCompatActivity)
 
         postponeEnterTransition()
         setuptAppBar()
         setupMenu()
         setupAdapter()
         loadNotesList()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        AppBarColorUtil.resetSystemBarColor(activity as AppCompatActivity)
     }
 
     private fun setuptAppBar() {

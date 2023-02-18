@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.util.size
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.core.view.WindowCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -24,7 +25,6 @@ import com.example.mynotes.databinding.FragmentNotesListBinding
 import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.enums.LayoutMode
 import com.example.mynotes.ui.viewModel.NotesListViewModel
-import com.example.mynotes.util.AppBarColorUtil.Companion.resetSystemBarColor
 import com.example.mynotes.util.ToastUtil
 import com.example.mynotes.util.WindowUtil
 import com.google.android.material.snackbar.Snackbar
@@ -58,6 +58,8 @@ class NotesListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewModel.updateViewModelNoteHasImage(false)
 
         sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) as SharedPreferences
         getSharedPreferenceLayoutMode()
@@ -122,7 +124,9 @@ class NotesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        WindowUtil.resetWindow(requireActivity() as AppCompatActivity)
+//        WindowUtil.resetWindow(requireActivity() as AppCompatActivity)
+        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
+        WindowUtil.implementsSystemBarInsets(binding.toolbar, binding.fragmentNotesListFooter)
 
         postponeEnterTransition()
         setupMenu()
@@ -133,7 +137,7 @@ class NotesListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        resetSystemBarColor(activity as AppCompatActivity)
+//        resetSystemBarColor(activity as AppCompatActivity)
     }
 
     private fun setupAppBar() {

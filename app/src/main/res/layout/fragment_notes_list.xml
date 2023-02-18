@@ -9,7 +9,6 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
         style="@style/Widget.MyNotes.Toolbar">
 
         <androidx.appcompat.widget.Toolbar
@@ -38,6 +37,7 @@
         tools:listitem="@layout/item_note_staggered_layout" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fragment_notes_list_footer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -90,7 +90,5 @@
                 android:contentDescription="@string/fragment_notes_button_add_new_note_content_description"
                 android:src="@drawable/ic_add" />
         </androidx.cardview.widget.CardView>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
