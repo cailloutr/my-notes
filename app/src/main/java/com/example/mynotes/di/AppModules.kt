@@ -1,5 +1,7 @@
 package com.example.mynotes.di
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.database.AppDatabase
@@ -11,6 +13,7 @@ import com.example.mynotes.ui.newnote.NewNoteFragment
 import com.example.mynotes.ui.noteslist.NotesListFragment
 import com.example.mynotes.ui.trash.TrashFragment
 import com.example.mynotes.ui.viewModel.NotesListViewModel
+import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -22,7 +25,7 @@ val uiModule = module {
 }
 
 val viewModelModule = module {
-    viewModel<NotesListViewModel> { NotesListViewModel(get()) }
+    viewModel<NotesListViewModel> { NotesListViewModel(get(), get()) }
 }
 
 val databaseModule = module {
@@ -38,6 +41,7 @@ val databaseModule = module {
     single<NoteDao> { get<AppDatabase>().notesDao() }
     single<MyNotesMigrations> { MyNotesMigrations() }
     single<NotesRepository> { NotesRepository(get()) }
+    single<SharedPreferences> { androidApplication().getSharedPreferences("default", Context.MODE_PRIVATE) }
 }
 
 val applicationModule = module {

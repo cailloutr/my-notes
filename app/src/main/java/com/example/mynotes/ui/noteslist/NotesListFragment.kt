@@ -1,8 +1,7 @@
 package com.example.mynotes.ui.noteslist
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -22,29 +21,28 @@ import com.example.mynotes.databinding.FragmentNotesListBinding
 import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.enums.LayoutMode
 import com.example.mynotes.ui.viewModel.NotesListViewModel
+import com.example.mynotes.util.ToastUtil
 import com.example.mynotes.util.windowinsets.InsetsWithKeyboardAnimationCallback
 import com.example.mynotes.util.windowinsets.InsetsWithKeyboardCallback
-import com.example.mynotes.util.ToastUtil
 import com.example.mynotes.util.windowinsets.WindowUtil
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
-// TODO: Image notes - Take a photo or choose from the gallery
-// TODO: Change the id of the model to use UUID
+// TODO: Image notes - Take a photo
 // TODO: Other options like add checkBoxes for each note as a shopping list
 // TODO: Add markers like topics
 // TODO: Share option
 // TODO: Archive item on swipe
 // TODO: auto clear the trash
+// TODO: lembretes
 
-//private const val TAG: String = "NoteListFragment"
+private const val TAG: String = "NoteListFragment"
 
 class NotesListFragment : Fragment() {
     private lateinit var adapter: NotesListAdapter
     private var _binding: FragmentNotesListBinding? = null
     val binding get() = _binding!!
 
-    lateinit var sharedPref: SharedPreferences
     private var actionMode: ActionMode? = null
 
 /*    private val viewModel: NotesListViewModel by activityViewModels {
@@ -59,10 +57,6 @@ class NotesListFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         viewModel.updateViewModelNoteHasImage(false)
-
-        sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) as SharedPreferences
-        getSharedPreferenceLayoutMode()
-
 /*        lifecycleScope.launch {
 
             val preferences = context?.dataStore?.data
@@ -91,25 +85,6 @@ class NotesListFragment : Fragment() {
         }
     }*/
 
-    private fun getSharedPreferenceLayoutMode() {
-        val defaultSharedPrefValue: String = LayoutMode.STAGGERED_GRID_LAYOUT.name
-
-        if (!(sharedPref.contains(getString(R.string.pref_key_layout_manager)))) {
-            saveOptionInSharedPreferences()
-        }
-
-        val layout: String = sharedPref.getString(
-            getString(R.string.pref_key_layout_manager),
-            defaultSharedPrefValue
-        ).toString()
-
-        viewModel.layoutMode = if (layout == LayoutMode.STAGGERED_GRID_LAYOUT.name) {
-            LayoutMode.STAGGERED_GRID_LAYOUT
-        } else {
-            LayoutMode.LINEAR_LAYOUT
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -123,6 +98,9 @@ class NotesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.i(TAG, "onViewCreated: Fragment")
+
+        viewModel.getSharedPreferenceLayoutMode(requireContext())
 
         setupEdgeToEdgeLayout()
 
@@ -203,22 +181,13 @@ class NotesListFragment : Fragment() {
 /*                    lifecycleScope.launch {
                         saveLayoutModeInDataStore()
                     }*/
-                    saveOptionInSharedPreferences()
+                    viewModel.saveOptionInSharedPreferences(requireContext())
                 }
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    private fun saveOptionInSharedPreferences() {
-        val sharedPrefEditor = sharedPref.edit()
-        sharedPrefEditor.putString(
-            getString(R.string.pref_key_layout_manager),
-            viewModel.layoutMode.name
-        )
-
-        sharedPrefEditor.apply()
-    }
 
     private fun setLayoutModeIcon(menuItem: MenuItem?) {
         if (menuItem == null) return

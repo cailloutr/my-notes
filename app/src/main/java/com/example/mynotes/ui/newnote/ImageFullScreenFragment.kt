@@ -58,15 +58,14 @@ class ImageFullScreenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar()
 
-//        WindowUtil.resetWindow(requireActivity() as AppCompatActivity)
-//        WindowUtil.setNoLimitsWindow(requireActivity() as AppCompatActivity)
-
-        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
-        implementsStatusBarInsets(binding.toolbar)
-        setThemeColor()
+        setupEdgeToEdgeLayout()
 
         binding.fragmentImageFullScreenImage.loadImage(args.imageUrl)
 
+        setupTapToHideShowSystemBars()
+    }
+
+    private fun setupTapToHideShowSystemBars() {
         binding.fragmentImageFullScreenImage.onSimpleTapListener = {
             val window = requireActivity().window
             val windowInsetsController =
@@ -82,6 +81,12 @@ class ImageFullScreenFragment : Fragment() {
                 (requireActivity() as AppCompatActivity).supportActionBar?.show()
             }
         }
+    }
+
+    private fun setupEdgeToEdgeLayout() {
+        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
+        implementsStatusBarInsets(binding.toolbar)
+        setThemeColor()
     }
 
     private fun setThemeColor() {

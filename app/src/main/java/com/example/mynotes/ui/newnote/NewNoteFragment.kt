@@ -109,10 +109,8 @@ class NewNoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        WindowUtil.setNoLimitsWindow(requireActivity() as AppCompatActivity)
 
-        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
-        WindowUtil.implementsSystemBarInsets(binding.toolbar, binding.fragmentNewNoteFooter)
+        setupEdgeToEdgeLayout()
         setupMenu()
 
 /*        if (fragmentMode == FragmentMode.FRAGMENT_NEW) {
@@ -122,6 +120,11 @@ class NewNoteFragment : Fragment() {
         setupDeleteImageButton()
         loadNoteFromViewModel()
         setupBottomSheet()
+    }
+
+    private fun setupEdgeToEdgeLayout() {
+        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
+        WindowUtil.implementsSystemBarInsets(binding.toolbar, binding.fragmentNewNoteFooter)
     }
 
     private fun setupDeleteImageButton() {

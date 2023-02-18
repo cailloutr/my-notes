@@ -1,6 +1,7 @@
 package com.example.mynotes.ui.viewModel
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.os.Environment
 import android.util.Log
@@ -8,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mynotes.R
 import com.example.mynotes.database.model.Note
 import com.example.mynotes.database.repository.NotesRepository
 import com.example.mynotes.ui.enums.FragmentMode
@@ -19,7 +21,8 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 
 class NotesListViewModel(
-    private val repository: NotesRepository
+    private val repository: NotesRepository,
+    private val sharedPref: SharedPreferences
 ) : ViewModel() {
     private val TAG: String = "NoteListViewModel"
     private val ALBUM_NAME = "notes"
@@ -37,7 +40,7 @@ class NotesListViewModel(
     private val _note = MutableLiveData<Note?>(null)
     val note: LiveData<Note?> = _note
 
-    private val _hasImage = MutableLiveData<Boolean>(false)
+    private val _hasImage = MutableLiveData(false)
     val hasImage: LiveData<Boolean> = _hasImage
 
     var layoutMode: LayoutMode = LayoutMode.STAGGERED_GRID_LAYOUT
@@ -47,16 +50,6 @@ class NotesListViewModel(
     private fun getTrash() = repository.getAllTrashNotes()
 
     fun saveNote() {
-        /*        if (note.value?.id == null) {
-            viewModelScope.launch {
-                note.value?.let { repository.insert(it) }
-            }
-        } else {
-            viewModelScope.launch {
-                note.value?.let { repository.update(it) }
-            }
-        }*/
-
         viewModelScope.launch {
             note.value?.let { repository.insert(it) }
         }
@@ -259,6 +252,36 @@ class NotesListViewModel(
             modifiedDate = null,
             isTrash = false
         )
+        updateViewModelNoteHasImage(_note.value!!.hasImage)
+    }
+
+    fun getSharedPreferenceLayoutMode(context: Context) {
+        val defaultSharedPrefValue: String = LayoutMode.STAGGERED_GRID_LAYOUT.name
+
+        if (!(sharedPref.contains(context.getString(R.string.pref_key_layout_manager)))) {
+            saveOptionInSharedPreferences(context)
+        }
+
+        val layout: String = sharedPref.getString(
+            context.getString(R.string.pref_key_layout_manager),
+            defaultSharedPrefValue
+        ).toString()
+
+        layoutMode = if (layout == LayoutMode.STAGGERED_GRID_LAYOUT.name) {
+            LayoutMode.STAGGERED_GRID_LAYOUT
+        } else {
+            LayoutMode.LINEAR_LAYOUT
+        }
+    }
+
+    fun saveOptionInSharedPreferences(context: Context) {
+        val sharedPrefEditor = sharedPref.edit()
+        sharedPrefEditor.putString(
+            context.getString(R.string.pref_key_layout_manager),
+            layoutMode.name
+        )
+
+        sharedPrefEditor.apply()
     }
 
 }
