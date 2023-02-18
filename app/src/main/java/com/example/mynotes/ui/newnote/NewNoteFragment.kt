@@ -34,7 +34,7 @@ import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.util.AppBarColorUtil
 import com.example.mynotes.util.NoteItemAnimationUtil
 import com.example.mynotes.util.ToastUtil
-import com.example.mynotes.util.WindowUtil
+import com.example.mynotes.util.windowinsets.WindowUtil
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 

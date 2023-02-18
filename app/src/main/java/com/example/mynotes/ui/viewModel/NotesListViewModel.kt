@@ -162,8 +162,7 @@ class NotesListViewModel(
         }
     }
 
-    // Return false if Note don't exist
-    fun deleteNote(): Boolean {
+    fun deleteNote() {
         if (note.value?.isTrash == true) {
             viewModelScope.launch {
                 note.value?.let {
@@ -171,9 +170,7 @@ class NotesListViewModel(
                 }
             }
         }
-
         clearNote()
-        return true
     }
 
     fun deleteSelectedNotes(listOfItemToDelete: List<Note>) {

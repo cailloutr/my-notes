@@ -16,7 +16,7 @@ import com.example.mynotes.databinding.FragmentImageFullScreenBinding
 import com.example.mynotes.ui.extensions.loadImage
 import com.example.mynotes.util.AppBarColorUtil
 import com.example.mynotes.util.NoteItemAnimationUtil
-import com.example.mynotes.util.WindowUtil.Companion.implementsStatusBarInsets
+import com.example.mynotes.util.windowinsets.WindowUtil.Companion.implementsStatusBarInsets
 
 //private const val TAG = "ImageFullScreenFragment"
 

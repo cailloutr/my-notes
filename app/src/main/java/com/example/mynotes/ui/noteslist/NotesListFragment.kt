@@ -7,10 +7,7 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.util.size
-import androidx.core.view.MenuHost
-import androidx.core.view.MenuProvider
-import androidx.core.view.WindowCompat
-import androidx.core.view.doOnPreDraw
+import androidx.core.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -25,8 +22,10 @@ import com.example.mynotes.databinding.FragmentNotesListBinding
 import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.enums.LayoutMode
 import com.example.mynotes.ui.viewModel.NotesListViewModel
+import com.example.mynotes.util.windowinsets.InsetsWithKeyboardAnimationCallback
+import com.example.mynotes.util.windowinsets.InsetsWithKeyboardCallback
 import com.example.mynotes.util.ToastUtil
-import com.example.mynotes.util.WindowUtil
+import com.example.mynotes.util.windowinsets.WindowUtil
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
@@ -124,9 +123,10 @@ class NotesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        WindowUtil.resetWindow(requireActivity() as AppCompatActivity)
-        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
-        WindowUtil.implementsSystemBarInsets(binding.toolbar, binding.fragmentNotesListFooter)
+
+        setupEdgeToEdgeLayout()
+
+        moveFooterWIthKeyboard()
 
         postponeEnterTransition()
         setupMenu()
@@ -135,9 +135,22 @@ class NotesListFragment : Fragment() {
         setupEditTextExpandViewButton()
     }
 
-    override fun onResume() {
-        super.onResume()
-//        resetSystemBarColor(activity as AppCompatActivity)
+    private fun moveFooterWIthKeyboard() {
+        val insetsWithKeyboardCallback = InsetsWithKeyboardCallback(requireActivity().window)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root, insetsWithKeyboardCallback)
+        ViewCompat.setWindowInsetsAnimationCallback(binding.root, insetsWithKeyboardCallback)
+
+        val insetsWithKeyboardAnimationCallback =
+            InsetsWithKeyboardAnimationCallback(binding.fragmentNotesListFooter)
+        ViewCompat.setWindowInsetsAnimationCallback(
+            binding.fragmentNotesListFooter,
+            insetsWithKeyboardAnimationCallback
+        )
+    }
+
+    private fun setupEdgeToEdgeLayout() {
+        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
+        WindowUtil.implementsSystemBarInsets(binding.toolbar, binding.fragmentNotesListFooter)
     }
 
     private fun setupAppBar() {

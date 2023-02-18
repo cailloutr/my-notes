@@ -1,4 +1,4 @@
-package com.example.mynotes.util
+package com.example.mynotes.util.windowinsets
 
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
