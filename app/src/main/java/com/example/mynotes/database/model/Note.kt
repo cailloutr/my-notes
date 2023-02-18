@@ -4,10 +4,11 @@ import androidx.annotation.ColorRes
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.UUID
 
 @Entity
 data class Note(
-    @PrimaryKey(autoGenerate = true) val id: Long? = null,
+    @PrimaryKey val id: String = UUID.randomUUID().toString(),
     var title: String? = "",
     var description: String? = "",
     @ColumnInfo(name = "modified_data") var modifiedDate: String?,

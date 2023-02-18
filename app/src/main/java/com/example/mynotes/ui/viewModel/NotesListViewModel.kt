@@ -47,7 +47,7 @@ class NotesListViewModel(
     private fun getTrash() = repository.getAllTrashNotes()
 
     fun saveNote() {
-        if (note.value?.id == null) {
+        /*        if (note.value?.id == null) {
             viewModelScope.launch {
                 note.value?.let { repository.insert(it) }
             }
@@ -55,6 +55,10 @@ class NotesListViewModel(
             viewModelScope.launch {
                 note.value?.let { repository.update(it) }
             }
+        }*/
+
+        viewModelScope.launch {
+            note.value?.let { repository.insert(it) }
         }
     }
 

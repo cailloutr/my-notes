@@ -3,7 +3,6 @@ package com.example.mynotes.database.dao
 import androidx.room.*
 import com.example.mynotes.database.model.Note
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 
 @Dao
 interface NoteDao {
@@ -51,7 +50,7 @@ interface NoteDao {
     @Query("UPDATE Note SET position = (id)")
     suspend fun insertPosition()
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(note: Note)
 
     @Update

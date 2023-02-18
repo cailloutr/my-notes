@@ -51,7 +51,6 @@ class TrashFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        WindowUtil.resetWindow(requireActivity() as AppCompatActivity)
 
         postponeEnterTransition()
         setuptAppBar()

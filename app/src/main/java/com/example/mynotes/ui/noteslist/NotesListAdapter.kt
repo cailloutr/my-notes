@@ -49,16 +49,16 @@ class NotesListAdapter(
 
         open fun bind(note: Note, isSelected: Boolean) {
             ViewCompat.setTransitionName(
-                title, note.id.toString() + note.title
+                title, note.id + "_title"
             )
             ViewCompat.setTransitionName(
-                description, note.id.toString() + note.description
+                description, note.id + "_description"
             )
             ViewCompat.setTransitionName(
-                container, note.id.toString() + "_container"
+                container, note.id + "_container"
             )
             ViewCompat.setTransitionName(
-                image, note.id.toString() + note.imageUrl
+                image, note.id + "_image"
             )
         }
 
