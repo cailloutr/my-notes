@@ -1,14 +1,14 @@
 package com.example.mynotes.ui.newnote
 
-import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.*
-import android.view.ScaleGestureDetector.SimpleOnScaleGestureListener
-import androidx.annotation.RequiresApi
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.*
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -18,24 +18,15 @@ import com.example.mynotes.databinding.FragmentImageFullScreenBinding
 import com.example.mynotes.ui.extensions.loadImage
 import com.example.mynotes.util.AppBarColorUtil
 import com.example.mynotes.util.NoteItemAnimationUtil
-import kotlin.math.max
-import kotlin.math.min
 
-private const val TAG = "ImageFullScreenFragment"
+//private const val TAG = "ImageFullScreenFragment"
 
-class ImageFullScreenFragment
-    : Fragment(),
-    GestureDetector.OnGestureListener {
+class ImageFullScreenFragment : Fragment() {
 
     private var _binding: FragmentImageFullScreenBinding? = null
     val binding get() = _binding!!
 
     private val args: ImageFullScreenFragmentArgs by navArgs()
-
-    private lateinit var scaleGestureDetector: ScaleGestureDetector
-    private var FACTOR = 1.0f
-
-    private lateinit var gestureDetector: GestureDetector
 
     private var isSystemBaVisible: Boolean = false
 
@@ -64,24 +55,10 @@ class ImageFullScreenFragment
         return binding.root
     }
 
-    // Given an action int, returns a string description
-    fun actionToString(action: Int): String {
-        return when (action) {
-            MotionEvent.ACTION_DOWN -> "Down"
-            MotionEvent.ACTION_MOVE -> "Move"
-            MotionEvent.ACTION_POINTER_DOWN -> "Pointer Down"
-            MotionEvent.ACTION_UP -> "Up"
-            MotionEvent.ACTION_POINTER_UP -> "Pointer Up"
-            MotionEvent.ACTION_OUTSIDE -> "Outside"
-            MotionEvent.ACTION_CANCEL -> "Cancel"
-            else -> ""
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar()
-        gestureDetector = GestureDetector(requireContext(), this)
+
 //        WindowUtil.resetWindow(requireActivity() as AppCompatActivity)
 //        WindowUtil.setNoLimitsWindow(requireActivity() as AppCompatActivity)
 
@@ -91,12 +68,20 @@ class ImageFullScreenFragment
 
         binding.fragmentImageFullScreenImage.loadImage(args.imageUrl)
 
-        scaleGestureDetector = ScaleGestureDetector(
-            requireContext(), ZoomListener()
-        )
+        binding.fragmentImageFullScreenImage.onSimpleTapListener = {
+            val window = requireActivity().window
+            val windowInsetsController =
+                WindowCompat.getInsetsController(window, window.decorView)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            hideAndShowSystemBars(binding.root)
+            isSystemBaVisible = !isSystemBaVisible
+
+            if (isSystemBaVisible) {
+                windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+                (requireActivity() as AppCompatActivity).supportActionBar?.hide()
+            } else {
+                windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
+                (requireActivity() as AppCompatActivity).supportActionBar?.show()
+            }
         }
     }
 
@@ -119,45 +104,6 @@ class ImageFullScreenFragment
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    @RequiresApi(Build.VERSION_CODES.R)
-    private fun hideAndShowSystemBars(targetView: View) {
-        val window = requireActivity().window
-
-        val windowInsetsController =
-            WindowCompat.getInsetsController(window, window.decorView)
-        // Configure the behavior of the hidden system bars.
-        windowInsetsController.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_BARS_BY_TOUCH
-
-        // Add a listener to update the behavior of the toggle fullscreen button when
-        // the system bars are hidden or revealed.
-        window.decorView.setOnApplyWindowInsetsListener { view, windowInsets ->
-            // You can hide the caption bar even when the other system bars are visible.
-            // To account for this, explicitly check the visibility of navigationBars()
-            // and statusBars() rather than checking the visibility of systemBars().
-            if (windowInsets.isVisible(WindowInsetsCompat.Type.navigationBars())
-                || windowInsets.isVisible(WindowInsetsCompat.Type.statusBars())
-            ) {
-                // Hide the status bar, the navigation bar and toolbar.
-                targetView.setOnTouchListener { view, motionEvent ->
-                    gestureDetector.onTouchEvent(motionEvent)
-                    isSystemBaVisible = true
-                    true
-                }
-
-            } else {
-                // show the status bar, the navigation bar and toolbar.
-                targetView.setOnTouchListener { view, motionEvent ->
-                    gestureDetector.onTouchEvent(motionEvent)
-                    isSystemBaVisible = false
-                    true
-                }
-            }
-            view.onApplyWindowInsets(windowInsets)
-        }
-    }
-
     private fun setThemeColor() {
         val colorId = args.color
         AppBarColorUtil.changeAppBarColor(activity as AppCompatActivity, colorId)
@@ -174,56 +120,5 @@ class ImageFullScreenFragment
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    inner class ZoomListener : SimpleOnScaleGestureListener() {
-        override fun onScale(detector: ScaleGestureDetector): Boolean {
-            FACTOR *= detector.scaleFactor
-            FACTOR = max(0.1f, min(FACTOR, 10f))
-            binding.fragmentImageFullScreenImage.scaleX = FACTOR
-            binding.fragmentImageFullScreenImage.scaleY = FACTOR
-            return true
-        }
-    }
-
-    override fun onDown(p0: MotionEvent): Boolean {
-        Log.i(TAG, "onDown: ")
-        return false
-    }
-
-    override fun onShowPress(p0: MotionEvent) {
-        Log.i(TAG, "onShowPress: ")
-    }
-
-    override fun onSingleTapUp(p0: MotionEvent): Boolean {
-        Log.i(TAG, "onSingleTapUp ")
-        val window = requireActivity().window
-        val windowInsetsController =
-            WindowCompat.getInsetsController(window, window.decorView)
-
-        if (isSystemBaVisible) {
-            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-            (requireActivity() as AppCompatActivity).supportActionBar?.hide()
-            Log.i(TAG, "hideAndShowSystemBars: hide")
-        } else {
-            windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
-            (requireActivity() as AppCompatActivity).supportActionBar?.show()
-            Log.i(TAG, "hideAndShowSystemBars: show")
-        }
-        return true
-    }
-
-    override fun onScroll(p0: MotionEvent, p1: MotionEvent, p2: Float, p3: Float): Boolean {
-        Log.i(TAG, "onScroll: ")
-        return false
-    }
-
-    override fun onLongPress(p0: MotionEvent) {
-        Log.i(TAG, "onLongPress: ")
-    }
-
-    override fun onFling(p0: MotionEvent, p1: MotionEvent, p2: Float, p3: Float): Boolean {
-        Log.i(TAG, "onFling: ")
-        return false
     }
 }

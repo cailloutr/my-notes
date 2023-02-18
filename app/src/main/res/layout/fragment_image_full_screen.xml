@@ -19,7 +19,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <ImageView
+    <com.example.mynotes.ui.customviews.ZoomImageView
         android:id="@+id/fragment_image_full_screen_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
