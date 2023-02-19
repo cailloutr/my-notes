@@ -1,7 +1,6 @@
 package com.example.mynotes.ui.noteslist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -26,6 +25,9 @@ import com.example.mynotes.util.windowinsets.InsetsWithKeyboardAnimationCallback
 import com.example.mynotes.util.windowinsets.InsetsWithKeyboardCallback
 import com.example.mynotes.util.windowinsets.WindowUtil
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 // TODO: Image notes - Take a photo
@@ -36,7 +38,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 // TODO: auto clear the trash
 // TODO: lembretes
 
-private const val TAG: String = "NoteListFragment"
+//private const val TAG: String = "NoteListFragment"
 
 class NotesListFragment : Fragment() {
     private lateinit var adapter: NotesListAdapter
@@ -55,35 +57,12 @@ class NotesListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         viewModel.updateViewModelNoteHasImage(false)
-/*        lifecycleScope.launch {
-
-            val preferences = context?.dataStore?.data
-            if (preferences == null) {
-                saveLayoutModeInDataStore()
-            }
-
-            preferences?.collect {
-                it[layoutManagerPreferences]?.let { layoutMode ->
-                    layoutMode.let {
-                        viewModel.layoutMode =
-                            if (layoutMode == LayoutMode.STAGGERED_GRID_LAYOUT.name) {
-                                LayoutMode.STAGGERED_GRID_LAYOUT
-                            } else {
-                                LayoutMode.LINEAR_LAYOUT
-                            }
-                    }
-                }
-            }
-        }*/
-    }
-
-/*    private suspend fun saveLayoutModeInDataStore() {
-        context?.dataStore?.edit { settings ->
-            settings[layoutManagerPreferences] = viewModel.layoutMode.name
+        runBlocking {
+            val layoutMode = async { viewModel.userPreferencesFlow.first().layoutMode }
+            viewModel.setLayoutMode(LayoutMode.valueOf(layoutMode.await()))
         }
-    }*/
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -98,14 +77,9 @@ class NotesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.i(TAG, "onViewCreated: Fragment")
-
-        viewModel.getSharedPreferenceLayoutMode(requireContext())
 
         setupEdgeToEdgeLayout()
-
-        moveFooterWIthKeyboard()
-
+        moveFooterWithKeyboard()
         postponeEnterTransition()
         setupMenu()
         chooseLayout()
@@ -113,7 +87,7 @@ class NotesListFragment : Fragment() {
         setupEditTextExpandViewButton()
     }
 
-    private fun moveFooterWIthKeyboard() {
+    private fun moveFooterWithKeyboard() {
         val insetsWithKeyboardCallback = InsetsWithKeyboardCallback(requireActivity().window)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root, insetsWithKeyboardCallback)
         ViewCompat.setWindowInsetsAnimationCallback(binding.root, insetsWithKeyboardCallback)
@@ -170,18 +144,16 @@ class NotesListFragment : Fragment() {
                 }
 
                 if (menuItem.itemId == R.id.note_list_options_menu_layout_style) {
-                    viewModel.layoutMode =
+                    viewModel.setLayoutMode(
                         if (viewModel.layoutMode == LayoutMode.STAGGERED_GRID_LAYOUT) {
                             LayoutMode.LINEAR_LAYOUT
                         } else {
                             LayoutMode.STAGGERED_GRID_LAYOUT
                         }
-                    chooseLayout()
+                    )
+                    viewModel.hasPreferencesChanged(true)
                     setLayoutModeIcon(menuItem)
-/*                    lifecycleScope.launch {
-                        saveLayoutModeInDataStore()
-                    }*/
-                    viewModel.saveOptionInSharedPreferences(requireContext())
+                    chooseLayout()
                 }
                 return true
             }
@@ -345,7 +317,6 @@ class NotesListFragment : Fragment() {
                         undoAction = false
                     }
                 })
-
                 snackbar.show()
             })
 
@@ -414,6 +385,14 @@ class NotesListFragment : Fragment() {
 
         override fun onDestroyActionMode(mode: ActionMode?) {
             adapter.resetStateArray()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (viewModel.hasPreferencesChanged) {
+            viewModel.updateLayoutMode()
+            viewModel.hasPreferencesChanged(false)
         }
     }
 
