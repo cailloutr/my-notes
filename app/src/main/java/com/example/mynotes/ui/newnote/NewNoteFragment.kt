@@ -1,13 +1,16 @@
 package com.example.mynotes.ui.newnote
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmapOrNull
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -37,8 +40,11 @@ import com.example.mynotes.util.ToastUtil
 import com.example.mynotes.util.windowinsets.WindowUtil
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import java.io.File
+import java.io.IOException
 
 //private const val TAG = "NewNoteFragment"
+//const val REQUEST_IMAGE_CAPTURE = 1
 
 class NewNoteFragment : Fragment() {
 
@@ -84,17 +90,21 @@ class NewNoteFragment : Fragment() {
                 // Callback is invoked after the user selects a media item or closes the
                 // photo picker.
                 if (uri != null) {
-                    binding.fragmentNewNoteImageContainer.visibility = View.VISIBLE
-                    binding.fragmentNewNoteImage.loadImage(uri)
-
-                    viewModel.updateViewModelNoteHasImage(true)
+                    setupNoteImage(uri)
+                    viewModel.uri = uri
 
                     Log.d(TAG, "Selected URI: $uri")
-                    Log.d(TAG, "Note: ${viewModel.note.value}")
+                    Log.d(TAG, "Note: ${viewModel.uri}")
                 } else {
                     Log.d(TAG, "No media selected")
                 }
             }
+    }
+
+    private fun setupNoteImage(uri: Uri?) {
+        binding.fragmentNewNoteImageContainer.visibility = View.VISIBLE
+        binding.fragmentNewNoteImage.loadImage(uri)
+        viewModel.updateViewModelNoteHasImage(true)
     }
 
     override fun onCreateView(
@@ -112,11 +122,6 @@ class NewNoteFragment : Fragment() {
 
         setupEdgeToEdgeLayout()
         setupMenu()
-
-/*        if (fragmentMode == FragmentMode.FRAGMENT_NEW) {
-            viewModel.createEmptyNote()
-        }*/
-
         setupDeleteImageButton()
         loadNoteFromViewModel()
         setupBottomSheet()
@@ -199,17 +204,60 @@ class NewNoteFragment : Fragment() {
                     false
                 )
             ) {
-                if (it == ImageBottomSheet.Operation.GALLERY) {
-                    // Launch the photo picker and allow the user to choose only images.
-                    pickMedia.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                    )
+                when (it) {
+                    ImageBottomSheet.Operation.GALLERY -> {
+                        // Launch the photo picker and allow the user to choose only images.
+                        pickMedia.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    }
+                    ImageBottomSheet.Operation.CAMERA -> {
+                        dispatchTakePictureIntent()
+                    }
                 }
             }
 
             openBottomSheet(bottomSheet, bottomSheet.TAG)
         }
     }
+
+    private fun dispatchTakePictureIntent() {
+        val photoFile: File? = try {
+            viewModel.note.value?.id?.let {
+                viewModel.createTempFile(
+                    requireContext(),
+                    it
+                )
+            }
+        } catch (ex: IOException) {
+            Toast.makeText(requireContext(), "Error creating file", Toast.LENGTH_SHORT).show()
+            null
+        }
+
+        photoFile?.also {
+            val photoUri: Uri = FileProvider.getUriForFile(
+                requireContext(),
+                "com.example.android.fileprovider",
+                it
+            )
+            takePictureActivityResultLauncher.launch(photoUri)
+        }
+    }
+
+    private val takePictureActivityResultLauncher: ActivityResultLauncher<Uri> =
+        registerForActivityResult(
+            ActivityResultContracts.TakePicture()
+        ) {
+            if (it) {
+                binding.fragmentNewNoteImageContainer.visibility = View.VISIBLE
+                binding.fragmentNewNoteImage.loadImage(viewModel.currentPhotoPath)
+                viewModel.updateViewModelNoteHasImage(true)
+
+                Log.i(TAG, "PhotoPath: ${viewModel.currentPhotoPath}: ")
+            } else {
+                Toast.makeText(requireContext(), "Error saving file", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     private fun openBottomSheet(bottomSheet: BaseBottomSheet, tag: String) {
         bottomSheet.show(parentFragmentManager, tag)
@@ -327,8 +375,15 @@ class NewNoteFragment : Fragment() {
         } else {
             val imagePath = if (viewModel.hasImage.value == true) {
                 val imageView = binding.fragmentNewNoteImage
-                val bitmap = imageView.drawable.toBitmapOrNull(250, 250)
-                viewModel.saveImageInAppSpecificAlbumStorageDir(bitmap, requireContext())
+                val bitmap = imageView.drawable.toBitmapOrNull(
+                    250,
+                    250
+                )
+                viewModel.saveImageInAppSpecificAlbumStorageDir(
+                    bitmap,
+                    requireContext(),
+                    viewModel.getImagePath(requireContext()).toString()
+                )
             } else {
                 viewModel.deleteImageInAppSpecificAlbumStorageDir(requireContext())
                 ""

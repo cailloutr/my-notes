@@ -1,5 +1,6 @@
 package com.example.mynotes.ui.bottomsheet
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,6 +35,16 @@ class ImageBottomSheet(
         binding.optionMenuBottomSheetGallery.setOnClickListener {
             operation(Operation.GALLERY)
             dismiss()
+        }
+
+        if (requireActivity().packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
+            binding.menuBottomSheetCamera.isEnabled = true
+            binding.menuBottomSheetCamera.setOnClickListener {
+                operation(Operation.CAMERA)
+                dismiss()
+            }
+        } else {
+            binding.menuBottomSheetCamera.isEnabled = false
         }
 
     }

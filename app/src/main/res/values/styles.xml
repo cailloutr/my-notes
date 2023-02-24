@@ -117,7 +117,7 @@
         <item name="android:background">@color/black_overlay</item>
         <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
     </style>
-    
+
     <style name="Widget.MyNotes.Toolbar.Transparent" parent="Widget.AppCompat.Toolbar">
         <item name="backgroundColor">@android:color/transparent</item>
         <item name="titleTextAppearance">?attr/textAppearanceHeadline6</item>

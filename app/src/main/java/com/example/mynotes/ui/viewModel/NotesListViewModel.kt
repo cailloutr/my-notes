@@ -2,14 +2,14 @@ package com.example.mynotes.ui.viewModel
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.os.Environment
-import android.util.Log
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mynotes.database.model.Note
 import com.example.mynotes.database.model.UserPreferences
+import com.example.mynotes.database.repository.InternalStorageRepository
 import com.example.mynotes.database.repository.NotesRepository
 import com.example.mynotes.database.repository.UserPreferencesRepository
 import com.example.mynotes.ui.enums.FragmentMode
@@ -18,16 +18,14 @@ import com.example.mynotes.util.DateUtil
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStream
 
 class NotesListViewModel(
     private val repository: NotesRepository,
-    private val userPreferencesRepository: UserPreferencesRepository
+    private val userPreferencesRepository: UserPreferencesRepository,
+    private val internalStorageRepository: InternalStorageRepository
 ) : ViewModel() {
 
-    private val TAG: String = "NoteListViewModel"
-    private val ALBUM_NAME = "notes"
+//    private val TAG: String = "NoteListViewModel"
 
     private val _notesList = getAllNotes()
     val notesList: LiveData<List<Note>> = _notesList
@@ -53,6 +51,9 @@ class NotesListViewModel(
     private var _hasPreferencesChanged: Boolean = false
     val hasPreferencesChanged get() = _hasPreferencesChanged
 
+    var uri: Uri? = null
+    lateinit var currentPhotoPath: String
+
     private fun getAllNotes() = repository.getAllSavedNotes()
 
     private fun getTrash() = repository.getAllTrashNotes()
@@ -63,61 +64,32 @@ class NotesListViewModel(
         }
     }
 
-    private fun getAppSpecificAlbumStorageDir(context: Context): File {
-        // Get the pictures directory that's inside the app-specific directory on
-        // external storage.
-        val file = File(
-            context.getExternalFilesDir(
-                Environment.DIRECTORY_PICTURES
-            ), ALBUM_NAME
-        )
-        if (!file.mkdirs()) {
-            Log.e(TAG, "Directory not created")
+    fun createTempFile(context: Context, id: String): File {
+        return internalStorageRepository.createTempImageFile(context, id).apply {
+            currentPhotoPath = absolutePath
         }
-        return file
     }
 
     fun deleteImageInAppSpecificAlbumStorageDir(context: Context) {
-        val path = getImagePath(context)
-        val file = File(path)
-
-        if (file.exists()) {
-            try {
-                val fileDeleted = file.delete()
-                Log.d(TAG, "deleteImageInAppSpecificAlbumStorageDir: $fileDeleted")
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        note.value?.id?.let {
+            internalStorageRepository.deleteImageInAppSpecificAlbumStorageDir(
+                context, it
+            )
         }
     }
 
-    fun saveImageInAppSpecificAlbumStorageDir(bitmap: Bitmap?, context: Context): String {
-        var baos: OutputStream? = null
-        val path = getImagePath(context)
-        val file = File(path)
-        try {
-            baos = FileOutputStream(file)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-
-        try {
-            baos?.flush()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        try {
-            baos?.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        return path
+    fun saveImageInAppSpecificAlbumStorageDir(
+        bitmap: Bitmap?,
+        context: Context,
+        path: String
+    ): String {
+        return internalStorageRepository.saveImageInAppSpecificAlbumStorageDir(
+            bitmap, context, path
+        )
     }
 
-    private fun getImagePath(context: Context) =
-        "${getAppSpecificAlbumStorageDir(context)}/${note.value?.id}.jpg"
+    fun getImagePath(context: Context): String? =
+        note.value?.id?.let { internalStorageRepository.getImagePath(context, it) }
 
 
     fun clearTrash() {
