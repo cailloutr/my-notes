@@ -20,6 +20,6 @@ Animações personalizadas de transição entre fragments.
 
 Tecnologias:
 - ViewModel, LiveData, Room, Flow, Coroutines, Contratos de atividade do Jetpack
-- Navigation Component, Single Activivity with Fragments, Data Store
+- Navigation Component, Single Activivity with Fragments, Data Store, RecyclerView
 - Injeção de Dependência com o Koin
 - BottomSheetDialogFragment
