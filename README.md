@@ -19,7 +19,7 @@ Shared Elements Transitions nas Imagens e no conteúdo das notas ao clicar para 
 Animações personalizadas de transição entre fragments.
 
 Tecnologias:
-- ViewModel, LiveData, Room, Flow, Coroutines
+- ViewModel, LiveData, Room, Flow, Coroutines, Contratos de atividade do Jetpack
 - Navigation Component, Single Activivity with Fragments, Data Store
 - Injeção de Dependência com o Koin
 - BottomSheetDialogFragment
