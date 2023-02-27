@@ -12,7 +12,7 @@ Funcionalidades:
 - Apagar definitivamente, todos ou individualmente, os itens da lixeira
 - As notas são salvas localmente no dispositivos usando o Room
 - Segurar uma nota para selecionar uma ou mais notas e executar ações como deletar ou restaurar
-- Criar notas com imagens da camera ou da galeria
+- Criar notas com imagens da camera ou da galeria e salvar no arquivos específicos do app
 
 Conteúdo do App em Edge-To-Edge   
 Shared Elements Transitions nas Imagens e no conteúdo das notas ao clicar para editar   
