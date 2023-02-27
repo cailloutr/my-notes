@@ -1,6 +1,6 @@
 # MyNotes App (ongoing project)
 
-<img src="screenshots/HomeScreen.png" style="width: 390px; height: 844px; display: flex;"/> <img src="screenshots/EditScreen.png" style="width: 390px; height: 844px;"/> <img src="screenshots/ColorSheet.png" style="width: 390px; height: 844px;"/> <img src="screenshots/SelectItems.png" style="width: 390px; height: 844px;"/>
+<img src="Media/Gifs/new_note.gif" style="width: 390px; height: 844px; display: flex;"/> <img src="Media/Gifs/new_note_image_camera.gif" style="width: 390px; height: 844px;"/> <img src="Media/Gifs/new_note_image_gallery.gif" style="width: 390px; height: 844px;"/> <img src="Media/Gifs/full_screen_image.gif" style="width: 390px; height: 844px;"/>
 
 
 
@@ -12,3 +12,14 @@ Funcionalidades:
 - Apagar definitivamente, todos ou individualmente, os itens da lixeira
 - As notas são salvas localmente no dispositivos usando o Room
 - Segurar uma nota para selecionar uma ou mais notas e executar ações como deletar ou restaurar
+- Criar notas com imagens da camera ou da galeria
+
+Conteúdo do App em Edge-To-Edge   
+Shared Elements Transitions nas Imagens e no conteúdo das notas ao clicar para editar   
+Animações personalizadas de transição entre fragments.
+
+Tecnologias:
+- ViewModel, LiveData, Room, Flow, Coroutines
+- Navigation Component, Single Activivity with Fragments, Data Store
+- Injeção de Dependência com o Koin
+- BottomSheetDialogFragment
