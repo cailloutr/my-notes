@@ -7,10 +7,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface NoteDao {
 
-    @Query("SELECT * FROM note WHERE is_trash != 1")
+    @Query("SELECT * FROM note WHERE is_trash != 1 ORDER BY modified_date DESC")
     fun getAllSavedNotes(): Flow<List<Note>>
 
-    @Query("SELECT * FROM note WHERE is_trash = 1")
+    @Query("SELECT * FROM note WHERE is_trash = 1 ORDER BY modified_date DESC")
     fun getAllTrashNotes(): Flow<List<Note>>
 
     @Query("DELETE FROM note WHERE is_trash = 1")

@@ -98,7 +98,7 @@ class MyNotesMigrations {
             """.trimIndent())
         }
 
-        val MIGRATION_15_16 = object : Migration(15, 16) {
+        private val MIGRATION_15_16 = object : Migration(15, 16) {
             val newNote = "NewNote"
             val currentNote = "Note"
             override fun migrate(database: SupportSQLiteDatabase) {
@@ -144,13 +144,22 @@ class MyNotesMigrations {
             }
         }
 
+        private val MIGRATION_16_17 = object : Migration(16, 17) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("""
+                    ALTER TABLE Note RENAME COLUMN modified_data TO modified_date
+                """.trimIndent())
+            }
+        }
+
         val ALL_MIGRATIONS = arrayOf(
             MIGRATION_11_12,
             MIGRATION_12_13,
             MIGRATION_13_14,
             MIGRATION_14_13,
             MIGRATION_14_15,
-            MIGRATION_15_16
+            MIGRATION_15_16,
+            MIGRATION_16_17
         )
     }
 }
