@@ -7,7 +7,7 @@ import com.example.mynotes.database.converters.Converters
 import com.example.mynotes.database.dao.NoteDao
 import com.example.mynotes.database.model.Note
 
-@Database(entities = [Note::class], version = 15, exportSchema = false)
+@Database(entities = [Note::class], version = 16, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 

@@ -1,6 +1,7 @@
 package com.example.mynotes.database.migrations
 
 import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import java.util.UUID
 
 class MyNotesMigrations {
@@ -97,12 +98,59 @@ class MyNotesMigrations {
             """.trimIndent())
         }
 
+        val MIGRATION_15_16 = object : Migration(15, 16) {
+            val newNote = "NewNote"
+            val currentNote = "Note"
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Create a new table
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS $newNote (
+                    `id` TEXT NOT NULL, 
+                    `title` TEXT, 
+                    `description` TEXT, 
+                    `modified_data` TEXT, 
+                    `is_trash` INTEGER, 
+                    `color` INTEGER, 
+                    `image_url` TEXT, 
+                    `has_image` INTEGER NOT NULL, 
+                    PRIMARY KEY(`id`)
+                    )
+                """.trimIndent())
+
+                // Copy data to the new table
+                database.execSQL("""
+                    INSERT INTO $newNote 
+                    SELECT 
+                        id, 
+                        title, 
+                        description, 
+                        modified_data, 
+                        is_trash, 
+                        color, 
+                        image_url, 
+                        has_image
+                    FROM $currentNote
+                """.trimIndent())
+
+                // Drop current table
+                database.execSQL("""
+                    DROP TABLE $currentNote
+                """.trimIndent())
+
+                // Rename new table as the current one
+                database.execSQL("""
+                    ALTER TABLE $newNote RENAME TO $currentNote
+                """.trimIndent())
+            }
+        }
+
         val ALL_MIGRATIONS = arrayOf(
             MIGRATION_11_12,
             MIGRATION_12_13,
             MIGRATION_13_14,
             MIGRATION_14_13,
-            MIGRATION_14_15
+            MIGRATION_14_15,
+            MIGRATION_15_16
         )
     }
 }
