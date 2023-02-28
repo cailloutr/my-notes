@@ -8,9 +8,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 
-class InternalStorageRepository(
-    private val context: Context
-) {
+class InternalStorageRepository {
 
     private val TAG = "StorageRepository"
     private val ALBUM_NAME = "notes"
@@ -26,7 +24,7 @@ class InternalStorageRepository(
         context.cacheDir.deleteRecursively()
     }
 
-    fun getAppSpecificAlbumStorageDir(context: Context): File {
+    private fun getAppSpecificAlbumStorageDir(context: Context): File {
         // Get the pictures directory that's inside the app-specific directory on
         // external storage.
         val file = File(
@@ -56,11 +54,9 @@ class InternalStorageRepository(
 
     fun saveImageInAppSpecificAlbumStorageDir(
         bitmap: Bitmap?,
-        context: Context,
         path: String
     ): String {
         var baos: OutputStream? = null
-//        val path: String = getImagePath(context)
         val file = File(path)
 
         try {

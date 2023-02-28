@@ -78,7 +78,6 @@ class NotesListAdapter(
 
             if (!note.imageUrl.isNullOrEmpty()) {
                 imageView.apply {
-//                    loadStartImage(note.imageUrl, "${note.imageUrl}")
                     loadImage(note.imageUrl)
                 }
             }
@@ -144,7 +143,11 @@ class NotesListAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val note = getItem(position)
         holder.bind(note, itemStateArray[holder.adapterPosition, false])
+        setupLongClickAction(holder)
+        setupClickAction(holder, note)
+    }
 
+    private fun setupLongClickAction(holder: ViewHolder) {
         holder.itemView.setOnLongClickListener {
             if (!isSelectedMode) {
                 if (itemStateArray.contains(holder.adapterPosition)) {
@@ -160,7 +163,12 @@ class NotesListAdapter(
             isSelectedMode = true
             true
         }
+    }
 
+    private fun setupClickAction(
+        holder: ViewHolder,
+        note: Note?
+    ) {
         holder.itemView.setOnClickListener {
             if (isSelectedMode) {
                 if (itemStateArray.contains(holder.adapterPosition)) {

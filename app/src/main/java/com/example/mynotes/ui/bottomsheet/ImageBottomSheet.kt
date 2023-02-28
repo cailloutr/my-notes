@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.mynotes.databinding.ImageBottomSheetBinding
+import com.example.mynotes.ui.enums.Operation
+import com.example.mynotes.ui.enums.Operation.*
 
 class ImageBottomSheet(
     backgroundColor: Int?,
@@ -14,10 +16,6 @@ class ImageBottomSheet(
 ) : BaseBottomSheet(backgroundColor, binding.root) {
 
     val TAG = "ImageBottomSheet"
-
-    enum class Operation {
-        CAMERA, GALLERY
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,23 +27,27 @@ class ImageBottomSheet(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setBackgroundColor()
+        setupGalleryOption()
+        setupCameraOption()
+    }
 
-        binding.optionMenuBottomSheetGallery.setOnClickListener {
-            operation(Operation.GALLERY)
-            dismiss()
-        }
-
+    private fun setupCameraOption() {
         if (requireActivity().packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
             binding.menuBottomSheetCamera.isEnabled = true
             binding.menuBottomSheetCamera.setOnClickListener {
-                operation(Operation.CAMERA)
+                operation(CAMERA)
                 dismiss()
             }
         } else {
             binding.menuBottomSheetCamera.isEnabled = false
         }
+    }
 
+    private fun setupGalleryOption() {
+        binding.optionMenuBottomSheetGallery.setOnClickListener {
+            operation(GALLERY)
+            dismiss()
+        }
     }
 }

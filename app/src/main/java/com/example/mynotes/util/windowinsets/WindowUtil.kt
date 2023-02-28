@@ -2,35 +2,27 @@ package com.example.mynotes.util.windowinsets
 
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
-import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
+import android.view.Window
+import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.*
 
 class WindowUtil {
 
     companion object {
-        fun setNoLimitsWindow(activity: AppCompatActivity) {
-            activity.window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+
+        fun setupEdgeToEdgeLayout(
+            window: Window,
+            toolbar: Toolbar,
+            footer: ConstraintLayout
+        ) {
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+            implementsSystemBarInsets(toolbar, footer)
+            window.navigationBarColor = android.R.color.transparent
         }
 
-        fun resetWindow(activity: AppCompatActivity) {
-            activity.window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        }
 
-        fun hideSystemUI(activity: AppCompatActivity, view: View) {
-            WindowCompat.setDecorFitsSystemWindows(activity.window, false)
-            WindowInsetsControllerCompat(activity.window, view).let { controller ->
-                controller.hide(WindowInsetsCompat.Type.systemBars())
-                controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-            }
-        }
-
-        fun showSystemUI(activity: AppCompatActivity, view: View) {
-            WindowCompat.setDecorFitsSystemWindows(activity.window, true)
-            WindowInsetsControllerCompat(activity.window, view).show(WindowInsetsCompat.Type.systemBars())
-        }
-
-        fun implementsStatusBarInsets(toolbar: androidx.appcompat.widget.Toolbar) {
+        fun implementsStatusBarInsets(toolbar: Toolbar) {
             ViewCompat.setOnApplyWindowInsetsListener(toolbar) { view, windowInsets ->
                 val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
                 // Apply the insets as a margin to the view. Here the system is setting
@@ -49,7 +41,7 @@ class WindowUtil {
             }
         }
 
-        fun implementsSystemBarInsets(toolbar: View, footer: View) {
+        private fun implementsSystemBarInsets(toolbar: View, footer: View) {
             ViewCompat.setOnApplyWindowInsetsListener(toolbar) { view, windowInsets ->
                 val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
                 // Apply the insets as a margin to the view. Here the system is setting

@@ -54,7 +54,7 @@ val databaseModule = module {
     single<MyNotesMigrations> { MyNotesMigrations() }
     single<NotesRepository> { NotesRepository(get()) }
     single<UserPreferencesRepository> { UserPreferencesRepository(get()) }
-    single<InternalStorageRepository> { InternalStorageRepository(get()) }
+    single<InternalStorageRepository> { InternalStorageRepository() }
     single<DataStore<Preferences>> { PreferenceDataStoreFactory.create(
         corruptionHandler = ReplaceFileCorruptionHandler(
             produceNewData = { emptyPreferences() }

@@ -71,6 +71,7 @@ class ZoomImageView : AppCompatImageView, View.OnTouchListener,
             var mScaleFactor = detector.scaleFactor
             val prevScale = mSaveScale
             mSaveScale *= mScaleFactor
+
             if (mSaveScale > mMaxScale) {
                 mSaveScale = mMaxScale
                 mScaleFactor = mMaxScale / prevScale
@@ -78,6 +79,7 @@ class ZoomImageView : AppCompatImageView, View.OnTouchListener,
                 mSaveScale = mMinScale
                 mScaleFactor = mMinScale / prevScale
             }
+
             if (origWidth * mSaveScale <= viewWidth
                 || origHeight * mSaveScale <= viewHeight
             ) {
@@ -91,6 +93,7 @@ class ZoomImageView : AppCompatImageView, View.OnTouchListener,
                     detector.focusX, detector.focusY
                 )
             }
+
             fixTranslation()
             return true
         }

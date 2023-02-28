@@ -5,7 +5,10 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.util.size
-import androidx.core.view.*
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
+import androidx.core.view.ViewCompat
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -23,7 +26,7 @@ import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.util.ToastUtil
 import com.example.mynotes.util.windowinsets.InsetsWithKeyboardAnimationCallback
 import com.example.mynotes.util.windowinsets.InsetsWithKeyboardCallback
-import com.example.mynotes.util.windowinsets.WindowUtil
+import com.example.mynotes.util.windowinsets.WindowUtil.Companion.setupEdgeToEdgeLayout
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
@@ -37,6 +40,7 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 // TODO: Archive item on swipe
 // TODO: auto clear the trash
 // TODO: lembretes
+// TODO: favoritos
 
 //private const val TAG: String = "NoteListFragment"
 
@@ -78,7 +82,12 @@ class NotesListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupEdgeToEdgeLayout()
+        setupEdgeToEdgeLayout(
+            window = requireActivity().window,
+            toolbar = binding.toolbar,
+            footer = binding.fragmentNotesListFooter
+        )
+
         moveFooterWithKeyboard()
         postponeEnterTransition()
         setupMenu()
@@ -98,11 +107,6 @@ class NotesListFragment : Fragment() {
             binding.fragmentNotesListFooter,
             insetsWithKeyboardAnimationCallback
         )
-    }
-
-    private fun setupEdgeToEdgeLayout() {
-        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
-        WindowUtil.implementsSystemBarInsets(binding.toolbar, binding.fragmentNotesListFooter)
     }
 
     private fun setupAppBar() {
@@ -390,6 +394,10 @@ class NotesListFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
+        savePreferencesInDataStore()
+    }
+
+    private fun savePreferencesInDataStore() {
         if (viewModel.hasPreferencesChanged) {
             viewModel.updateLayoutMode()
             viewModel.hasPreferencesChanged(false)

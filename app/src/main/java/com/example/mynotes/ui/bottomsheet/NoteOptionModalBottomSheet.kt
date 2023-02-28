@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import com.example.mynotes.R
 import com.example.mynotes.databinding.FragmentNewNoteOptionsBottomSheetBinding
 
 class NoteOptionModalBottomSheet(
@@ -28,8 +26,7 @@ class NoteOptionModalBottomSheet(
 
         setBackgroundColor()
 
-        val deleteOption = view.findViewById<TextView>(R.id.menu_bottom_sheet_camera)
-        deleteOption.setOnClickListener {
+        binding.menuBottomSheetCamera.setOnClickListener {
             listener()
             dismiss()
         }

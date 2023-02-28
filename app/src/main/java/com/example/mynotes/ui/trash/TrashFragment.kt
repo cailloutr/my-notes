@@ -31,11 +31,11 @@ class TrashFragment : Fragment() {
     private var actionMode: ActionMode? = null
     private lateinit var adapter: NotesListAdapter
 
-//    private val viewModel: NotesListViewModel by activityViewModels {
-//        NotesListViewModelFactory(
-//            (activity?.application as MyNotesApplication)
-//        )
-//    }
+/*    private val viewModel: NotesListViewModel by activityViewModels {
+        NotesListViewModelFactory(
+            (activity?.application as MyNotesApplication)
+        )
+    }*/
 
     private val viewModel: NotesListViewModel by activityViewModel()
 
@@ -53,13 +53,13 @@ class TrashFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         postponeEnterTransition()
-        setuptAppBar()
+        setupAppBar()
         setupMenu()
         setupAdapter()
         loadNotesList()
     }
 
-    private fun setuptAppBar() {
+    private fun setupAppBar() {
         val navController = findNavController()
         val appBarConfiguration = AppBarConfiguration(navController.graph)
         binding.toolbar.setupWithNavController(navController, appBarConfiguration)

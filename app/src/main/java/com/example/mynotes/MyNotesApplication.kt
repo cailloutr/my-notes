@@ -10,8 +10,6 @@ import org.koin.core.context.startKoin
 
 class MyNotesApplication: Application() {
 
-//    val database: AppDatabase by lazy { AppDatabase.getDatabase(this) }
-
     override fun onCreate() {
         super.onCreate()
 

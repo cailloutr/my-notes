@@ -80,11 +80,10 @@ class NotesListViewModel(
 
     fun saveImageInAppSpecificAlbumStorageDir(
         bitmap: Bitmap?,
-        context: Context,
         path: String
     ): String {
         return internalStorageRepository.saveImageInAppSpecificAlbumStorageDir(
-            bitmap, context, path
+            bitmap, path
         )
     }
 

@@ -57,15 +57,12 @@ class ImageFullScreenFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar()
-
         setupEdgeToEdgeLayout()
-
         binding.fragmentImageFullScreenImage.loadImage(args.imageUrl)
-
-        setupTapToHideShowSystemBars()
+        setupTapToHideOrShowSystemBars()
     }
 
-    private fun setupTapToHideShowSystemBars() {
+    private fun setupTapToHideOrShowSystemBars() {
         binding.fragmentImageFullScreenImage.onSimpleTapListener = {
             val window = requireActivity().window
             val windowInsetsController =

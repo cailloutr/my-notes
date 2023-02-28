@@ -2,6 +2,7 @@ package com.example.mynotes.ui.newnote
 
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import android.view.*
 import android.widget.Toast
@@ -14,7 +15,6 @@ import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmapOrNull
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
-import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -23,6 +23,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.mynotes.R
+import com.example.mynotes.database.model.Note
 import com.example.mynotes.databinding.ColorsBottomSheetBinding
 import com.example.mynotes.databinding.FragmentNewNoteBinding
 import com.example.mynotes.databinding.FragmentNewNoteOptionsBottomSheetBinding
@@ -32,12 +33,14 @@ import com.example.mynotes.ui.bottomsheet.ImageBottomSheet
 import com.example.mynotes.ui.bottomsheet.NoteOptionModalBottomSheet
 import com.example.mynotes.ui.bottomsheet.colors.ColorsBottomSheet
 import com.example.mynotes.ui.enums.FragmentMode
+import com.example.mynotes.ui.enums.Operation.CAMERA
+import com.example.mynotes.ui.enums.Operation.GALLERY
 import com.example.mynotes.ui.extensions.loadImage
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.util.AppBarColorUtil
 import com.example.mynotes.util.NoteItemAnimationUtil
 import com.example.mynotes.util.ToastUtil
-import com.example.mynotes.util.windowinsets.WindowUtil
+import com.example.mynotes.util.windowinsets.WindowUtil.Companion.setupEdgeToEdgeLayout
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.io.File
@@ -120,16 +123,15 @@ class NewNoteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupEdgeToEdgeLayout()
+        setupEdgeToEdgeLayout(
+            window = requireActivity().window,
+            toolbar = binding.toolbar,
+            footer = binding.fragmentNewNoteFooter
+        )
         setupMenu()
         setupDeleteImageButton()
         loadNoteFromViewModel()
         setupBottomSheet()
-    }
-
-    private fun setupEdgeToEdgeLayout() {
-        WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
-        WindowUtil.implementsSystemBarInsets(binding.toolbar, binding.fragmentNewNoteFooter)
     }
 
     private fun setupDeleteImageButton() {
@@ -140,6 +142,7 @@ class NewNoteFragment : Fragment() {
 
     private fun setupBottomSheet() {
         binding.fragmentNewNoteOptionsMenu.setOnClickListener {
+            //TODO: Fix snackbar undo action deleting note from newNoteFragment
             val bottomSheet = NoteOptionModalBottomSheet(
                 backgroundColor = viewModel.note.value?.color,
                 binding = FragmentNewNoteOptionsBottomSheetBinding.inflate(
@@ -205,13 +208,13 @@ class NewNoteFragment : Fragment() {
                 )
             ) {
                 when (it) {
-                    ImageBottomSheet.Operation.GALLERY -> {
+                    GALLERY -> {
                         // Launch the photo picker and allow the user to choose only images.
                         pickMedia.launch(
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                         )
                     }
-                    ImageBottomSheet.Operation.CAMERA -> {
+                    CAMERA -> {
                         dispatchTakePictureIntent()
                     }
                 }
@@ -254,8 +257,6 @@ class NewNoteFragment : Fragment() {
                 viewModel.updateViewModelNoteHasImage(true)
 
                 Log.i(TAG, "PhotoPath: ${viewModel.currentPhotoPath}: ")
-            } else {
-                Toast.makeText(requireContext(), "Error saving file", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -294,33 +295,11 @@ class NewNoteFragment : Fragment() {
             setThemeColors(note?.color)
 
             if (note?.hasImage == true) {
-                if (!note.imageUrl.isNullOrEmpty()) {
-                    binding.fragmentNewNoteImage.loadImage(note.imageUrl)
-
-                    binding.fragmentNewNoteImage.setOnClickListener {
-                        val navigatorExtras = FragmentNavigatorExtras(
-                            binding.fragmentNewNoteImage to "full_screen_image"
-                        )
-
-                        val color = note.color ?: R.color.white
-                        findNavController().navigate(
-                            NewNoteFragmentDirections.actionNewNoteFragmentToImageFullScreenFragment2(
-                                note.imageUrl.toString(),
-                                color
-                            ),
-                            navigatorExtras
-                        )
-                    }
-                }
+                setupImage(note)
             }
 
             if (fragmentMode == FragmentMode.FRAGMENT_TRASH) {
-                binding.apply {
-                    fragmentNewNoteTextInputEdittextTitle.isEnabled = false
-                    fragmentNewNoteTextInputEdittextDescription.isEnabled = false
-                    fragmentNewNoteOptionsColors.isEnabled = false
-                    fragmentNewNoteOptionsPhoto.isEnabled = false
-                }
+                disableViews()
             }
         }
 
@@ -330,6 +309,36 @@ class NewNoteFragment : Fragment() {
             } else {
                 binding.fragmentNewNoteImageContainer.visibility = View.GONE
             }
+        }
+    }
+
+    private fun setupImage(note: Note) {
+        if (!note.imageUrl.isNullOrEmpty()) {
+            binding.fragmentNewNoteImage.loadImage(note.imageUrl)
+
+            binding.fragmentNewNoteImage.setOnClickListener {
+                val navigatorExtras = FragmentNavigatorExtras(
+                    binding.fragmentNewNoteImage to "full_screen_image"
+                )
+
+                val color = note.color ?: R.color.white
+                findNavController().navigate(
+                    NewNoteFragmentDirections.actionNewNoteFragmentToImageFullScreenFragment2(
+                        note.imageUrl.toString(),
+                        color
+                    ),
+                    navigatorExtras
+                )
+            }
+        }
+    }
+
+    private fun disableViews() {
+        binding.apply {
+            fragmentNewNoteTextInputEdittextTitle.isEnabled = false
+            fragmentNewNoteTextInputEdittextDescription.isEnabled = false
+            fragmentNewNoteOptionsColors.isEnabled = false
+            fragmentNewNoteOptionsPhoto.isEnabled = false
         }
     }
 
@@ -346,7 +355,19 @@ class NewNoteFragment : Fragment() {
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 if (menuItem.itemId == R.id.fragment_new_note_menu_item_save_note) {
-                    saveNewNote()
+
+                    val title = binding.fragmentNewNoteTextInputEdittextTitle.text
+                    val description = binding.fragmentNewNoteTextInputEdittextDescription.text
+
+                    if (title.isNullOrEmpty() && description.isNullOrEmpty()) {
+                        ToastUtil.makeToast(
+                            context,
+                            getString(R.string.notes_list_fragment_toast_empty_note)
+                        )
+                    } else {
+                        saveNewNote(title, description)
+                    }
+                    navigateUp()
                 }
 
                 if (menuItem.itemId == R.id.fragment_new_note_trash_menu_restore) {
@@ -358,46 +379,38 @@ class NewNoteFragment : Fragment() {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    private fun undoDeleteNote() {
-        viewModel.retrieveNoteFromTrash()
+    private fun navigateUp() {
+        findNavController().navigateUp()
+    }
+
+    private fun saveNewNote(title: Editable?, description: Editable?) {
+        val imagePath = if (viewModel.hasImage.value == true) {
+            val imageView = binding.fragmentNewNoteImage
+            val bitmap = imageView.drawable.toBitmapOrNull(
+                250,
+                250
+            )
+            viewModel.saveImageInAppSpecificAlbumStorageDir(
+                bitmap,
+                viewModel.getImagePath(requireContext()).toString()
+            )
+        } else {
+            viewModel.deleteImageInAppSpecificAlbumStorageDir(requireContext())
+            ""
+        }
+
+        viewModel.updateViewModelNote(
+            title = title.toString(),
+            description = description.toString(),
+            imagePath = imagePath,
+            hasImage = viewModel.hasImage.value
+        )
         viewModel.saveNote()
     }
 
-    private fun saveNewNote() {
-        val title = binding.fragmentNewNoteTextInputEdittextTitle.text
-        val description = binding.fragmentNewNoteTextInputEdittextDescription.text
-
-        if (title.isNullOrEmpty() && description.isNullOrEmpty()) {
-            ToastUtil.makeToast(
-                context,
-                getString(R.string.notes_list_fragment_toast_empty_note)
-            )
-        } else {
-            val imagePath = if (viewModel.hasImage.value == true) {
-                val imageView = binding.fragmentNewNoteImage
-                val bitmap = imageView.drawable.toBitmapOrNull(
-                    250,
-                    250
-                )
-                viewModel.saveImageInAppSpecificAlbumStorageDir(
-                    bitmap,
-                    requireContext(),
-                    viewModel.getImagePath(requireContext()).toString()
-                )
-            } else {
-                viewModel.deleteImageInAppSpecificAlbumStorageDir(requireContext())
-                ""
-            }
-
-            viewModel.updateViewModelNote(
-                title = title.toString(),
-                description = description.toString(),
-                imagePath = imagePath,
-                hasImage = viewModel.hasImage.value
-            )
-            viewModel.saveNote()
-        }
-        findNavController().navigateUp()
+    private fun undoDeleteNote() {
+        viewModel.retrieveNoteFromTrash()
+        viewModel.saveNote()
     }
 
     private fun navigateToNoteListFragment() {
