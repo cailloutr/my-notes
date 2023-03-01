@@ -6,6 +6,7 @@ import android.view.Window
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.*
+import androidx.core.view.WindowCompat.setDecorFitsSystemWindows
 
 class WindowUtil {
 
@@ -16,9 +17,8 @@ class WindowUtil {
             toolbar: Toolbar,
             footer: ConstraintLayout
         ) {
-            WindowCompat.setDecorFitsSystemWindows(window, false)
+            setDecorFitsSystemWindows(window, false)
             implementsSystemBarInsets(toolbar, footer)
-            window.navigationBarColor = android.R.color.transparent
         }
 
 

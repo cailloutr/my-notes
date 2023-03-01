@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.mynotes.database.converters.Converters
 import com.example.mynotes.database.dao.NoteDao
-import com.example.mynotes.database.model.Note
+import com.example.mynotes.model.Note
 
 @Database(entities = [Note::class], version = 17, exportSchema = false)
 @TypeConverters(Converters::class)

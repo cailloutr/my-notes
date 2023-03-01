@@ -18,7 +18,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.mynotes.R
-import com.example.mynotes.database.model.Note
+import com.example.mynotes.model.Note
 import com.example.mynotes.databinding.FragmentNotesListBinding
 import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.enums.LayoutMode
@@ -33,14 +33,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
-// TODO: Image notes - Take a photo
 // TODO: Other options like add checkBoxes for each note as a shopping list
 // TODO: Add markers like topics
 // TODO: Share option
 // TODO: Archive item on swipe
 // TODO: auto clear the trash
-// TODO: lembretes
-// TODO: favoritos
+// TODO: reminders
+// TODO: favorites
 
 //private const val TAG: String = "NoteListFragment"
 

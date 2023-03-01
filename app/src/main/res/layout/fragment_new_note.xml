@@ -67,6 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/fragment_new_note_edittext_hint_title"
+            android:inputType="textCapSentences"
             android:transitionName="fragment_new_note_title" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -90,7 +91,7 @@
             android:layout_height="match_parent"
             android:gravity="top"
             android:hint="@string/fragment_new_note_edittext_hint_description"
-            android:inputType="textMultiLine"
+            android:inputType="textMultiLine|textCapSentences"
             android:transitionName="fragment_new_note_description" />
     </com.google.android.material.textfield.TextInputLayout>
 

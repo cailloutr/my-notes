@@ -1,4 +1,4 @@
-package com.example.mynotes.database.model
+package com.example.mynotes.model
 
 class UserPreferences(
     val layoutMode: String

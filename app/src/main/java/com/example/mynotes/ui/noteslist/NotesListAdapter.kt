@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mynotes.R
-import com.example.mynotes.database.model.Note
+import com.example.mynotes.model.Note
 import com.example.mynotes.databinding.ItemNoteLinearLayoutBinding
 import com.example.mynotes.databinding.ItemNoteStaggeredLayoutBinding
 import com.example.mynotes.ui.enums.LayoutMode

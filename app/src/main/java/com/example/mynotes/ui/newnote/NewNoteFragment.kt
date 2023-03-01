@@ -23,7 +23,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.mynotes.R
-import com.example.mynotes.database.model.Note
+import com.example.mynotes.model.Note
 import com.example.mynotes.databinding.ColorsBottomSheetBinding
 import com.example.mynotes.databinding.FragmentNewNoteBinding
 import com.example.mynotes.databinding.FragmentNewNoteOptionsBottomSheetBinding

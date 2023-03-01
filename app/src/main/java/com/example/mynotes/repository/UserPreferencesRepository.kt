@@ -1,12 +1,12 @@
-package com.example.mynotes.database.repository
+package com.example.mynotes.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.example.mynotes.database.model.UserPreferences
-import com.example.mynotes.database.repository.UserPreferencesRepository.PreferencesKeys.LAYOUT_MODE
+import com.example.mynotes.model.UserPreferences
+import com.example.mynotes.repository.UserPreferencesRepository.PreferencesKeys.LAYOUT_MODE
 import com.example.mynotes.ui.enums.LayoutMode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

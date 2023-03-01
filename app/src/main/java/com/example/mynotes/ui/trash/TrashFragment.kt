@@ -14,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.mynotes.R
-import com.example.mynotes.database.model.Note
+import com.example.mynotes.model.Note
 import com.example.mynotes.databinding.FragmentTrashBinding
 import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.noteslist.NotesListAdapter

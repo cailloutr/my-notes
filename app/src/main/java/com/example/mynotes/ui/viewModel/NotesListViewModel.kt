@@ -7,11 +7,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mynotes.database.model.Note
-import com.example.mynotes.database.model.UserPreferences
-import com.example.mynotes.database.repository.InternalStorageRepository
-import com.example.mynotes.database.repository.NotesRepository
-import com.example.mynotes.database.repository.UserPreferencesRepository
+import com.example.mynotes.model.Note
+import com.example.mynotes.model.UserPreferences
+import com.example.mynotes.repository.InternalStorageRepository
+import com.example.mynotes.repository.NotesRepository
+import com.example.mynotes.repository.UserPreferencesRepository
 import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.enums.LayoutMode
 import com.example.mynotes.util.DateUtil
