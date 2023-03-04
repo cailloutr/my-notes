@@ -67,17 +67,16 @@ class NotesListViewModel(
         bitmap: Bitmap?,
         context: Context
     ) {
-        val imagePath: String = if (currentPhotoPath.isNullOrEmpty()) {
+        val imagePath: String? = if (currentPhotoPath.isNullOrEmpty()) {
             saveImageFromImageView(bitmap, context)
         } else {
             saveImageFromCache(context)
-            currentPhotoPath!!
         }
 
         updateViewModelNote(
             title = title,
             description = description,
-            imagePath = imagePath,
+            imagePath = imagePath ?: "",
             hasImage = hasImage.value
         )
 
@@ -85,10 +84,11 @@ class NotesListViewModel(
         saveNote()
     }
 
-    private fun saveImageFromCache(context: Context) {
+    private fun saveImageFromCache(context: Context): String? {
         val source = currentPhotoPath?.let { File(it) }
         val destination = getImagePath(context)?.let { File(it) }
         copyFiles(source, destination)
+        return destination?.absolutePath
     }
 
     private fun saveImageFromImageView(bitmap: Bitmap?, context: Context): String {
