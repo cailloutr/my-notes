@@ -20,6 +20,10 @@
             app:exitAnim="@anim/nav_exit_anim"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@anim/nav_exit_anim" />
+        <argument
+            android:name="hasRemovedNote"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/newNoteFragment"

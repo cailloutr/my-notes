@@ -1,6 +1,7 @@
 package com.example.mynotes.ui.noteslist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -9,18 +10,20 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.doOnPreDraw
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.mynotes.R
-import com.example.mynotes.model.Note
 import com.example.mynotes.databinding.FragmentNotesListBinding
+import com.example.mynotes.model.Note
+import com.example.mynotes.ui.BaseFragment
 import com.example.mynotes.ui.enums.FragmentMode
+import com.example.mynotes.ui.enums.FragmentMode.FRAGMENT_EDIT
+import com.example.mynotes.ui.enums.FragmentMode.FRAGMENT_NEW
 import com.example.mynotes.ui.enums.LayoutMode
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.example.mynotes.util.ToastUtil
@@ -41,14 +44,20 @@ import org.koin.androidx.viewmodel.ext.android.activityViewModel
 // TODO: reminders
 // TODO: favorites
 
-//private const val TAG: String = "NoteListFragment"
+private const val TAG: String = "NoteListFragment"
+private const val STAGGERED_GRID_SPAN_COUNT = 2
 
-class NotesListFragment : Fragment() {
+class NotesListFragment : BaseFragment() {
     private lateinit var adapter: NotesListAdapter
+
     private var _binding: FragmentNotesListBinding? = null
     val binding get() = _binding!!
 
     private var actionMode: ActionMode? = null
+
+    private val args: NotesListFragmentArgs by navArgs()
+
+    private var hasRemovedNote: Boolean = false
 
 /*    private val viewModel: NotesListViewModel by activityViewModels {
         NotesListViewModelFactory(
@@ -60,11 +69,20 @@ class NotesListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.updateViewModelNoteHasImage(false)
+        hasRemovedNote = args.hasRemovedNote
+        resetViewModelNoteState()
+        getLayoutModeFromDataStore()
+    }
+
+    private fun getLayoutModeFromDataStore() {
         runBlocking {
             val layoutMode = async { viewModel.userPreferencesFlow.first().layoutMode }
             viewModel.setLayoutMode(LayoutMode.valueOf(layoutMode.await()))
         }
+    }
+
+    private fun resetViewModelNoteState() {
+        viewModel.updateViewModelNoteHasImage(false)
     }
 
     override fun onCreateView(
@@ -93,6 +111,8 @@ class NotesListFragment : Fragment() {
         chooseLayout()
         setupAddNoteButton()
         setupEditTextExpandViewButton()
+
+
     }
 
     private fun moveFooterWithKeyboard() {
@@ -114,24 +134,6 @@ class NotesListFragment : Fragment() {
         binding.toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 
-    private fun chooseLayout() {
-        when (viewModel.layoutMode) {
-            LayoutMode.STAGGERED_GRID_LAYOUT -> {
-                binding.fragmentNotesRecyclerView.layoutManager =
-                    StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-                setupAdapter()
-                loadNotesList()
-            }
-
-            LayoutMode.LINEAR_LAYOUT -> {
-                binding.fragmentNotesRecyclerView.layoutManager =
-                    LinearLayoutManager(context)
-                setupAdapter()
-                loadNotesList()
-            }
-        }
-    }
-
     private fun setupMenu() {
         (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -147,22 +149,43 @@ class NotesListFragment : Fragment() {
                 }
 
                 if (menuItem.itemId == R.id.note_list_options_menu_layout_style) {
-                    viewModel.setLayoutMode(
-                        if (viewModel.layoutMode == LayoutMode.STAGGERED_GRID_LAYOUT) {
-                            LayoutMode.LINEAR_LAYOUT
-                        } else {
-                            LayoutMode.STAGGERED_GRID_LAYOUT
-                        }
-                    )
-                    viewModel.hasPreferencesChanged(true)
-                    setLayoutModeIcon(menuItem)
-                    chooseLayout()
+                    changeLayoutMode(menuItem)
                 }
                 return true
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
+    private fun changeLayoutMode(menuItem: MenuItem) {
+        viewModel.setLayoutMode(
+            if (viewModel.layoutMode == LayoutMode.STAGGERED_GRID_LAYOUT) {
+                LayoutMode.LINEAR_LAYOUT
+            } else {
+                LayoutMode.STAGGERED_GRID_LAYOUT
+            }
+        )
+        viewModel.hasPreferencesChanged(true)
+        setLayoutModeIcon(menuItem)
+        chooseLayout()
+    }
+
+    private fun chooseLayout() {
+        when (viewModel.layoutMode) {
+            LayoutMode.STAGGERED_GRID_LAYOUT -> {
+                binding.fragmentNotesRecyclerView.layoutManager =
+                    StaggeredGridLayoutManager(
+                        STAGGERED_GRID_SPAN_COUNT,
+                        StaggeredGridLayoutManager.VERTICAL
+                    )
+            }
+
+            LayoutMode.LINEAR_LAYOUT -> {
+                binding.fragmentNotesRecyclerView.layoutManager =
+                    LinearLayoutManager(context)
+            }
+        }
+        loadNotesList()
+    }
 
     private fun setLayoutModeIcon(menuItem: MenuItem?) {
         if (menuItem == null) return
@@ -176,47 +199,64 @@ class NotesListFragment : Fragment() {
         }
     }
 
-    private fun navigateToTrashFragment() {
-        findNavController().navigate(
-            NotesListFragmentDirections.actionNotesListFragmentToTrashFragment()
-        )
-    }
-
-    private fun navigateToNewNotesFragment(fragmentMode: FragmentMode) {
-        val action =
-            NotesListFragmentDirections.actionNotesListFragmentToNewNoteFragment(fragmentMode)
-        findNavController().navigate(action)
-    }
-
-    private fun navigateToNewNotesFragmentExtras(
-        fragmentMode: FragmentMode,
-        extrasArray: ArrayList<View>
-    ) {
-        val navigatorExtras = FragmentNavigatorExtras(
-            extrasArray[0] to "fragment_new_note_title",
-            extrasArray[1] to "fragment_new_note_description",
-            extrasArray[2] to "fragment_new_note_container"
-        )
-
-        val action =
-            NotesListFragmentDirections.actionNotesListFragmentToNewNoteFragment(fragmentMode)
-        findNavController().navigate(
-            action,
-            navigatorExtras
-        )
-    }
-
     private fun loadNotesList() {
         val adapter = setupAdapter()
-        viewModel.notesList.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+        viewModel.notesList.observe(viewLifecycleOwner) { noteList ->
+            adapter.submitList(noteList)
 
             // Start the transition once all views have been
             // measured and laid out
             (view?.parent as? ViewGroup)?.doOnPreDraw {
                 startPostponedEnterTransition()
             }
+
+            /**
+             * If hasRemovedNote == true means that a delete action had been performed in NewNoteFragment
+             * Then it gets a reference from the deleted note from the viewModel and show the snack-bar that
+             * will only delete it from the database if the undo action is not called
+             * */
+            if (hasRemovedNote) {
+                val noteMap = mutableMapOf<Int, Note>()
+                viewModel.note.value?.let {
+                    val index = adapter.currentList.indexOf(it)
+                    noteMap.put(index, it)
+                }
+
+                showSnackbarWithUndoDeleteAction(noteMap) {
+                    hasRemovedNote = false
+                }
+            }
         }
+        Log.i(TAG, "loadNotesList: ${adapter.currentList}")
+    }
+
+    private fun showSnackbarWithUndoDeleteAction(
+        noteMap: MutableMap<Int, Note>,
+        operation: () -> Unit = {}
+    ) {
+        var undoAction = false
+        removeNotesFromCurrentList(noteMap)
+
+        val snackbar = Snackbar.make(
+            binding.fragmentNotesCardviewButtonAddNote,
+            getString(R.string.note_list_fragment_move_to_trash_snackbar),
+            Snackbar.LENGTH_SHORT
+        ).setAction(R.string.note_list_snack_bar_message_undo) {
+            undoRemoveAction(noteMap)
+            undoAction = true
+        }.addCallback(object : Snackbar.Callback() {
+            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                super.onDismissed(transientBottomBar, event)
+
+                if (!undoAction) {
+                    viewModel.moveSelectedItemsToTrash(noteMap.values.toList())
+                }
+
+                undoAction = false
+                operation()
+            }
+        })
+        snackbar.show()
     }
 
     private fun setupEditTextExpandViewButton() {
@@ -224,16 +264,11 @@ class NotesListFragment : Fragment() {
             viewModel.createEmptyNote()
             saveDescriptionInViewModel()
             cleanEditTextInsertNote()
-            viewModel.setFragmentMode(FragmentMode.FRAGMENT_NEW)
-            viewModel.fragmentMode.value?.let { fragmentMode ->
-                navigateToNewNotesFragment(fragmentMode)
-            }
+
+            navigateToNewNotesFragment(FRAGMENT_NEW)
         }
     }
 
-    /**
-     * Return true if the description field is not empty
-     * */
     private fun saveDescriptionInViewModel(): Boolean {
         val description = binding.fragmentNotesTextInputEdittextInsert.text.toString()
 
@@ -270,14 +305,19 @@ class NotesListFragment : Fragment() {
             { note, itemStateArray, title, description, container, image ->
                 // Handles a single click to open a note
                 if (note != null) {
-                    viewModel.loadNote(note)
-                    viewModel.setFragmentMode(FragmentMode.FRAGMENT_EDIT)
 
                     val extras = setupSharedElementsExtras(title, description, container, image)
+                    val direction =
+                        NotesListFragmentDirections.actionNotesListFragmentToNewNoteFragment(
+                            FRAGMENT_EDIT
+                        )
 
-                    viewModel.fragmentMode.value?.let {
-                        navigateToNewNotesFragmentExtras(it, extras)
-                    }
+                    openNote(
+                        note,
+                        viewModel,
+                        extras,
+                        direction
+                    )
                 } else {
                     // Handle the selection of multiples items
                     when (itemStateArray.size) {
@@ -298,56 +338,15 @@ class NotesListFragment : Fragment() {
                 }
             },
             // Handles the action delete on the selected items
-            { listOfItems, _ ->
-                var undoAction = false
-                removeNotesFromCurrentList(listOfItems)
-
-                val snackbar = Snackbar.make(
-                    binding.fragmentNotesCardviewButtonAddNote,
-                    getString(R.string.note_list_fragment_move_to_trash_snackbar),
-                    Snackbar.LENGTH_SHORT
-                ).setAction(R.string.note_list_snack_bar_message_undo) {
-                    undoRemoveAction(listOfItems)
-                    undoAction = true
-                }.addCallback(object : Snackbar.Callback() {
-                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                        super.onDismissed(transientBottomBar, event)
-
-                        if (!undoAction) {
-                            viewModel.moveSelectedItemsToTrash(listOfItems.values.toList())
-                        }
-
-                        undoAction = false
-                    }
-                })
-                snackbar.show()
-            })
+            { listOfItems: Map<Int, Note>, _ ->
+                showSnackbarWithUndoDeleteAction(listOfItems as MutableMap<Int, Note>)
+            }
+        )
 
         binding.fragmentNotesRecyclerView.adapter = adapter
         return adapter
     }
 
-    private fun setupSharedElementsExtras(
-        title: View?,
-        description: View?,
-        container: View?,
-        image: View?
-    ): ArrayList<View> {
-        val extras: ArrayList<View> = arrayListOf()
-        if (title != null) {
-            extras.add(title)
-        }
-        if (description != null) {
-            extras.add(description)
-        }
-        if (container != null) {
-            extras.add(container)
-        }
-        if (image != null) {
-            extras.add(image)
-        }
-        return extras
-    }
 
     private fun undoRemoveAction(
         listOfItems: Map<Int, Note>
@@ -365,30 +364,32 @@ class NotesListFragment : Fragment() {
         adapter.submitList(mutableList)
     }
 
-    private val callback = object : ActionMode.Callback {
-
-        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-            activity?.menuInflater?.inflate(R.menu.notes_list_fragment_contextual_action_bar, menu)
-            return true
-        }
-
-        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-            return false
-        }
-
-        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-            return when (item?.itemId) {
+    private val callback = setupActionModeCallback(
+        menuRes = R.menu.notes_list_fragment_contextual_action_bar,
+        onActionItemClickListener = { menuItem ->
+            when (menuItem?.itemId) {
                 R.id.delete -> {
                     adapter.returnSelectedItems(null)
                     true
                 }
                 else -> false
             }
-        }
-
-        override fun onDestroyActionMode(mode: ActionMode?) {
+        },
+        onDestroyActionModeListener = {
             adapter.resetStateArray()
         }
+    )
+
+    private fun navigateToTrashFragment() {
+        findNavController().navigate(
+            NotesListFragmentDirections.actionNotesListFragmentToTrashFragment()
+        )
+    }
+
+    private fun navigateToNewNotesFragment(fragmentMode: FragmentMode) {
+        val action =
+            NotesListFragmentDirections.actionNotesListFragmentToNewNoteFragment(fragmentMode)
+        findNavController().navigate(action)
     }
 
     override fun onStop() {

@@ -12,7 +12,6 @@ import com.example.mynotes.model.UserPreferences
 import com.example.mynotes.repository.InternalStorageRepository
 import com.example.mynotes.repository.NotesRepository
 import com.example.mynotes.repository.UserPreferencesRepository
-import com.example.mynotes.ui.enums.FragmentMode
 import com.example.mynotes.ui.enums.LayoutMode
 import com.example.mynotes.util.DateUtil
 import kotlinx.coroutines.flow.Flow
@@ -33,10 +32,6 @@ class NotesListViewModel(
     private val _trashList = getTrash()
     val trashList: LiveData<List<Note>> = _trashList
 
-    private var _fragmentMode: MutableLiveData<FragmentMode> =
-        MutableLiveData(FragmentMode.FRAGMENT_NEW)
-    val fragmentMode: LiveData<FragmentMode> = _fragmentMode
-
     private val _note = MutableLiveData<Note?>(null)
     val note: LiveData<Note?> = _note
 
@@ -51,8 +46,10 @@ class NotesListViewModel(
     private var _hasPreferencesChanged: Boolean = false
     val hasPreferencesChanged get() = _hasPreferencesChanged
 
+    private var _currentPhotoPath: String? = null
+    val currentPhotoPath: String? get() = _currentPhotoPath
+
     var uri: Uri? = null
-    lateinit var currentPhotoPath: String
 
     private fun getAllNotes() = repository.getAllSavedNotes()
 
@@ -64,13 +61,58 @@ class NotesListViewModel(
         }
     }
 
-    fun createTempFile(context: Context, id: String): File {
-        return internalStorageRepository.createTempImageFile(context, id).apply {
-            currentPhotoPath = absolutePath
+    fun saveNewNote(
+        title: String,
+        description: String,
+        bitmap: Bitmap?,
+        context: Context
+    ) {
+        val imagePath: String = if (currentPhotoPath.isNullOrEmpty()) {
+            saveImageFromImageView(bitmap, context)
+        } else {
+            saveImageFromCache(context)
+            currentPhotoPath!!
+        }
+
+        updateViewModelNote(
+            title = title,
+            description = description,
+            imagePath = imagePath,
+            hasImage = hasImage.value
+        )
+
+        setCurrentPhotoPath(null)
+        saveNote()
+    }
+
+    private fun saveImageFromCache(context: Context) {
+        val source = currentPhotoPath?.let { File(it) }
+        val destination = getImagePath(context)?.let { File(it) }
+        copyFiles(source, destination)
+    }
+
+    private fun saveImageFromImageView(bitmap: Bitmap?, context: Context): String {
+        return if (hasImage.value == true) {
+            saveImageInAppSpecificAlbumStorageDir(
+                bitmap,
+                getImagePath(context).toString()
+            )
+        } else {
+            deleteImageInAppSpecificAlbumStorageDir(context)
+            ""
         }
     }
 
-    fun deleteImageInAppSpecificAlbumStorageDir(context: Context) {
+    fun createTempFile(context: Context, id: String): File {
+        return internalStorageRepository.createTempImageFile(context, id).apply {
+            setCurrentPhotoPath(absolutePath)
+        }
+    }
+
+    private fun copyFiles(source: File?, destination: File?) =
+        internalStorageRepository.copyFile(source, destination)
+
+    private fun deleteImageInAppSpecificAlbumStorageDir(context: Context) {
         note.value?.id?.let {
             internalStorageRepository.deleteImageInAppSpecificAlbumStorageDir(
                 context, it
@@ -78,7 +120,7 @@ class NotesListViewModel(
         }
     }
 
-    fun saveImageInAppSpecificAlbumStorageDir(
+    private fun saveImageInAppSpecificAlbumStorageDir(
         bitmap: Bitmap?,
         path: String
     ): String {
@@ -87,7 +129,10 @@ class NotesListViewModel(
         )
     }
 
-    fun getImagePath(context: Context): String? =
+/*    fun getAppSpecificAlbumStorageDir(context: Context) =
+        internalStorageRepository.getAppSpecificAlbumStorageDir(context)*/
+
+    private fun getImagePath(context: Context): String? =
         note.value?.id?.let { internalStorageRepository.getImagePath(context, it) }
 
 
@@ -118,15 +163,6 @@ class NotesListViewModel(
         viewModelScope.launch {
             repository.delete(*listOfItemToDelete.toTypedArray())
         }
-    }
-
-    fun moveNoteToTrash(): Boolean {
-        if (note.value?.id == null) {
-            return false
-        }
-
-        _note.value?.isTrash = true
-        return true
     }
 
     fun moveSelectedItemsToTrash(listOfItem: List<Note>) {
@@ -185,10 +221,6 @@ class NotesListViewModel(
         _note.value = null
     }
 
-    fun setFragmentMode(mode: FragmentMode) {
-        _fragmentMode.value = mode
-    }
-
     fun setNoteColor(color: Int) {
         _note.value?.color = color
     }
@@ -216,6 +248,12 @@ class NotesListViewModel(
     fun setLayoutMode(mode: LayoutMode) {
         _layoutMode = mode
     }
+
+    private fun setCurrentPhotoPath(path: String?) {
+        _currentPhotoPath = path
+    }
+
+    fun noteIsTrash(): Boolean = note.value?.isTrash ?: false
 
 }
 

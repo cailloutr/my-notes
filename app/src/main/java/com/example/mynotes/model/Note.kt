@@ -9,10 +9,10 @@ import java.util.UUID
 @Entity
 data class Note(
     @PrimaryKey val id: String = UUID.randomUUID().toString(),
-    var title: String? = "",
-    var description: String? = "",
+    var title: String = "",
+    var description: String = "",
     @ColumnInfo(name = "modified_date") var modifiedDate: String?,
-    @ColumnInfo(name = "is_trash") var isTrash: Boolean? = false,
+    @ColumnInfo(name = "is_trash") var isTrash: Boolean = false,
     @ColorRes var color: Int? = null,
     @ColumnInfo(name = "image_url") var imageUrl: String? = null,
     @ColumnInfo(name = "has_image") var hasImage: Boolean = false

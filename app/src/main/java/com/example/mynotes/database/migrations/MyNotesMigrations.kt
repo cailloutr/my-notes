@@ -8,27 +8,35 @@ class MyNotesMigrations {
 
     companion object {
         private val MIGRATION_11_12 = Migration(11, 12) {
-            it.execSQL(""" 
+            it.execSQL(
+                """ 
                 ALTER TABLE Note ADD color INTEGER
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
 
         private val MIGRATION_12_13 = Migration(12, 13) {
-            it.execSQL(""" 
+            it.execSQL(
+                """ 
                 ALTER TABLE Note ADD image_url TEXT
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
 
         private val MIGRATION_13_14 = Migration(13, 14) {
-            it.execSQL(""" 
+            it.execSQL(
+                """ 
                 ALTER TABLE Note ADD has_image INTEGER DEFAULT 0 NOT NULL
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
 
         private val MIGRATION_14_13 = Migration(14, 13) {
-            it.execSQL(""" 
+            it.execSQL(
+                """ 
                 ALTER TABLE Note DROP has_image
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
 
         private val MIGRATION_14_15 = Migration(14, 15) {
@@ -36,7 +44,8 @@ class MyNotesMigrations {
             val newTable = "NewTable"
 
             //Create a copy of the current table
-            it.execSQL(""" 
+            it.execSQL(
+                """ 
                 CREATE TABLE IF NOT EXISTS $newTable (
                 `id` TEXT NOT NULL, 
                 `title` TEXT, 
@@ -49,10 +58,12 @@ class MyNotesMigrations {
                 `has_image` INTEGER NOT NULL, 
                 PRIMARY KEY(`id`)
                 )
-            """.trimIndent())
+            """.trimIndent()
+            )
 
             // Copy the data from old table to new table
-            it.execSQL("""
+            it.execSQL(
+                """
                 INSERT INTO $newTable (
                 `id`, 
                 `title`, 
@@ -75,27 +86,34 @@ class MyNotesMigrations {
                 `image_url`, 
                 `has_image`
                 FROM $currentTable
-            """.trimIndent())
+            """.trimIndent()
+            )
 
             // Set new ids for every row
             val cursor = it.query("SELECT * FROM $newTable")
             while (cursor.moveToNext()) {
                 val id = cursor.getString(cursor.getColumnIndexOrThrow("id"))
-                it.execSQL("""
+                it.execSQL(
+                    """
                     UPDATE $newTable SET `id` = "${UUID.randomUUID()}"
                     WHERE `id` = $id
-                """.trimIndent())
+                """.trimIndent()
+                )
             }
 
             // Drop the current table
-            it.execSQL("""
+            it.execSQL(
+                """
                 DROP TABLE $currentTable
-            """.trimIndent())
+            """.trimIndent()
+            )
 
             // Rename the new table to old table's name
-            it.execSQL("""
+            it.execSQL(
+                """
                 ALTER TABLE $newTable RENAME TO $currentTable
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
 
         private val MIGRATION_15_16 = object : Migration(15, 16) {
@@ -103,7 +121,8 @@ class MyNotesMigrations {
             val currentNote = "Note"
             override fun migrate(database: SupportSQLiteDatabase) {
                 // Create a new table
-                database.execSQL("""
+                database.execSQL(
+                    """
                     CREATE TABLE IF NOT EXISTS $newNote (
                     `id` TEXT NOT NULL, 
                     `title` TEXT, 
@@ -115,10 +134,12 @@ class MyNotesMigrations {
                     `has_image` INTEGER NOT NULL, 
                     PRIMARY KEY(`id`)
                     )
-                """.trimIndent())
+                """.trimIndent()
+                )
 
                 // Copy data to the new table
-                database.execSQL("""
+                database.execSQL(
+                    """
                     INSERT INTO $newNote 
                     SELECT 
                         id, 
@@ -130,25 +151,86 @@ class MyNotesMigrations {
                         image_url, 
                         has_image
                     FROM $currentNote
-                """.trimIndent())
+                """.trimIndent()
+                )
 
                 // Drop current table
-                database.execSQL("""
+                database.execSQL(
+                    """
                     DROP TABLE $currentNote
-                """.trimIndent())
+                """.trimIndent()
+                )
 
                 // Rename new table as the current one
-                database.execSQL("""
+                database.execSQL(
+                    """
                     ALTER TABLE $newNote RENAME TO $currentNote
-                """.trimIndent())
+                """.trimIndent()
+                )
             }
         }
 
         private val MIGRATION_16_17 = object : Migration(16, 17) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("""
+                database.execSQL(
+                    """
                     ALTER TABLE Note RENAME COLUMN modified_data TO modified_date
-                """.trimIndent())
+                """.trimIndent()
+                )
+            }
+        }
+
+        private val MIGRATION_17_18 = object : Migration(17, 18) {
+            val newNote = "NewNote"
+            val currentNote = "Note"
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Create a new table
+                database.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS $newNote (
+                    `id` TEXT NOT NULL, 
+                    `title` TEXT NOT NULL, 
+                    `description` TEXT NOT NULL, 
+                    `modified_date` TEXT, 
+                    `is_trash` INTEGER NOT NULL, 
+                    `color` INTEGER, 
+                    `image_url` TEXT, 
+                    `has_image` INTEGER NOT NULL, 
+                    PRIMARY KEY(`id`)
+                    )
+                """.trimIndent()
+                )
+
+                // Copy data to the new table
+                database.execSQL(
+                    """
+                    INSERT INTO $newNote 
+                    SELECT 
+                        id, 
+                        title, 
+                        description, 
+                        modified_date, 
+                        is_trash, 
+                        color, 
+                        image_url, 
+                        has_image
+                    FROM $currentNote
+                """.trimIndent()
+                )
+
+                // Drop current table
+                database.execSQL(
+                    """
+                    DROP TABLE $currentNote
+                """.trimIndent()
+                )
+
+                // Rename new table as the current one
+                database.execSQL(
+                    """
+                    ALTER TABLE $newNote RENAME TO $currentNote
+                """.trimIndent()
+                )
             }
         }
 
@@ -159,7 +241,8 @@ class MyNotesMigrations {
             MIGRATION_14_13,
             MIGRATION_14_15,
             MIGRATION_15_16,
-            MIGRATION_16_17
+            MIGRATION_16_17,
+            MIGRATION_17_18
         )
     }
 }

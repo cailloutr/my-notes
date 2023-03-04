@@ -1,8 +1,8 @@
 package com.example.mynotes.ui.newnote
 
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
 import android.util.Log
 import android.view.*
 import android.widget.Toast
@@ -23,11 +23,11 @@ import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.mynotes.R
-import com.example.mynotes.model.Note
 import com.example.mynotes.databinding.ColorsBottomSheetBinding
 import com.example.mynotes.databinding.FragmentNewNoteBinding
 import com.example.mynotes.databinding.FragmentNewNoteOptionsBottomSheetBinding
 import com.example.mynotes.databinding.ImageBottomSheetBinding
+import com.example.mynotes.model.Note
 import com.example.mynotes.ui.bottomsheet.BaseBottomSheet
 import com.example.mynotes.ui.bottomsheet.ImageBottomSheet
 import com.example.mynotes.ui.bottomsheet.NoteOptionModalBottomSheet
@@ -47,7 +47,6 @@ import java.io.File
 import java.io.IOException
 
 //private const val TAG = "NewNoteFragment"
-//const val REQUEST_IMAGE_CAPTURE = 1
 
 class NewNoteFragment : Fragment() {
 
@@ -142,7 +141,6 @@ class NewNoteFragment : Fragment() {
 
     private fun setupBottomSheet() {
         binding.fragmentNewNoteOptionsMenu.setOnClickListener {
-            //TODO: Fix snackbar undo action deleting note from newNoteFragment
             val bottomSheet = NoteOptionModalBottomSheet(
                 backgroundColor = viewModel.note.value?.color,
                 binding = FragmentNewNoteOptionsBottomSheetBinding.inflate(
@@ -151,33 +149,22 @@ class NewNoteFragment : Fragment() {
                     false
                 ),
                 listener = {
-                    val snackbar: Snackbar?
-                    if (viewModel.note.value?.isTrash == true) {
+                    if (viewModel.noteIsTrash()) {
                         viewModel.deleteNote()
-
-                        snackbar = Snackbar.make(
-                            binding.root,
-                            resources.getQuantityString(
-                                R.plurals.snackbar_message_notes_deleted,
-                                1
-                            ),
-                            Snackbar.LENGTH_SHORT
+                        val message = resources.getQuantityString(
+                            R.plurals.snackbar_message_notes_deleted,
+                            1
                         )
+                        Snackbar.make(
+                            binding.root,
+                            message,
+                            Snackbar.LENGTH_LONG
+                        ).show()
 
                         navigateToTrashFragment()
                     } else {
-                        viewModel.moveNoteToTrash()
-                        viewModel.saveNote()
-
-                        snackbar = Snackbar.make(
-                            binding.root,
-                            getString(R.string.note_list_fragment_move_to_trash_snackbar),
-                            Snackbar.LENGTH_SHORT
-                        )
-
-                        navigateToNoteListFragment()
+                        navigateToNoteListFragment(hasRemovedNote = true)
                     }
-                    snackbar.show()
                 }
             )
             openBottomSheet(bottomSheet, bottomSheet.TAG)
@@ -264,12 +251,6 @@ class NewNoteFragment : Fragment() {
         bottomSheet.show(parentFragmentManager, tag)
     }
 
-    private fun navigateToTrashFragment() {
-        findNavController().navigate(
-            NewNoteFragmentDirections.actionNewNoteFragmentToTrashFragment()
-        )
-    }
-
     private fun setThemeColors(color: Int?) {
         val colorId = color ?: ContextCompat.getColor(requireContext(), R.color.white)
         binding.root.setBackgroundColor(colorId)
@@ -342,7 +323,6 @@ class NewNoteFragment : Fragment() {
         }
     }
 
-
     private fun setupMenu() {
         (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -355,19 +335,7 @@ class NewNoteFragment : Fragment() {
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 if (menuItem.itemId == R.id.fragment_new_note_menu_item_save_note) {
-
-                    val title = binding.fragmentNewNoteTextInputEdittextTitle.text
-                    val description = binding.fragmentNewNoteTextInputEdittextDescription.text
-
-                    if (title.isNullOrEmpty() && description.isNullOrEmpty()) {
-                        ToastUtil.makeToast(
-                            context,
-                            getString(R.string.notes_list_fragment_toast_empty_note)
-                        )
-                    } else {
-                        saveNewNote(title, description)
-                    }
-                    navigateUp()
+                    saveNewNote()
                 }
 
                 if (menuItem.itemId == R.id.fragment_new_note_trash_menu_restore) {
@@ -379,33 +347,31 @@ class NewNoteFragment : Fragment() {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    private fun navigateUp() {
-        findNavController().navigateUp()
-    }
+    private fun saveNewNote() {
+        val title =
+            binding.fragmentNewNoteTextInputEdittextTitle.text.toString()
+        val description =
+            binding.fragmentNewNoteTextInputEdittextDescription.text.toString()
 
-    private fun saveNewNote(title: Editable?, description: Editable?) {
-        val imagePath = if (viewModel.hasImage.value == true) {
-            val imageView = binding.fragmentNewNoteImage
-            val bitmap = imageView.drawable.toBitmapOrNull(
-                250,
-                250
-            )
-            viewModel.saveImageInAppSpecificAlbumStorageDir(
-                bitmap,
-                viewModel.getImagePath(requireContext()).toString()
-            )
-        } else {
-            viewModel.deleteImageInAppSpecificAlbumStorageDir(requireContext())
-            ""
+        var bitmap: Bitmap? = null
+        if (viewModel.hasImage.value!!) {
+            bitmap = binding.fragmentNewNoteImage.drawable.toBitmapOrNull(250, 250)
         }
 
-        viewModel.updateViewModelNote(
-            title = title.toString(),
-            description = description.toString(),
-            imagePath = imagePath,
-            hasImage = viewModel.hasImage.value
-        )
-        viewModel.saveNote()
+        if (title.isEmpty() && description.isEmpty()) {
+            ToastUtil.makeToast(
+                context,
+                getString(R.string.notes_list_fragment_toast_empty_note)
+            )
+        } else {
+            viewModel.saveNewNote(
+                title,
+                description,
+                bitmap,
+                requireContext()
+            )
+        }
+        navigateUp()
     }
 
     private fun undoDeleteNote() {
@@ -413,10 +379,20 @@ class NewNoteFragment : Fragment() {
         viewModel.saveNote()
     }
 
-    private fun navigateToNoteListFragment() {
+    private fun navigateToNoteListFragment(hasRemovedNote: Boolean = false) {
         findNavController().navigate(
-            NewNoteFragmentDirections.actionNewNoteFragmentToNotesListFragment()
+            NewNoteFragmentDirections.actionNewNoteFragmentToNotesListFragment(hasRemovedNote)
         )
+    }
+
+    private fun navigateToTrashFragment() {
+        findNavController().navigate(
+            NewNoteFragmentDirections.actionNewNoteFragmentToTrashFragment()
+        )
+    }
+
+    private fun navigateUp() {
+        findNavController().navigateUp()
     }
 
     override fun onDestroyView() {

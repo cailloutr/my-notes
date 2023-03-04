@@ -7,16 +7,15 @@ import androidx.core.util.size
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.core.view.doOnPreDraw
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.example.mynotes.R
-import com.example.mynotes.model.Note
 import com.example.mynotes.databinding.FragmentTrashBinding
-import com.example.mynotes.ui.enums.FragmentMode
+import com.example.mynotes.model.Note
+import com.example.mynotes.ui.BaseFragment
+import com.example.mynotes.ui.enums.FragmentMode.FRAGMENT_TRASH
 import com.example.mynotes.ui.noteslist.NotesListAdapter
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -24,7 +23,7 @@ import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 
-class TrashFragment : Fragment() {
+class TrashFragment : BaseFragment() {
 
     private var _binding: FragmentTrashBinding? = null
     val binding get() = _binding!!
@@ -79,8 +78,10 @@ class TrashFragment : Fragment() {
                             resources.getString(
                                 R.string.fragment_trash_confirmation_dialog_clear_trash_message
                             )
-                        ) { viewModel.clearTrash() }
-                        showSnackBar(getString(R.string.snackbar_message_trash_cleaned))
+                        ) {
+                            viewModel.clearTrash()
+                            showSnackBar(getString(R.string.snackbar_message_trash_cleaned))
+                        }
                     }
                     R.id.trash_list_menu_option_restore_all -> {
                         viewModel.restoreAllNotesFromTrash()
@@ -122,7 +123,7 @@ class TrashFragment : Fragment() {
         viewModel.trashList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
 
-            hideEmptyRecyclerVIew(it)
+            hideEmptyRecyclerView(it)
 
             // Start the transition once all views have been
             // measured and laid out
@@ -132,7 +133,7 @@ class TrashFragment : Fragment() {
         }
     }
 
-    private fun hideEmptyRecyclerVIew(it: List<Note>) {
+    private fun hideEmptyRecyclerView(it: List<Note>) {
         if (it.isEmpty()) {
             binding.fragmentTrashRecyclerView.visibility = View.GONE
             binding.fragmentTrashEmptyTrashView.visibility = View.VISIBLE
@@ -142,38 +143,23 @@ class TrashFragment : Fragment() {
         }
     }
 
-    private fun navigateToNewNotesFragmentExtras(
-        fragmentMode: FragmentMode,
-        extrasArray: ArrayList<View>
-    ) {
-        val navigatorExtras = FragmentNavigatorExtras(
-            extrasArray[0] to "fragment_new_note_title",
-            extrasArray[1] to "fragment_new_note_description",
-            extrasArray[2] to "fragment_new_note_container"
-        )
-
-        val action =
-            TrashFragmentDirections.actionTrashFragmentToNewNoteFragment(fragmentMode)
-        findNavController().navigate(
-            action,
-            navigatorExtras
-        )
-    }
-
     private fun setupAdapter(): NotesListAdapter {
         adapter = NotesListAdapter(
             viewModel.layoutMode,
             { note, itemStateArray, title, description, container, image ->
                 // Handle the click on a note to open
                 if (note != null) {
-                    viewModel.loadNote(note)
-                    viewModel.setFragmentMode(FragmentMode.FRAGMENT_TRASH)
 
                     val extras = setupSharedElementsExtras(title, description, container, image)
+                    val direction =
+                        TrashFragmentDirections.actionTrashFragmentToNewNoteFragment(FRAGMENT_TRASH)
 
-                    viewModel.fragmentMode.value?.let {
-                        navigateToNewNotesFragmentExtras(it, extras)
-                    }
+                    openNote(
+                        note,
+                        viewModel,
+                        extras,
+                        direction
+                    )
                 } else {
                     // Handle the selection of items
                     when (itemStateArray.size) {
@@ -214,28 +200,6 @@ class TrashFragment : Fragment() {
         return adapter
     }
 
-    private fun setupSharedElementsExtras(
-        title: View?,
-        description: View?,
-        container: View?,
-        image: View?
-    ): ArrayList<View> {
-        val extras: ArrayList<View> = arrayListOf()
-        if (title != null) {
-            extras.add(title)
-        }
-        if (description != null) {
-            extras.add(description)
-        }
-        if (container != null) {
-            extras.add(container)
-        }
-        if (image != null) {
-            extras.add(image)
-        }
-        return extras
-    }
-
     private fun showSnackBar(message: String) {
         Snackbar.make(
             binding.root,
@@ -244,19 +208,10 @@ class TrashFragment : Fragment() {
         ).show()
     }
 
-    private val callback = object : ActionMode.Callback {
-
-        override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-            activity?.menuInflater?.inflate(R.menu.trash_fragment_contextual_action_bar, menu)
-            return true
-        }
-
-        override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-            return false
-        }
-
-        override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-            return when (item?.itemId) {
+    private val callback = setupActionModeCallback(
+        menuRes = R.menu.trash_fragment_contextual_action_bar,
+        onActionItemClickListener = { menuItem ->
+            when (menuItem?.itemId) {
                 R.id.delete -> {
                     showConfirmationDialog(
                         title = getString(
@@ -265,7 +220,7 @@ class TrashFragment : Fragment() {
                         message = getString(
                             R.string.trash_fragment_delete_selected_notes_dialog_message
                         )
-                    ) { adapter.returnSelectedItems(item.itemId) }
+                    ) { adapter.returnSelectedItems(menuItem.itemId) }
                     true
                 }
                 R.id.restore -> {
@@ -276,17 +231,16 @@ class TrashFragment : Fragment() {
                         message = getString(
                             R.string.trash_fragment_restore_selected_notes_dialog_message
                         )
-                    ) { adapter.returnSelectedItems(item.itemId) }
+                    ) { adapter.returnSelectedItems(menuItem.itemId) }
                     true
                 }
                 else -> false
             }
-        }
-
-        override fun onDestroyActionMode(mode: ActionMode?) {
+        },
+        onDestroyActionModeListener = {
             adapter.resetStateArray()
         }
-    }
+    )
 
     override fun onDestroyView() {
         super.onDestroyView()

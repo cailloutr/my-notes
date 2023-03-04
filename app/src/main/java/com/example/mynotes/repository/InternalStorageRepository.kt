@@ -1,12 +1,12 @@
-package com.example.mynotes.database.repository
+package com.example.mynotes.repository
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Environment
+import android.os.FileUtils
 import android.util.Log
-import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStream
+import java.io.*
 
 class InternalStorageRepository {
 
@@ -24,7 +24,14 @@ class InternalStorageRepository {
         context.cacheDir.deleteRecursively()
     }
 
-    private fun getAppSpecificAlbumStorageDir(context: Context): File {
+    @Throws(IOException::class)
+    fun copyFile(source: File?, destination: File?) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            FileUtils.copy(FileInputStream(source), FileOutputStream(destination))
+        }
+    }
+
+    fun getAppSpecificAlbumStorageDir(context: Context): File {
         // Get the pictures directory that's inside the app-specific directory on
         // external storage.
         val file = File(
