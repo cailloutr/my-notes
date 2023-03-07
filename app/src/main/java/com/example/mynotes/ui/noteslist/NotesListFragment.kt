@@ -3,7 +3,6 @@ package com.example.mynotes.ui.noteslist
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.util.size
 import androidx.core.view.MenuHost
@@ -13,8 +12,6 @@ import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.mynotes.R
@@ -26,7 +23,6 @@ import com.example.mynotes.ui.enums.FragmentMode.FRAGMENT_EDIT
 import com.example.mynotes.ui.enums.FragmentMode.FRAGMENT_NEW
 import com.example.mynotes.ui.enums.LayoutMode
 import com.example.mynotes.ui.viewModel.NotesListViewModel
-import com.example.mynotes.util.ToastUtil
 import com.example.mynotes.util.windowinsets.InsetsWithKeyboardAnimationCallback
 import com.example.mynotes.util.windowinsets.InsetsWithKeyboardCallback
 import com.example.mynotes.util.windowinsets.WindowUtil.Companion.setupEdgeToEdgeLayout
@@ -91,8 +87,7 @@ class NotesListFragment : BaseFragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentNotesListBinding.inflate(inflater, container, false)
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
-        setupAppBar()
+        setupAppBar(binding.notesListToolbar)
         return binding.root
     }
 
@@ -101,8 +96,8 @@ class NotesListFragment : BaseFragment() {
 
         setupEdgeToEdgeLayout(
             window = requireActivity().window,
-            toolbar = binding.toolbar,
-            footer = binding.fragmentNotesListFooter
+            toolbar = binding.notesListToolbar,
+            footer = binding.notesListFooter
         )
 
         moveFooterWithKeyboard()
@@ -111,8 +106,6 @@ class NotesListFragment : BaseFragment() {
         chooseLayout()
         setupAddNoteButton()
         setupEditTextExpandViewButton()
-
-
     }
 
     private fun moveFooterWithKeyboard() {
@@ -121,17 +114,11 @@ class NotesListFragment : BaseFragment() {
         ViewCompat.setWindowInsetsAnimationCallback(binding.root, insetsWithKeyboardCallback)
 
         val insetsWithKeyboardAnimationCallback =
-            InsetsWithKeyboardAnimationCallback(binding.fragmentNotesListFooter)
+            InsetsWithKeyboardAnimationCallback(binding.notesListFooter)
         ViewCompat.setWindowInsetsAnimationCallback(
-            binding.fragmentNotesListFooter,
+            binding.notesListFooter,
             insetsWithKeyboardAnimationCallback
         )
-    }
-
-    private fun setupAppBar() {
-        val navController = findNavController()
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-        binding.toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 
     private fun setupMenu() {
@@ -172,7 +159,7 @@ class NotesListFragment : BaseFragment() {
     private fun chooseLayout() {
         when (viewModel.layoutMode) {
             LayoutMode.STAGGERED_GRID_LAYOUT -> {
-                binding.fragmentNotesRecyclerView.layoutManager =
+                binding.notesListRecyclerView.layoutManager =
                     StaggeredGridLayoutManager(
                         STAGGERED_GRID_SPAN_COUNT,
                         StaggeredGridLayoutManager.VERTICAL
@@ -180,7 +167,7 @@ class NotesListFragment : BaseFragment() {
             }
 
             LayoutMode.LINEAR_LAYOUT -> {
-                binding.fragmentNotesRecyclerView.layoutManager =
+                binding.notesListRecyclerView.layoutManager =
                     LinearLayoutManager(context)
             }
         }
@@ -238,7 +225,7 @@ class NotesListFragment : BaseFragment() {
         removeNotesFromCurrentList(noteMap)
 
         val snackbar = Snackbar.make(
-            binding.fragmentNotesCardviewButtonAddNote,
+            binding.notesListCardviewButtonAddNote,
             getString(R.string.note_list_fragment_move_to_trash_snackbar),
             Snackbar.LENGTH_SHORT
         ).setAction(R.string.note_list_snack_bar_message_undo) {
@@ -260,7 +247,7 @@ class NotesListFragment : BaseFragment() {
     }
 
     private fun setupEditTextExpandViewButton() {
-        binding.fragmentNotesTextInputInsert.setEndIconOnClickListener {
+        binding.notesListTextInputInsert.setEndIconOnClickListener {
             viewModel.createEmptyNote()
             saveDescriptionInViewModel()
             cleanEditTextInsertNote()
@@ -270,7 +257,7 @@ class NotesListFragment : BaseFragment() {
     }
 
     private fun saveDescriptionInViewModel(): Boolean {
-        val description = binding.fragmentNotesTextInputEdittextInsert.text.toString()
+        val description = binding.notesListTextInputEdittextInsert.text.toString()
 
         if (description.isNotEmpty()) {
             viewModel.updateViewModelNote(description = description)
@@ -281,22 +268,23 @@ class NotesListFragment : BaseFragment() {
     }
 
     private fun setupAddNoteButton() {
-        binding.fragmentNotesButtonAddNote.setOnClickListener {
+        binding.notesListButtonAddNote.setOnClickListener {
             viewModel.createEmptyNote()
             if (saveDescriptionInViewModel()) {
                 viewModel.saveNote()
                 cleanEditTextInsertNote()
             } else {
-                ToastUtil.makeToast(
-                    context,
-                    getString(R.string.notes_list_fragment_toast_empty_note)
-                )
+                Snackbar.make(
+                    binding.root,
+                    getString(R.string.notes_list_fragment_toast_empty_note),
+                    Snackbar.LENGTH_SHORT
+                ).show()
             }
         }
     }
 
     private fun cleanEditTextInsertNote() {
-        binding.fragmentNotesTextInputEdittextInsert.text?.clear()
+        binding.notesListTextInputEdittextInsert.text?.clear()
     }
 
     private fun setupAdapter(): NotesListAdapter {
@@ -343,7 +331,7 @@ class NotesListFragment : BaseFragment() {
             }
         )
 
-        binding.fragmentNotesRecyclerView.adapter = adapter
+        binding.notesListRecyclerView.adapter = adapter
         return adapter
     }
 

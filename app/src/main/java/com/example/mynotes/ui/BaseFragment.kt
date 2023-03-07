@@ -5,11 +5,14 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.MenuRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.example.mynotes.model.Note
 import com.example.mynotes.ui.viewModel.NotesListViewModel
 
@@ -88,6 +91,13 @@ open class BaseFragment : Fragment() {
                 onDestroyActionModeListener()
             }
         }
+    }
+
+    fun setupAppBar(toolbar: androidx.appcompat.widget.Toolbar) {
+        (activity as AppCompatActivity).setSupportActionBar(toolbar)
+        val navController = findNavController()
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        toolbar.setupWithNavController(navController, appBarConfiguration)
     }
 
 }

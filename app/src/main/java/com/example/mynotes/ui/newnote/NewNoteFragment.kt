@@ -15,19 +15,17 @@ import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmapOrNull
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import com.example.mynotes.R
 import com.example.mynotes.databinding.ColorsBottomSheetBinding
 import com.example.mynotes.databinding.FragmentNewNoteBinding
 import com.example.mynotes.databinding.FragmentNewNoteOptionsBottomSheetBinding
 import com.example.mynotes.databinding.ImageBottomSheetBinding
 import com.example.mynotes.model.Note
+import com.example.mynotes.ui.BaseFragment
 import com.example.mynotes.ui.bottomsheet.BaseBottomSheet
 import com.example.mynotes.ui.bottomsheet.ImageBottomSheet
 import com.example.mynotes.ui.bottomsheet.NoteOptionModalBottomSheet
@@ -48,7 +46,7 @@ import java.io.IOException
 
 //private const val TAG = "NewNoteFragment"
 
-class NewNoteFragment : Fragment() {
+class NewNoteFragment : BaseFragment() {
 
     private var _binding: FragmentNewNoteBinding? = null
     val binding get() = _binding!!
@@ -104,8 +102,8 @@ class NewNoteFragment : Fragment() {
     }
 
     private fun setupNoteImage(uri: Uri?) {
-        binding.fragmentNewNoteImageContainer.visibility = View.VISIBLE
-        binding.fragmentNewNoteImage.loadImage(uri)
+        binding.newNoteImageContainer.visibility = View.VISIBLE
+        binding.newNoteImage.loadImage(uri)
         viewModel.updateViewModelNoteHasImage(true)
     }
 
@@ -115,7 +113,8 @@ class NewNoteFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentNewNoteBinding.inflate(inflater, container, false)
-        setupAppBar()
+//        (activity as AppCompatActivity).setSupportActionBar(binding.newNoteToolbar)
+        setupAppBar(binding.newNoteToolbar)
         return binding.root
     }
 
@@ -124,8 +123,8 @@ class NewNoteFragment : Fragment() {
 
         setupEdgeToEdgeLayout(
             window = requireActivity().window,
-            toolbar = binding.toolbar,
-            footer = binding.fragmentNewNoteFooter
+            toolbar = binding.newNoteToolbar,
+            footer = binding.newNoteFooter
         )
         setupMenu()
         setupDeleteImageButton()
@@ -134,13 +133,13 @@ class NewNoteFragment : Fragment() {
     }
 
     private fun setupDeleteImageButton() {
-        binding.fragmentNewNoteImageDelete.setOnClickListener {
+        binding.newNoteImageDelete.setOnClickListener {
             viewModel.updateViewModelNoteHasImage(false)
         }
     }
 
     private fun setupBottomSheet() {
-        binding.fragmentNewNoteOptionsMenu.setOnClickListener {
+        binding.newNoteOptionsMenu.setOnClickListener {
             val bottomSheet = NoteOptionModalBottomSheet(
                 backgroundColor = viewModel.note.value?.color,
                 binding = FragmentNewNoteOptionsBottomSheetBinding.inflate(
@@ -170,7 +169,7 @@ class NewNoteFragment : Fragment() {
             openBottomSheet(bottomSheet, bottomSheet.TAG)
         }
 
-        binding.fragmentNewNoteOptionsColors.setOnClickListener {
+        binding.newNoteOptionsColors.setOnClickListener {
             val bottomSheet = ColorsBottomSheet(
                 backgroundColor = viewModel.note.value?.color, {
                     setThemeColors(it)
@@ -185,7 +184,7 @@ class NewNoteFragment : Fragment() {
             openBottomSheet(bottomSheet, bottomSheet.TAG)
         }
 
-        binding.fragmentNewNoteOptionsPhoto.setOnClickListener {
+        binding.newNoteOptionsPhoto.setOnClickListener {
             val bottomSheet = ImageBottomSheet(
                 backgroundColor = viewModel.note.value?.color,
                 binding = ImageBottomSheetBinding.inflate(
@@ -239,8 +238,8 @@ class NewNoteFragment : Fragment() {
             ActivityResultContracts.TakePicture()
         ) {
             if (it) {
-                binding.fragmentNewNoteImageContainer.visibility = View.VISIBLE
-                binding.fragmentNewNoteImage.loadImage(viewModel.currentPhotoPath)
+                binding.newNoteImageContainer.visibility = View.VISIBLE
+                binding.newNoteImage.loadImage(viewModel.currentPhotoPath)
                 viewModel.updateViewModelNoteHasImage(true)
 
                 Log.i(TAG, "PhotoPath: ${viewModel.currentPhotoPath}: ")
@@ -257,22 +256,21 @@ class NewNoteFragment : Fragment() {
         AppBarColorUtil.changeAppBarColor(activity as AppCompatActivity, colorId)
     }
 
-    private fun setupAppBar() {
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+/*    private fun setupAppBar() {
         val navController = findNavController()
         val appBarConfiguration = AppBarConfiguration(navController.graph)
-        binding.toolbar.setupWithNavController(navController, appBarConfiguration)
+        binding.newNoteToolbar.setupWithNavController(navController, appBarConfiguration)
 
         if (fragmentMode == FragmentMode.FRAGMENT_EDIT) {
             activity?.title = getString(R.string.app_bar_title_edit_note)
         }
-    }
+    }*/
 
     private fun loadNoteFromViewModel() {
         viewModel.note.observe(viewLifecycleOwner) { note ->
-            binding.fragmentNewNoteTextInputEdittextTitle.setText(note?.title)
-            binding.fragmentNewNoteTextInputEdittextDescription.setText(note?.description)
-            binding.fragmentNewNoteDate.text = note?.modifiedDate
+            binding.newNoteTextInputEdittextTitle.setText(note?.title)
+            binding.newNoteTextInputEdittextDescription.setText(note?.description)
+            binding.newNoteDate.text = note?.modifiedDate
             setThemeColors(note?.color)
 
             if (note?.hasImage == true) {
@@ -286,20 +284,20 @@ class NewNoteFragment : Fragment() {
 
         viewModel.hasImage.observe(viewLifecycleOwner) {
             if (it) {
-                binding.fragmentNewNoteImageContainer.visibility = View.VISIBLE
+                binding.newNoteImageContainer.visibility = View.VISIBLE
             } else {
-                binding.fragmentNewNoteImageContainer.visibility = View.GONE
+                binding.newNoteImageContainer.visibility = View.GONE
             }
         }
     }
 
     private fun setupImage(note: Note) {
         if (!note.imageUrl.isNullOrEmpty()) {
-            binding.fragmentNewNoteImage.loadImage(note.imageUrl)
+            binding.newNoteImage.loadImage(note.imageUrl)
 
-            binding.fragmentNewNoteImage.setOnClickListener {
+            binding.newNoteImage.setOnClickListener {
                 val navigatorExtras = FragmentNavigatorExtras(
-                    binding.fragmentNewNoteImage to "full_screen_image"
+                    binding.newNoteImage to "full_screen_image"
                 )
 
                 val color = note.color ?: R.color.white
@@ -316,10 +314,10 @@ class NewNoteFragment : Fragment() {
 
     private fun disableViews() {
         binding.apply {
-            fragmentNewNoteTextInputEdittextTitle.isEnabled = false
-            fragmentNewNoteTextInputEdittextDescription.isEnabled = false
-            fragmentNewNoteOptionsColors.isEnabled = false
-            fragmentNewNoteOptionsPhoto.isEnabled = false
+            newNoteTextInputEdittextTitle.isEnabled = false
+            newNoteTextInputEdittextDescription.isEnabled = false
+            newNoteOptionsColors.isEnabled = false
+            newNoteOptionsPhoto.isEnabled = false
         }
     }
 
@@ -336,6 +334,8 @@ class NewNoteFragment : Fragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 if (menuItem.itemId == R.id.fragment_new_note_menu_item_save_note) {
                     saveNewNote()
+                    navigateUp()
+//                    navigateToNoteListFragment()
                 }
 
                 if (menuItem.itemId == R.id.fragment_new_note_trash_menu_restore) {
@@ -349,13 +349,13 @@ class NewNoteFragment : Fragment() {
 
     private fun saveNewNote() {
         val title =
-            binding.fragmentNewNoteTextInputEdittextTitle.text.toString()
+            binding.newNoteTextInputEdittextTitle.text.toString()
         val description =
-            binding.fragmentNewNoteTextInputEdittextDescription.text.toString()
+            binding.newNoteTextInputEdittextDescription.text.toString()
 
         var bitmap: Bitmap? = null
         if (viewModel.hasImage.value!!) {
-            bitmap = binding.fragmentNewNoteImage.drawable.toBitmapOrNull(250, 250)
+            bitmap = binding.newNoteImage.drawable.toBitmapOrNull(250, 250)
         }
 
         if (title.isEmpty() && description.isEmpty()) {
@@ -371,7 +371,6 @@ class NewNoteFragment : Fragment() {
                 requireContext()
             )
         }
-        navigateUp()
     }
 
     private fun undoDeleteNote() {

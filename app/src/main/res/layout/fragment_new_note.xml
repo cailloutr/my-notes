@@ -8,7 +8,7 @@
     tools:context=".ui.newnote.NewNoteFragment">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+        android:id="@+id/new_note_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,16 +20,16 @@
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/fragment_new_note_image_container"
+        android:id="@+id/new_note_image_container"
         android:layout_width="0dp"
         android:layout_height="250dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toBottomOf="@id/new_note_toolbar">
 
         <ImageView
-            android:id="@+id/fragment_new_note_image"
+            android:id="@+id/new_note_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clickable="true"
@@ -40,7 +40,7 @@
             tools:src="@tools:sample/avatars" />
 
         <ImageButton
-            android:id="@+id/fragment_new_note_image_delete"
+            android:id="@+id/new_note_image_delete"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="end"
@@ -52,17 +52,17 @@
     </androidx.cardview.widget.CardView>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fragment_new_note_textInput_title"
+        android:id="@+id/new_note_text_input_title"
         style="@style/Widget.MyNotes.TextInputLayout.OutlinedBox.BorderlessEditText"
         android:layout_width="@dimen/match_constrain"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/border_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fragment_new_note_image_container">
+        app:layout_constraintTop_toBottomOf="@id/new_note_image_container">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/fragment_new_note_textInput_edittext_title"
+            android:id="@+id/new_note_text_input_edittext_title"
             style="@style/Widget.MyNotes.TextInputEditText.OutlinedBox.BorderlessEditText.Title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -73,19 +73,19 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/fragment_new_note_textInput_description"
+        android:id="@+id/new_note_text_input_description"
         style="@style/Widget.MyNotes.TextInputLayout.OutlinedBox.BorderlessEditText"
         android:layout_width="@dimen/match_constrain"
         android:layout_height="@dimen/match_constrain"
         android:layout_marginTop="@dimen/border_margin"
         android:layout_marginBottom="@dimen/border_margin"
-        app:layout_constraintBottom_toTopOf="@id/fragment_new_note_footer"
-        app:layout_constraintEnd_toEndOf="@id/fragment_new_note_textInput_title"
-        app:layout_constraintStart_toStartOf="@id/fragment_new_note_textInput_title"
-        app:layout_constraintTop_toBottomOf="@id/fragment_new_note_textInput_title">
+        app:layout_constraintBottom_toTopOf="@id/new_note_footer"
+        app:layout_constraintEnd_toEndOf="@id/new_note_text_input_title"
+        app:layout_constraintStart_toStartOf="@id/new_note_text_input_title"
+        app:layout_constraintTop_toBottomOf="@id/new_note_text_input_title">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/fragment_new_note_textInput_edittext_description"
+            android:id="@+id/new_note_text_input_edittext_description"
             style="@style/Widget.MyNotes.TextInputEditText.OutlinedBox.BorderlessEditText.Description"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -96,7 +96,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/fragment_new_note_footer"
+        android:id="@+id/new_note_footer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -104,7 +104,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageButton
-            android:id="@+id/fragment_new_note_options_colors"
+            android:id="@+id/new_note_options_colors"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/border_margin"
@@ -118,7 +118,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageButton
-            android:id="@+id/fragment_new_note_options_photo"
+            android:id="@+id/new_note_options_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/border_margin"
@@ -129,22 +129,22 @@
             android:padding="4dp"
             android:src="@drawable/ic_photo"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/fragment_new_note_options_colors" />
+            app:layout_constraintStart_toEndOf="@id/new_note_options_colors" />
 
         <TextView
-            android:id="@+id/fragment_new_note_date"
+            android:id="@+id/new_note_date"
             style="@style/Widget.MyNotes.TextView.Date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/border_margin"
-            app:layout_constraintBottom_toBottomOf="@id/fragment_new_note_options_menu"
+            app:layout_constraintBottom_toBottomOf="@id/new_note_options_menu"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/fragment_new_note_options_menu"
+            app:layout_constraintTop_toTopOf="@id/new_note_options_menu"
             tools:text="Edited: 08/12/2022" />
 
         <ImageButton
-            android:id="@+id/fragment_new_note_options_menu"
+            android:id="@+id/new_note_options_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/border_margin"

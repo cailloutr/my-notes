@@ -2,17 +2,18 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/notes_list_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="ui.noteslist.NotesListFragment">
 
     <com.google.android.material.appbar.AppBarLayout
+        style="@style/Widget.MyNotes.Toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/Widget.MyNotes.Toolbar">
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/notes_list_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|enterAlways">
@@ -21,10 +22,11 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_notes_recycler_view"
+        android:id="@+id/notes_list_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -32,28 +34,27 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
         app:spanCount="2"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:itemCount="20"
         tools:listitem="@layout/item_note_staggered_layout" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/fragment_notes_list_footer"
+        android:id="@+id/notes_list_footer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/fragment_notes_text_input_insert_card"
+            android:id="@+id/notes_list_text_input_insert_card"
             android:layout_width="@dimen/match_constrain"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/border_margin"
             android:paddingTop="@dimen/fragment_notes_list_text_input_padding"
             app:cardCornerRadius="30dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/fragment_notes_cardview_button_add_note"
+            app:layout_constraintEnd_toStartOf="@id/notes_list_cardview_button_add_note"
             app:layout_constraintStart_toStartOf="parent">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/fragment_notes_text_input_insert"
+                android:id="@+id/notes_list_text_input_insert"
                 style="@style/Widget.MyNotes.TextInputLayout.CircularOutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -62,7 +63,7 @@
                 app:endIconDrawable="@drawable/ic_open_in_full">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/fragment_notes_text_input_edittext_insert"
+                    android:id="@+id/notes_list_text_input_edittext_insert"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/fragment_notes_text_input_insert_hint"
@@ -74,18 +75,18 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/fragment_notes_cardview_button_add_note"
+            android:id="@+id/notes_list_cardview_button_add_note"
             android:layout_width="@dimen/fragment_notes_list_button_add_note_size"
             android:layout_height="@dimen/fragment_notes_list_button_add_note_size"
             android:layout_marginEnd="@dimen/border_margin"
             app:cardCornerRadius="@dimen/fragment_notes_list_text_input_radius"
-            app:layout_constraintBottom_toBottomOf="@id/fragment_notes_text_input_insert_card"
+            app:layout_constraintBottom_toBottomOf="@id/notes_list_text_input_insert_card"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/fragment_notes_text_input_insert_card"
-            app:layout_constraintTop_toTopOf="@id/fragment_notes_text_input_insert_card">
+            app:layout_constraintStart_toEndOf="@id/notes_list_text_input_insert_card"
+            app:layout_constraintTop_toTopOf="@id/notes_list_text_input_insert_card">
 
             <ImageButton
-                android:id="@+id/fragment_notes_button_add_note"
+                android:id="@+id/notes_list_button_add_note"
                 style="@style/Widget.MyNotes.FloatingActionButton"
                 android:contentDescription="@string/fragment_notes_button_add_new_note_content_description"
                 android:src="@drawable/ic_add" />
