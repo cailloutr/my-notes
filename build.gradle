@@ -7,6 +7,12 @@ buildscript {
         koin_android_version = '3.3.2'
         coil_version = "2.2.2"
         data_store_version = "1.0.0"
+        ext_junit = "1.1.5"
+        androidXTestVersion = "1.5.0"
+        espressoVersion = "3.5.1"
+        navigation_component = "2.5.3"
+        lifecycle_livedata = "2.5.1"
+        fragment_version = "1.5.5"
     }
 
     dependencies {

@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
+import com.example.mynotes.BuildConfig
 import com.example.mynotes.MyNotesApplication
 import com.example.mynotes.database.AppDatabase
 import com.example.mynotes.database.dao.NoteDao
@@ -45,7 +46,7 @@ val databaseModule = module {
         Room.databaseBuilder(
             get(),
             AppDatabase::class.java,
-            "app_database"
+            BuildConfig.DATABASE_NAME
         )
             .addMigrations(*MyNotesMigrations.ALL_MIGRATIONS)
             .build()
