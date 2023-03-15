@@ -11,7 +11,7 @@ Aplicativo para criar notas
 
 ## Screenshots:
 
-<img src="Media/Screenshots/HomeScreen.png" style="width: 390px; height: 844px; display: flex;#vitrinedev"/>
+<img src="https://raw.githubusercontent.com/cailloutr/my-notes/main/Media/Screenshots/HomeScreen.png#vitrinedev" style="width: 390px; height: 844px; display: flex;"/>
 
 
 ## Funcionalidades:
