@@ -1,4 +1,4 @@
-# MyNotes App (ongoing project)
+# MyNotes App 
 
 Aplicativo para criar notas
 
